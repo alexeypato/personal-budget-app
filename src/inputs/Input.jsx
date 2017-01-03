@@ -8,19 +8,18 @@ export default class Input extends React.Component {
     this.state = {
       value: '',
       textError: '',
-    }
+    };
   }
 
   handleOnChangeInput = () => {
     this.setState({
-      value: ReactDOM.findDOMNode(this.refs.cash).value.replace(/\D/, '')
-    })
+      value: ReactDOM.findDOMNode(this.refs.cash).value.replace(/\D/, ''),
+    });
   };
 
   handleAddCash = () => {
     if (this.state.value.length > 0) {
-      if (this.state.value.replace(/\d/g, '').length)
-      {
+      if (this.state.value.replace(/\d/g, '').length) {
         this.setState({ value: '' });
         this.setState({ textError: 'Error! Invalid sum of money.' });
       } else {
@@ -28,7 +27,7 @@ export default class Input extends React.Component {
         this.setState({ value: '' });
         this.setState({ textError: '' });
       }
-    } else{
+    } else {
       this.setState({ textError: 'Error! Enter sum of money.' });
     }
   };
@@ -38,19 +37,20 @@ export default class Input extends React.Component {
       <div>
         <input
           onChange={() => this.handleOnChangeInput()}
-          placeholder='Sum of money'
+          placeholder="Sum of money"
           value={this.state.value}
-          ref='cash'
+          ref="cash"
         />
         <a
-          className='add-btn'
           onClick={() => this.handleAddCash()}
+          className="add-btn"
           href={undefined}
-          >
-          Place
+          tabIndex={0}
+        >
+        Place
         </a>
         <p>{this.state.textError}</p>
       </div>
     );
   }
-};
+}
