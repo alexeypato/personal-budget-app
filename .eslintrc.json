@@ -4,6 +4,13 @@
         "browser": true,
         "node": true
     },
+    "parser": "babel-eslint",
+    "parserOptions": {
+	    "ecmaFeatures": {
+	        "jsx": true,
+	        "modules": true
+	    }
+		},
     "plugins": [
         "react",
         "jsx-a11y",
