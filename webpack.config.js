@@ -12,13 +12,12 @@ module.exports = {
     loaders: [
       {
         test: /\.js$|\.jsx$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react', 'stage-0'],
-        },
+        loaders: ['react-hot', 'babel'],
+        plugins: ['transform-runtime'],
         exclude: /node_modules/
       },
-      { test: /\.s?css$/, loader: 'style!css!sass' },
+      { test: /\.css$|\.s?css$/, loader: 'style!css!sass' },
+      { test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/, loader: 'file'}
     ]
   },
   resolve: {

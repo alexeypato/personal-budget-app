@@ -3,6 +3,9 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import Input from './inputs/Input';
 import CashInfoTable from './components/CashInfoTable';
 
+const moment = require('moment');
+const DatePicker = require('react-datepicker');
+
 export default class App extends React.Component {
 
   constructor(props) {
@@ -17,17 +20,18 @@ export default class App extends React.Component {
       unplannedCash: Number(localStorage.getItem('unplannedCash')) ?
         Number(localStorage.getItem('unplannedCash')) :
         0,
+      startDate: moment(),
     };
   }
 
   addCash = (value) => {
     const accountHistory = this.state.accountHistory;
     const unplannedCash = localStorage.unplannedCash = +this.state.unplannedCash + +value;
-    const date = new Date();
+    const date = this.state.startDate.format('DD-MM-YYYY');
     const newCash = {
       id: accountHistory.length + 1,
       cash: value,
-      date: date.toDateString(),
+      date: date.toString(),
     };
 
     accountHistory.push(newCash);
@@ -38,25 +42,34 @@ export default class App extends React.Component {
     this.setState({ unplannedCash });
   };
 
+  handleOnChangeDate = (date) => {
+    this.setState({
+      startDate: date,
+    });
+  };
+
   render() {
     return (
       <Grid>
-        <code>
-          <Row className="show-grid">
-            <Col xs={6} md={4}>
-              <h4>To place money :</h4>
-              <Input addCash={this.addCash} />
-            </Col>
-            <Col xs={12} md={8}>
-              <CashInfoTable accountHistory={this.state.accountHistory} />
-            </Col>
-          </Row>
-          <Row className="show-grid">
-            <Col className="text-center">
-              <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
-            </Col>
-          </Row>
-        </code>
+        <Row className="show-grid">
+          <Col xs={6} md={4}>
+            <h4>To place money :</h4>
+            <Input addCash={this.addCash} />
+            <DatePicker
+              selected={this.state.startDate}
+              onChange={this.handleOnChangeDate}
+              inline
+            />
+          </Col>
+          <Col xs={12} md={8}>
+            <CashInfoTable accountHistory={this.state.accountHistory} />
+          </Col>
+        </Row>
+        <Row className="show-grid">
+          <Col className="text-center">
+            <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
+          </Col>
+        </Row>
       </Grid>
     );
   }
