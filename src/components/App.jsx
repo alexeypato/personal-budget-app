@@ -1,8 +1,8 @@
 import React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
-import Input from './inputs/Input';
-import CashInfoTable from './components/CashInfoTable';
-import '../src/assets/stylesheets/app.scss';
+import Input from '../inputs/Input';
+import CashInfoTable from '../components/CashInfoTable';
+import '../assets/stylesheets/app.scss';
 
 const moment = require('moment');
 const DatePicker = require('react-datepicker');
