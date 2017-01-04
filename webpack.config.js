@@ -3,6 +3,7 @@ var path = require('path');
 
 module.exports = {
   entry: [
+    'webpack-hot-middleware/client',
     './src/index'
   ],
   module: {
