@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '../assets/stylesheets/input.scss';
+import { Button } from 'react-bootstrap';
+
+const moment = require('moment');
+const DatePicker = require('react-datepicker');
 
 export default class Input extends React.Component {
   constructor(props) {
@@ -8,6 +11,7 @@ export default class Input extends React.Component {
     this.state = {
       value: '',
       textError: '',
+      startDate: moment(),
     };
   }
 
@@ -32,24 +36,36 @@ export default class Input extends React.Component {
     }
   };
 
+  handleOnChangeDate = (date) => {
+    this.setState({
+      startDate: date,
+    });
+  };
+
   render() {
     return (
       <div>
-        <input
-          onChange={() => this.handleOnChangeInput()}
-          placeholder="Sum of money"
-          value={this.state.value}
-          ref="cash"
-        />
-        <a
+        <div className="col-md-9">
+          <input
+            className="form-control place-form-control"
+            onChange={() => this.handleOnChangeInput()}
+            placeholder={this.state.textError ? this.state.textError : 'Sum of money'}
+            value={this.state.value}
+            ref="cash"
+          />
+          <DatePicker
+            selected={this.state.startDate}
+            onChange={this.handleOnChangeDate}
+            inline
+          />
+        </div>
+        <Button
           onClick={() => this.handleAddCash()}
+          bsStyle="primary"
           className="add-btn"
-          href={undefined}
-          tabIndex={0}
         >
-        Place
-        </a>
-        <p>{this.state.textError}</p>
+          Place
+        </Button>
       </div>
     );
   }

@@ -17,11 +17,13 @@
         "import"
     ],
     "rules": {
-      "linebreak-style": "off",
+      "arrow-body-style": 0,
+      "linebreak-style": 0,
       "max-len": ["error", 120],
       "react/prop-types": 0,
       "react/no-string-refs": 0,
       "react/no-find-dom-node": 0,
-      "react/prefer-stateless-function": 0
+      "react/prefer-stateless-function": 0,
+      "prefer-template": 0
     }
 }

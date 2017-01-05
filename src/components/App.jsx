@@ -1,18 +1,15 @@
 import React from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Button, Grid, Row, Col } from 'react-bootstrap';
 import Input from '../inputs/Input';
-import CashInfoTable from '../components/CashInfoTable';
-import '../assets/stylesheets/app.scss';
+import CashInfoTable from './CashInfoTable';
 
-const moment = require('moment');
-const DatePicker = require('react-datepicker');
+// const moment = require('moment');
+// const DatePicker = require('react-datepicker');
 
 export default class App extends React.Component {
 
   constructor(props) {
     super(props);
-
-    // localStorage.clear();
 
     this.state = {
       accountHistory: JSON.parse(localStorage.getItem('accountHistory')) ?
@@ -21,14 +18,15 @@ export default class App extends React.Component {
       unplannedCash: Number(localStorage.getItem('unplannedCash')) ?
         Number(localStorage.getItem('unplannedCash')) :
         0,
-      startDate: moment(),
+      // startDate: moment(),
     };
   }
 
-  addCash = (value) => {
+  addCash = (value, uDate) => {
     const accountHistory = this.state.accountHistory;
     const unplannedCash = localStorage.unplannedCash = +this.state.unplannedCash + +value;
-    const date = this.state.startDate.format('DD-MM-YYYY');
+    // const date = this.state.startDate.format('YYYY-MM-DD');
+    const date = uDate.format('YYYY-MM-DD');
     const newCash = {
       id: accountHistory.length + 1,
       cash: value,
@@ -43,41 +41,55 @@ export default class App extends React.Component {
     this.setState({ unplannedCash });
   };
 
-  handleOnChangeDate = (date) => {
+  /* handleOnChangeDate = (date) => {
     this.setState({
       startDate: date,
+    });
+  };*/
+
+  handleCleanAccountHistory = () => {
+    this.setState({
+      accountHistory: [],
+      unplannedCash: 0,
+      // startDate: moment(),
     });
   };
 
   render() {
     return (
-      <div className="root">
-        <Grid>
-          <Row className="show-grid">
-            <Col xs={6} md={4}>
-              <div className="alert">
-                <h4>To place money :</h4>
-                <Input addCash={this.addCash} />
-                <DatePicker
-                  selected={this.state.startDate}
-                  onChange={this.handleOnChangeDate}
-                  inline
-                />
+      <Grid>
+        <Row className="main-row show-grid">
+          <Col md={4}>
+            <div className="place-panel">
+              <h4><b>To place money :</b></h4>
+              <Input addCash={this.addCash} />
+              {/* <DatePicker
+                selected={this.state.startDate}
+                onChange={this.handleOnChangeDate}
+                inline
+              />*/}
+              <div>
+                <Button
+                  bsStyle="danger"
+                  onClick={() => this.handleCleanAccountHistory()}
+                >
+                Clean accountHistory
+                </Button>
               </div>
-            </Col>
-            <Col xs={12} md={8}>
-              <CashInfoTable accountHistory={this.state.accountHistory} />
-            </Col>
-          </Row>
-          <Row className="show-grid">
-            <Col className="text-center">
-              <div className="alert alert-danger">
-                <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
-              </div>
-            </Col>
-          </Row>
-        </Grid>
-      </div>
+            </div>
+          </Col>
+          <Col md={8}>
+            <CashInfoTable accountHistory={this.state.accountHistory} />
+          </Col>
+        </Row>
+        <Row className="show-grid">
+          <Col className="text-center">
+            <div className={`alert ${this.state.unplannedCash > 0 ? 'alert-danger' : 'alert-success'}`}>
+              <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
+            </div>
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }

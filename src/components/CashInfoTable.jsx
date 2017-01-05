@@ -5,6 +5,14 @@ function priceFormatter(cell) {
   return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
 }
 
+function revertSortFunc(a, b, order) {   // order is desc or asc
+  if (order === 'desc') {
+    return a.cash - b.cash;
+  }
+
+  return b.cash - a.cash;
+}
+
 export default class CashInfoTable extends React.Component {
   render() {
   /* const options = {
@@ -33,19 +41,47 @@ export default class CashInfoTable extends React.Component {
       prePage: 'Prev', // Previous page button text
       nextPage: 'Next', // Next page button text
       hideSizePerPage: true,
+      defaultSortName: 'id',  // default sort column name
+      defaultSortOrder: 'desc',  // default sort order
+      clearSearch: true,
     };
 
     return (
-      <div><h4>History of receipt</h4>
+      <div>
         <BootstrapTable
           data={this.props.accountHistory}
           striped
           pagination
           options={options}
+          search
+          searchPlaceholder="Search..."
         >
-          <TableHeaderColumn dataField="id" isKey dataAlign="center" dataSort>ID</TableHeaderColumn>
-          <TableHeaderColumn dataField="cash" dataFormat={priceFormatter} dataSort>Sum of money</TableHeaderColumn>
-          <TableHeaderColumn dataField="date" dataSort>Date of receipt</TableHeaderColumn>
+          <TableHeaderColumn
+            dataField="id"
+            isKey
+            dataAlign="center"
+            dataSort
+            width="100"
+          >
+            ID
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            dataField="cash"
+            dataFormat={priceFormatter}
+            dataAlign="center"
+            dataSort
+            sortFunc={revertSortFunc}
+          >
+            Sum of money
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            dataField="date"
+            dataAlign="center"
+            dataSort
+            width="200"
+          >
+            Date of receipt
+          </TableHeaderColumn>
         </BootstrapTable>
       </div>
     );
