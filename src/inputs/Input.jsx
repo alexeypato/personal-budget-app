@@ -49,7 +49,11 @@ export default class Input extends React.Component {
           <input
             className="form-control"
             onChange={() => this.handleOnChangeInput()}
-            placeholder={this.state.textError ? this.state.textError : 'Sum of money'}
+            placeholder={
+              this.state.textError ?
+                this.state.textError :
+                'Sum of money'
+            }
             value={this.state.value}
             ref="cash"
           />

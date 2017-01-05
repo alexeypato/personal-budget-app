@@ -3,9 +3,6 @@ import { Button, Grid, Row, Col } from 'react-bootstrap';
 import Input from '../inputs/Input';
 import CashInfoTable from './CashInfoTable';
 
-// const moment = require('moment');
-// const DatePicker = require('react-datepicker');
-
 export default class App extends React.Component {
 
   constructor(props) {
@@ -18,14 +15,13 @@ export default class App extends React.Component {
       unplannedCash: Number(localStorage.getItem('unplannedCash')) ?
         Number(localStorage.getItem('unplannedCash')) :
         0,
-      // startDate: moment(),
     };
   }
 
   addCash = (value, startDate) => {
     const accountHistory = this.state.accountHistory;
-    const unplannedCash = localStorage.unplannedCash = +this.state.unplannedCash + +value;
-    // const date = this.state.startDate.format('YYYY-MM-DD');
+    const unplannedCash = localStorage.unplannedCash =
+      +this.state.unplannedCash + +value;
     const date = startDate.format('YYYY-MM-DD');
     const newCash = {
       id: accountHistory.length + 1,
@@ -40,12 +36,6 @@ export default class App extends React.Component {
     this.setState({ accountHistory });
     this.setState({ unplannedCash });
   };
-
-  /* handleOnChangeDate = (date) => {
-    this.setState({
-      startDate: date,
-    });
-  };*/
 
   handleCleanAccountHistory = () => {
     this.setState({
@@ -63,7 +53,7 @@ export default class App extends React.Component {
               bsStyle="danger"
               onClick={() => this.handleCleanAccountHistory()}
             >
-              Clean accountHistory
+              Clear accountHistory
             </Button>
             <h4><b>To place money :</b></h4>
             <Input addCash={this.addCash} />
@@ -74,7 +64,13 @@ export default class App extends React.Component {
         </Row>
         <Row className="show-grid">
           <Col className="text-center">
-            <div className={`alert ${this.state.unplannedCash > 0 ? 'alert-danger' : 'alert-success'}`}>
+            <div
+              className={
+              `alert ${this.state.unplannedCash > 0 ?
+                'alert-danger' :
+                'alert-success'}`
+              }
+            >
               <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
             </div>
           </Col>
