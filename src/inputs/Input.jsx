@@ -27,7 +27,7 @@ export default class Input extends React.Component {
         this.setState({ value: '' });
         this.setState({ textError: 'Error! Invalid sum of money.' });
       } else {
-        this.props.addCash(this.state.value);
+        this.props.addCash(this.state.value, this.state.startDate);
         this.setState({ value: '' });
         this.setState({ textError: '' });
       }
@@ -45,9 +45,9 @@ export default class Input extends React.Component {
   render() {
     return (
       <div>
-        <div className="col-md-9">
+        <div className="col-md-8">
           <input
-            className="form-control place-form-control"
+            className="form-control"
             onChange={() => this.handleOnChangeInput()}
             placeholder={this.state.textError ? this.state.textError : 'Sum of money'}
             value={this.state.value}

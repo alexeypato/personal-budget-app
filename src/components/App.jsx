@@ -22,11 +22,11 @@ export default class App extends React.Component {
     };
   }
 
-  addCash = (value, uDate) => {
+  addCash = (value, startDate) => {
     const accountHistory = this.state.accountHistory;
     const unplannedCash = localStorage.unplannedCash = +this.state.unplannedCash + +value;
     // const date = this.state.startDate.format('YYYY-MM-DD');
-    const date = uDate.format('YYYY-MM-DD');
+    const date = startDate.format('YYYY-MM-DD');
     const newCash = {
       id: accountHistory.length + 1,
       cash: value,
@@ -51,7 +51,6 @@ export default class App extends React.Component {
     this.setState({
       accountHistory: [],
       unplannedCash: 0,
-      // startDate: moment(),
     });
   };
 
@@ -59,26 +58,17 @@ export default class App extends React.Component {
     return (
       <Grid>
         <Row className="main-row show-grid">
-          <Col md={4}>
-            <div className="place-panel">
-              <h4><b>To place money :</b></h4>
-              <Input addCash={this.addCash} />
-              {/* <DatePicker
-                selected={this.state.startDate}
-                onChange={this.handleOnChangeDate}
-                inline
-              />*/}
-              <div>
-                <Button
-                  bsStyle="danger"
-                  onClick={() => this.handleCleanAccountHistory()}
-                >
-                Clean accountHistory
-                </Button>
-              </div>
-            </div>
+          <Col md={6}>
+            <Button
+              bsStyle="danger"
+              onClick={() => this.handleCleanAccountHistory()}
+            >
+              Clean accountHistory
+            </Button>
+            <h4><b>To place money :</b></h4>
+            <Input addCash={this.addCash} />
           </Col>
-          <Col md={8}>
+          <Col md={6}>
             <CashInfoTable accountHistory={this.state.accountHistory} />
           </Col>
         </Row>
