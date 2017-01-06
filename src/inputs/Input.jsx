@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from 'react-bootstrap';
+import CustomControl from '../components/CustomControl';
 
-const moment = require('moment');
-const DatePicker = require('react-datepicker');
+const DatePicker = require('react-bootstrap-date-picker');
 
 export default class Input extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export default class Input extends React.Component {
     this.state = {
       value: '',
       textError: '',
-      startDate: moment(),
+      date: new Date().toISOString(),
     };
   }
 
@@ -27,7 +27,7 @@ export default class Input extends React.Component {
         this.setState({ value: '' });
         this.setState({ textError: 'Error! Invalid sum of money.' });
       } else {
-        this.props.addCash(this.state.value, this.state.startDate);
+        this.props.addCash(this.state.value, this.state.date);
         this.setState({ value: '' });
         this.setState({ textError: '' });
       }
@@ -36,40 +36,48 @@ export default class Input extends React.Component {
     }
   };
 
-  handleOnChangeDate = (date) => {
+  handleOnChangeDate = (value) => {
     this.setState({
-      startDate: date,
+      date: value,
     });
   };
 
   render() {
     return (
-      <div>
-        <div className="col-md-8">
-          <input
-            className="form-control"
-            onChange={() => this.handleOnChangeInput()}
-            placeholder={
-              this.state.textError ?
-                this.state.textError :
-                'Sum of money'
-            }
-            value={this.state.value}
-            ref="cash"
-          />
-          <DatePicker
-            selected={this.state.startDate}
-            onChange={this.handleOnChangeDate}
-            inline
-          />
+      <div className="container">
+        <div className="row">
+          <div className="col-md-3 text-center padding-margin-none">
+            <input
+              className="form-control text-center"
+              onChange={() => this.handleOnChangeInput()}
+              placeholder={
+                this.state.textError ?
+                  this.state.textError :
+                  'Sum of money'
+              }
+              value={this.state.value}
+              maxLength="10"
+              ref="cash"
+            />
+          </div>
+          <div className="col-md-1 padding-margin-none">
+            <DatePicker
+              customControl={<CustomControl />}
+              onChange={this.handleOnChangeDate}
+              value={this.state.date}
+              dateFormat="YYYY-MM-DD"
+            />
+          </div>
+          <div className="col-md-1">
+            <Button
+              onClick={() => this.handleAddCash()}
+              bsStyle="primary"
+              className="btn-block"
+            >
+              Place
+            </Button>
+          </div>
         </div>
-        <Button
-          onClick={() => this.handleAddCash()}
-          bsStyle="primary"
-          className="add-btn"
-        >
-          Place
-        </Button>
       </div>
     );
   }

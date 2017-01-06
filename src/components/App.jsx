@@ -1,7 +1,10 @@
 import React from 'react';
-import { Button, Grid, Row, Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import Dialog from 'react-bootstrap-dialog';
 import Input from '../inputs/Input';
 import CashInfoTable from './CashInfoTable';
+
+const date = require('date-and-time');
 
 export default class App extends React.Component {
 
@@ -22,60 +25,95 @@ export default class App extends React.Component {
     const accountHistory = this.state.accountHistory;
     const unplannedCash = localStorage.unplannedCash =
       +this.state.unplannedCash + +value;
-    const date = startDate.format('YYYY-MM-DD');
+    const dateOut = date.parse(startDate, 'YYYY-MM-DD');
     const newCash = {
       id: accountHistory.length + 1,
       cash: value,
-      date: date.toString(),
+      date: date.format(dateOut, 'YYYY-MM-DD'),
     };
 
     accountHistory.push(newCash);
 
     localStorage.setItem('accountHistory', JSON.stringify(accountHistory));
 
-    this.setState({ accountHistory });
-    this.setState({ unplannedCash });
+    this.setState({
+      accountHistory,
+      unplannedCash,
+    });
   };
 
   handleCleanAccountHistory = () => {
-    this.setState({
-      accountHistory: [],
-      unplannedCash: 0,
+    this.refs.dialog.show({
+      title: 'Clear accountHistory',
+      body: 'You are precisely sure that you want to remove all history?',
+      actions: [
+        Dialog.CancelAction(),
+        Dialog.Action(
+          'ОК',
+          () => {
+            this.setState({
+              accountHistory: [],
+              unplannedCash: 0,
+            });
+            localStorage.unplannedCash = 0;
+            localStorage.setItem('accountHistory', JSON.stringify([]));
+          },
+          'btn-danger',
+          ),
+      ],
+      bsSize: 'small',
+      onHide: (dialog) => {
+        dialog.hide();
+      },
     });
   };
 
   render() {
     return (
-      <Grid>
-        <Row className="main-row show-grid">
-          <Col md={6}>
-            <Button
-              bsStyle="danger"
-              onClick={() => this.handleCleanAccountHistory()}
-            >
-              Clear accountHistory
-            </Button>
-            <h4><b>To place money :</b></h4>
-            <Input addCash={this.addCash} />
-          </Col>
-          <Col md={6}>
-            <CashInfoTable accountHistory={this.state.accountHistory} />
-          </Col>
-        </Row>
-        <Row className="show-grid">
-          <Col className="text-center">
-            <div
-              className={
-              `alert ${this.state.unplannedCash > 0 ?
-                'alert-danger' :
-                'alert-success'}`
-              }
-            >
-              <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
+      <div className="container">
+
+        <div className="row main-row place-panel">
+          <div className="col-md-6">
+
+            <div className="row">
+              <h4><b>To place money :</b></h4>
             </div>
-          </Col>
-        </Row>
-      </Grid>
+
+            <div className="row">
+              <Input addCash={this.addCash} />
+            </div>
+
+            <div className="row clear-row">
+              <div className="col-md-6">
+                <Button
+                  bsStyle="danger"
+                  className="btn-block"
+                  onClick={() => this.handleCleanAccountHistory()}
+                >
+                  Clear accountHistory
+                </Button>
+                <Dialog ref="dialog" />
+              </div>
+            </div>
+
+          </div>
+
+          <div className="col-md-6 text-center">
+            <CashInfoTable accountHistory={this.state.accountHistory} />
+          </div>
+        </div>
+
+        <div
+          className={
+            `row text-center alert ${this.state.unplannedCash > 0 ?
+              'alert-danger' :
+              'alert-success'}`
+          }
+        >
+          <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
+        </div>
+
+      </div>
     );
   }
 }

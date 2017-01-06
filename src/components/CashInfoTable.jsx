@@ -5,7 +5,7 @@ function priceFormatter(cell) {
   return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
 }
 
-function revertSortFunc(a, b, order) {   // order is desc or asc
+function revertSortFunc(a, b, order) {
   if (order === 'desc') {
     return a.cash - b.cash;
   }
