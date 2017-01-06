@@ -3,6 +3,8 @@ import { Button } from 'react-bootstrap';
 import Dialog from 'react-bootstrap-dialog';
 import Input from '../inputs/Input';
 import CashInfoTable from './CashInfoTable';
+import CategoriesTable from './CategoriesTable';
+
 
 const date = require('date-and-time');
 
@@ -18,6 +20,16 @@ export default class App extends React.Component {
       unplannedCash: Number(localStorage.getItem('unplannedCash')) ?
         Number(localStorage.getItem('unplannedCash')) :
         0,
+      /* categoriesData: JSON.parse(localStorage.getItem('categoriesData')) ?
+        JSON.parse(localStorage.getItem('categoriesData')) :
+        [],*/
+      categoriesData: [
+        {
+          id: 0,
+          nameCategory: '111',
+          moneyPlanned: 111,
+        },
+      ],
     };
   }
 
@@ -40,6 +52,20 @@ export default class App extends React.Component {
       accountHistory,
       unplannedCash,
     });
+  };
+
+  addCategory = () => {
+    const categoriesData = this.state.categoriesData;
+    const newCategory = {
+      id: categoriesData.length + 1,
+      nameCategory: '',
+      moneyPlanned: 0,
+    };
+
+    categoriesData.push(newCategory);
+
+    localStorage.setItem('categoriesData', JSON.stringify(categoriesData));
+    this.setState({ categoriesData });
   };
 
   handleCleanAccountHistory = () => {
@@ -113,6 +139,11 @@ export default class App extends React.Component {
           <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
         </div>
 
+        <div className="row">
+          <CategoriesTable
+            categoriesData={this.state.categoriesData}
+          />
+        </div>
       </div>
     );
   }

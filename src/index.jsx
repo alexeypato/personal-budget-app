@@ -5,6 +5,7 @@ import './assets/stylesheets/main.scss';
 
 require('bootstrap/dist/css/bootstrap.css');
 require('bootstrap/dist/css/bootstrap-theme.css');
+require('react-bootstrap-table/dist/react-bootstrap-table-all.min.css');
 
 render(
   <App />,
