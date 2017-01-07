@@ -13,14 +13,14 @@ function revertSortFunc(a, b, order) {
   return b.cash - a.cash;
 }
 
-function onAfterInsertRow(row) {
-  alert(row.toString());
+function onAfterInsertRow() {
+  this.props.addCategory();
 }
 
 export default class CategoriesTable extends React.Component {
   render() {
     const options = {
-      afterInsertRow: { onAfterInsertRow },   // A hook for after insert rows
+      afterInsertRow: onAfterInsertRow,   // A hook for after insert rows
       sizePerPage: 5,  // which size per page you want to locate as default
       paginationSize: 3,  // the pagination bar size.
       prePage: 'Prev', // Previous page button text

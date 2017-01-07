@@ -5,7 +5,6 @@ import Input from '../inputs/Input';
 import CashInfoTable from './CashInfoTable';
 import CategoriesTable from './CategoriesTable';
 
-
 const date = require('date-and-time');
 
 export default class App extends React.Component {
@@ -142,6 +141,7 @@ export default class App extends React.Component {
         <div className="row">
           <CategoriesTable
             categoriesData={this.state.categoriesData}
+            addCategory={this.addCategory}
           />
         </div>
       </div>

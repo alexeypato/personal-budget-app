@@ -8,14 +8,14 @@ module.exports = {
   ],
   module: {
     preLoaders: [
-      { test: /\.js$|\.jsx$/, loader: 'eslint', exclude: /node_modules/ }
+      { test: /\.jsx$/, loader: 'eslint', exclude: /node_modules/ }
     ],
     loaders: [
       {
         test: /\.js$|\.jsx$/,
         loaders: ['react-hot', 'babel'],
         plugins: ['transform-runtime'],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       { test: /\.css$|\.s?css$/, loader: 'style!css!sass' },
       { test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/, loader: 'file'}
