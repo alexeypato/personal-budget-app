@@ -53,7 +53,7 @@ export default class App extends React.Component {
     });
   };
 
-  addCategory = () => {
+  /* addCategory = () => {
     const categoriesData = this.state.categoriesData;
     const newCategory = {
       id: categoriesData.length + 1,
@@ -63,9 +63,9 @@ export default class App extends React.Component {
 
     categoriesData.push(newCategory);
 
-    localStorage.setItem('categoriesData', JSON.stringify(categoriesData));
+    localStorage.setItem('categoriesData', JSON.stringify(this.state.categoriesData));
     this.setState({ categoriesData });
-  };
+  };*/
 
   handleCleanAccountHistory = () => {
     this.refs.dialog.show({
@@ -137,11 +137,10 @@ export default class App extends React.Component {
         >
           <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
         </div>
-
         <div className="row">
           <CategoriesTable
             categoriesData={this.state.categoriesData}
-            addCategory={this.addCategory}
+            /* addCategory={this.addCategory}*/
           />
         </div>
       </div>
