@@ -1,25 +1,14 @@
+html, body {
+  height: 100%;
+}
+
 #root {
-  margin: 10px 20px 10px 20px;
-  padding: 10px 20px 10px 20px;
+  margin: 0 2% 0 2%;
+  padding: 1% 2% 1% 2%;
   background-color: #F5F5F5;
-  border-radius: 10px;
+  height: 100%;
 }
 
-.main-row {
-	min-height: 400px; 
-}
-
-.clear-row {
-	margin-top: 10px;
-}
-
-.place-panel {
-	border-radius: 10px;
-	border: 1px solid black;
-	padding: 5px 10px 5px 10px;
-}
-
-.padding-margin-none {
-	margin: 0px !important;
-	padding: 0px !important;
+.margin-bottom {
+	margin-bottom: 5px !important;
 }

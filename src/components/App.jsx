@@ -96,46 +96,36 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="container">
-
-        <div className="row main-row place-panel">
-          <div className="col-md-6">
-
-            <div className="row">
-              <h4><b>To place money :</b></h4>
-            </div>
-
-            <div className="row">
+        <div className="row">
+          <div className="col-xs-2">
+            <div className="row margin-bottom">
               <Input addCash={this.addCash} />
             </div>
 
-            <div className="row clear-row">
-              <div className="col-md-6">
-                <Button
-                  bsStyle="danger"
-                  className="btn-block"
-                  onClick={() => this.handleCleanAccountHistory()}
-                >
-                  Clear accountHistory
-                </Button>
-                <Dialog ref="dialog" />
-              </div>
+            <div className="row margin-bottom">
+              <Button
+                bsStyle="danger"
+                className="btn-block"
+                onClick={() => this.handleCleanAccountHistory()}
+              >
+                Clear accountHistory
+              </Button>
+              <Dialog ref="dialog" />
             </div>
-
+            <div
+              className={
+                `row text-center alert ${this.state.unplannedCash > 0 ?
+                  'alert-danger' :
+                  'alert-success'}`
+              }
+            >
+              UNPLANNED MONEY<h3><b>{this.state.unplannedCash}</b></h3>
+            </div>
           </div>
 
-          <div className="col-md-6 text-center">
+          <div className="col-xs-8 col-xs-offset-1">
             <CashInfoTable accountHistory={this.state.accountHistory} />
           </div>
-        </div>
-
-        <div
-          className={
-            `row text-center alert ${this.state.unplannedCash > 0 ?
-              'alert-danger' :
-              'alert-success'}`
-          }
-        >
-          <h1>UNPLANNED MONEY: {this.state.unplannedCash}</h1>
         </div>
         <div className="row">
           <CategoriesTable

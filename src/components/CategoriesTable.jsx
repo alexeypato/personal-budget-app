@@ -1,5 +1,6 @@
 import React from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap-table';
+import Dialog from 'react-bootstrap-dialog';
 
 function priceFormatter(cell) {
   return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
@@ -18,6 +19,37 @@ function revertSortFunc(a, b, order) {
 }*/
 
 export default class CategoriesTable extends React.Component {
+  handleInsertButtonClick = () => {
+    this.refs.addCat.show({
+      title: 'Clear accountHistory',
+      body: 'You are precisely sure that you want to remove all history?',
+      actions: [
+        Dialog.CancelAction(),
+        Dialog.Action(
+          'ОК',
+          () => {
+          },
+          'btn-danger',
+          ),
+      ],
+      bsSize: 'small',
+      onHide: (dialog) => {
+        dialog.hide();
+      },
+    });
+  }
+
+  createCustomInsertButton = (onClick) => {
+    return (
+      <InsertButton
+        btnText="Add Category"
+        btnContextual="btn-warning"
+        className="my-custom-class"
+        onClick={() => this.handleInsertButtonClick(onClick)}
+      />
+    );
+  }
+
   render() {
     const options = {
       // afterInsertRow: onAfterInsertRow,   // A hook for after insert rows
@@ -29,6 +61,7 @@ export default class CategoriesTable extends React.Component {
       defaultSortName: 'id',  // default sort column name
       defaultSortOrder: 'desc',  // default sort order
       clearSearch: true,
+      insertBtn: this.createCustomInsertButton,
     };
 
     const selectRowProp = {
@@ -59,7 +92,6 @@ export default class CategoriesTable extends React.Component {
             dataField="nameCategory"
             dataAlign="center"
             dataSort
-            filter={{ type: 'TextFilter', delay: 1000 }}
           >
             Name of category
           </TableHeaderColumn>
@@ -74,6 +106,7 @@ export default class CategoriesTable extends React.Component {
             Total money
           </TableHeaderColumn>
         </BootstrapTable>
+        <Dialog ref="addCat" />
       </div>
     );
   }
