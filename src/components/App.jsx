@@ -19,16 +19,9 @@ export default class App extends React.Component {
       unplannedCash: Number(localStorage.getItem('unplannedCash')) ?
         Number(localStorage.getItem('unplannedCash')) :
         0,
-      /* categoriesData: JSON.parse(localStorage.getItem('categoriesData')) ?
+      categoriesData: JSON.parse(localStorage.getItem('categoriesData')) ?
         JSON.parse(localStorage.getItem('categoriesData')) :
-        [],*/
-      categoriesData: [
-        {
-          id: 0,
-          nameCategory: '111',
-          moneyPlanned: 111,
-        },
-      ],
+        [],
     };
   }
 
@@ -53,11 +46,17 @@ export default class App extends React.Component {
     });
   };
 
-  /* addCategory = () => {
+  addCategory = (nameCategory) => {
     const categoriesData = this.state.categoriesData;
+    const id = categoriesData.length + 1;
+    for (const i = 0; i < categoriesData.length; i + 1) {
+      if ((categoriesData[i + 1][0] - categoriesData[i][0]) != 1) {
+        id = categoriesData[i][0] + 1;
+      }
+    }
     const newCategory = {
       id: categoriesData.length + 1,
-      nameCategory: '',
+      nameCategory: nameCategory.toString(),
       moneyPlanned: 0,
     };
 
@@ -65,7 +64,14 @@ export default class App extends React.Component {
 
     localStorage.setItem('categoriesData', JSON.stringify(this.state.categoriesData));
     this.setState({ categoriesData });
-  };*/
+  };
+
+  deleteCategory = (id) => {
+    const categoriesData = this.state.categoriesData;
+    categoriesData.splice(id, 1);
+    localStorage.setItem('categoriesData', JSON.stringify(this.state.categoriesData));
+    this.setState({ categoriesData });
+  };
 
   handleCleanAccountHistory = () => {
     this.refs.dialog.show({
@@ -78,10 +84,12 @@ export default class App extends React.Component {
           () => {
             this.setState({
               accountHistory: [],
+              categoriesData: [],
               unplannedCash: 0,
             });
             localStorage.unplannedCash = 0;
             localStorage.setItem('accountHistory', JSON.stringify([]));
+            localStorage.setItem('categoriesData', JSON.stringify([]));
           },
           'btn-danger',
           ),
@@ -130,7 +138,8 @@ export default class App extends React.Component {
         <div className="row">
           <CategoriesTable
             categoriesData={this.state.categoriesData}
-            /* addCategory={this.addCategory}*/
+            addCategory={this.addCategory}
+            deleteCategory={this.deleteCategory}
           />
         </div>
       </div>

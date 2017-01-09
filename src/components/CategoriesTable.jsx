@@ -1,6 +1,7 @@
 import React from 'react';
-import { BootstrapTable, TableHeaderColumn, InsertButton } from 'react-bootstrap-table';
-import Dialog from 'react-bootstrap-dialog';
+import ReactDOM from 'react-dom';
+import { BootstrapTable, TableHeaderColumn, InsertButton, DeleteButton } from 'react-bootstrap-table';
+import { Button, Modal } from 'react-bootstrap';
 
 function priceFormatter(cell) {
   return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
@@ -19,40 +20,77 @@ function revertSortFunc(a, b, order) {
 }*/
 
 export default class CategoriesTable extends React.Component {
-  handleInsertButtonClick = () => {
-    this.refs.addCat.show({
-      title: 'Clear accountHistory',
-      body: 'You are precisely sure that you want to remove all history?',
-      actions: [
-        Dialog.CancelAction(),
-        Dialog.Action(
-          'ОК',
-          () => {
-          },
-          'btn-danger',
-          ),
-      ],
-      bsSize: 'small',
-      onHide: (dialog) => {
-        dialog.hide();
-      },
+  constructor(props) {
+    super(props);
+    this.state = {
+      nameCategory: '',
+      showModal: false,
+      textError: '',
+    };
+  }
+
+  handleOnChangeInput = () => {
+    this.setState({
+      nameCategory: ReactDOM.findDOMNode(this.refs.name).value,
     });
   }
+
+  handleInsertButtonClick = () => {
+    this.setState({ showModal: true });
+  }
+
+  /* handleDeleteButtonClick = (next, dropRowKeys) => {
+    const dropRowKeysStr = dropRowKeys.join(',');
+    confirm(`Are you sure you want to delete ${dropRowKeysStr}?`);
+  }*/
 
   createCustomInsertButton = (onClick) => {
     return (
       <InsertButton
-        btnText="Add Category"
-        btnContextual="btn-warning"
+        btnText="New category"
+        btnContextual="btn-primary"
         className="my-custom-class"
         onClick={() => this.handleInsertButtonClick(onClick)}
       />
     );
   }
 
+  createCustomDeleteButton = () => {
+    return (
+      <DeleteButton
+        btnText="Delete"
+        btnContextual="btn-danger"
+        className="my-custom-class"
+        onClick={() => this.handleDeleteButtonClick()}
+      />
+    );
+  }
+
+  closeModal = () => {
+    this.setState({ showModal: false });
+  }
+
+  saveAndClose = () => {
+    if (this.state.nameCategory.trim().length > 0) {
+      this.props.addCategory(this.state.nameCategory);
+      this.setState({
+        nameCategory: '',
+        textError: '',
+      });
+      this.closeModal();
+    } else {
+      this.setState({ textError: 'Error! Enter name of category.' });
+    }
+  }
+
+  customConfirm = (next, dropRowKeys) => {
+    const dropRowKeysStr = dropRowKeys.join(',');
+    confirm(`(It's a custom confirm)Are you sure you want to delete ${dropRowKeysStr}?`);
+    this.props.deleteCategory(dropRowKeysStr - 1);
+  }
+
   render() {
     const options = {
-      // afterInsertRow: onAfterInsertRow,   // A hook for after insert rows
       sizePerPage: 5,  // which size per page you want to locate as default
       paginationSize: 3,  // the pagination bar size.
       prePage: 'Prev', // Previous page button text
@@ -62,6 +100,8 @@ export default class CategoriesTable extends React.Component {
       defaultSortOrder: 'desc',  // default sort order
       clearSearch: true,
       insertBtn: this.createCustomInsertButton,
+      // deleteBtn: this.createCustomDeleteButton,
+      handleConfirmDeleteRow: this.customConfirm,
     };
 
     const selectRowProp = {
@@ -78,6 +118,7 @@ export default class CategoriesTable extends React.Component {
           searchPlaceholder="Search..."
           selectRow={selectRowProp}
           insertRow
+          deleteRow
         >
           <TableHeaderColumn
             dataField="id"
@@ -106,7 +147,40 @@ export default class CategoriesTable extends React.Component {
             Total money
           </TableHeaderColumn>
         </BootstrapTable>
-        <Dialog ref="addCat" />
+
+        <Modal
+          show={this.state.showModal}
+          onHide={this.closeModal}
+          bsSize="small"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Add new category
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              className="form-control text-center margin-bottom"
+              onChange={() => this.handleOnChangeInput()}
+              placeholder={
+                this.state.textError ?
+                  this.state.textError :
+                  'Enter a name of category'
+              }
+              value={this.state.nameCategory}
+              maxLength="10"
+              ref="name"
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeModal}>
+              Cansel
+            </Button>
+            <Button bsStyle="primary" onClick={this.saveAndClose}>
+              Save
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

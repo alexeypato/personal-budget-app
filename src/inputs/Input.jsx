@@ -44,6 +44,7 @@ export default class Input extends React.Component {
           textError: '',
           date: new Date().toISOString(),
         });
+        this.closeModal();
       }
     } else {
       this.setState({ textError: 'Error! Enter sum of money.' });
@@ -64,6 +65,7 @@ export default class Input extends React.Component {
         <Modal
           show={this.state.showModal}
           onHide={this.closeModal}
+          bsSize="small"
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -71,38 +73,33 @@ export default class Input extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="container">
-              <div className="row">
-                <div className="col-xs-4 col-xs-offset-1">
-                  <input
-                    className="form-control"
-                    onChange={() => this.handleOnChangeInput()}
-                    placeholder={
-                      this.state.textError ?
-                        this.state.textError :
-                        'Sum of money'
-                    }
-                    value={this.state.value}
-                    maxLength="10"
-                    ref="cash"
-                  />
-                  <DatePicker
-                    onChange={this.handleOnChangeDate}
-                    value={this.state.date}
-                    onFocus={() => { this.setState({ focused: true }); }}
-                    onBlur={() => { this.setState({ focused: false }); }}
-                    dateFormat="YYYY-MM-DD"
-                    showClearButton={false}
-                  />
-                </div>
-              </div>
-            </div>
+            <input
+              className="form-control text-center margin-bottom"
+              onChange={() => this.handleOnChangeInput()}
+              placeholder={
+                this.state.textError ?
+                  this.state.textError :
+                  'Sum of money'
+              }
+              value={this.state.value}
+              maxLength="10"
+              ref="cash"
+            />
+            <DatePicker
+              className="text-center"
+              onChange={this.handleOnChangeDate}
+              value={this.state.date}
+              onFocus={() => { this.setState({ focused: true }); }}
+              onBlur={() => { this.setState({ focused: false }); }}
+              dateFormat="YYYY-MM-DD"
+              showClearButton={false}
+            />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModal}>
               Close
             </Button>
-            <Button onClick={this.saveAndClose}>
+            <Button bsStyle="primary" onClick={this.saveAndClose}>
               Save
             </Button>
           </Modal.Footer>
