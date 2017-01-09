@@ -48,14 +48,25 @@ export default class App extends React.Component {
 
   addCategory = (nameCategory) => {
     const categoriesData = this.state.categoriesData;
-    const id = categoriesData.length + 1;
-    for (const i = 0; i < categoriesData.length; i + 1) {
-      if ((categoriesData[i + 1][0] - categoriesData[i][0]) != 1) {
-        id = categoriesData[i][0] + 1;
+    let setID = false;
+    let id = categoriesData.length + 1;
+    if (categoriesData.length === 0) {
+      setID = true;
+    }
+    if (!setID && categoriesData[0].id > 1) {
+      id = 1;
+      setID = true;
+    }
+    if (!setID) {
+      for (let i = 1; i < categoriesData.length; i += 1) {
+        if ((categoriesData[i].id - categoriesData[i - 1].id) !== 1) {
+          id = categoriesData[i - 1].id + 1;
+          break;
+        }
       }
     }
     const newCategory = {
-      id: categoriesData.length + 1,
+      id: +id,
       nameCategory: nameCategory.toString(),
       moneyPlanned: 0,
     };
