@@ -15,10 +15,6 @@ function revertSortFunc(a, b, order) {
   return b.cash - a.cash;
 }
 
-/* function onAfterInsertRow() {
-  this.props.addCategory();
-}*/
-
 export default class CategoriesTable extends React.Component {
   constructor(props) {
     super(props);
@@ -39,11 +35,6 @@ export default class CategoriesTable extends React.Component {
     this.setState({ showModal: true });
   }
 
-  /* handleDeleteButtonClick = (next, dropRowKeys) => {
-    const dropRowKeysStr = dropRowKeys.join(',');
-    confirm(`Are you sure you want to delete ${dropRowKeysStr}?`);
-  }*/
-
   createCustomInsertButton = (onClick) => {
     return (
       <InsertButton
@@ -61,7 +52,6 @@ export default class CategoriesTable extends React.Component {
         btnText="Delete"
         btnContextual="btn-danger"
         className="my-custom-class"
-        onClick={() => this.handleDeleteButtonClick()}
       />
     );
   }
@@ -85,8 +75,8 @@ export default class CategoriesTable extends React.Component {
 
   customConfirm = (next, dropRowKeys) => {
     const dropRowKeysStr = dropRowKeys.join(',');
-    confirm(`(It's a custom confirm)Are you sure you want to delete ${dropRowKeysStr}?`);
-    this.props.deleteCategory(dropRowKeysStr - 1);
+    // confirm(`(It's a custom confirm)Are you sure you want to delete ${dropRowKeysStr}?`);
+    this.props.deleteCategory(dropRowKeysStr);
   }
 
   render() {
@@ -96,11 +86,11 @@ export default class CategoriesTable extends React.Component {
       prePage: 'Prev', // Previous page button text
       nextPage: 'Next', // Next page button text
       hideSizePerPage: true,
-      defaultSortName: 'id',  // default sort column name
-      defaultSortOrder: 'desc',  // default sort order
+      defaultSortName: 'nameCategory',  // default sort column name
+      defaultSortOrder: 'asc',  // default sort order
       clearSearch: true,
       insertBtn: this.createCustomInsertButton,
-      // deleteBtn: this.createCustomDeleteButton,
+      deleteBtn: this.createCustomDeleteButton,
       handleConfirmDeleteRow: this.customConfirm,
     };
 
@@ -126,6 +116,7 @@ export default class CategoriesTable extends React.Component {
             dataAlign="center"
             dataSort
             width="150"
+            hidden
           >
             ID
           </TableHeaderColumn>

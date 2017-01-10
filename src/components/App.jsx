@@ -48,21 +48,10 @@ export default class App extends React.Component {
 
   addCategory = (nameCategory) => {
     const categoriesData = this.state.categoriesData;
-    let setID = false;
     let id = categoriesData.length + 1;
-    if (categoriesData.length === 0) {
-      setID = true;
-    }
-    if (!setID && categoriesData[0].id > 1) {
-      id = 1;
-      setID = true;
-    }
-    if (!setID) {
-      for (let i = 1; i < categoriesData.length; i += 1) {
-        if ((categoriesData[i].id - categoriesData[i - 1].id) !== 1) {
-          id = categoriesData[i - 1].id + 1;
-          break;
-        }
+    for (let i = 0; i < categoriesData.length; i += 1) {
+      if (categoriesData[i].id >= id) {
+        id = categoriesData[i].id + 1;
       }
     }
     const newCategory = {
@@ -79,9 +68,30 @@ export default class App extends React.Component {
 
   deleteCategory = (id) => {
     const categoriesData = this.state.categoriesData;
-    categoriesData.splice(id, 1);
-    localStorage.setItem('categoriesData', JSON.stringify(this.state.categoriesData));
-    this.setState({ categoriesData });
+    for (let i = 0; i < categoriesData.length; i += 1) {
+      if (categoriesData[i].id === +id) {
+        this.refs.deleteCategoryDialog.show({
+          title: 'Delete category',
+          body: `You precisely want to remove category (${categoriesData[i].nameCategory})?`,
+          actions: [
+            Dialog.CancelAction(),
+            Dialog.Action(
+              'ОК',
+              () => {
+                categoriesData.splice(i, 1);
+                localStorage.setItem('categoriesData', JSON.stringify(this.state.categoriesData));
+                this.setState({ categoriesData });
+              },
+              'btn-danger',
+              ),
+          ],
+          bsSize: 'small',
+          onHide: (dialog) => {
+            dialog.hide();
+          },
+        });
+      }
+    }
   };
 
   handleCleanAccountHistory = () => {
@@ -152,6 +162,7 @@ export default class App extends React.Component {
             addCategory={this.addCategory}
             deleteCategory={this.deleteCategory}
           />
+          <Dialog ref="deleteCategoryDialog" />
         </div>
       </div>
     );
