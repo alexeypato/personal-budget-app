@@ -141,6 +141,14 @@ export default class App extends React.Component {
               </Button>
               <Dialog ref="dialog" />
             </div>
+
+            <div className="main-menu">
+              <ul className="nav nav-pills nav-stacked">
+                <li className="active"><a href={undefined}>Home</a></li>
+                <li><a href={undefined}>Category</a></li>
+                <li><a href={undefined}>Expenses</a></li>
+              </ul>
+            </div>
             <div
               className={
                 `row text-center alert ${this.state.unplannedCash > 0 ?
