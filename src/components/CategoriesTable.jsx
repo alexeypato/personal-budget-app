@@ -52,7 +52,7 @@ export default class CategoriesTable extends React.Component {
   createCustomInsertButton = (onClick) => {
     return (
       <InsertButton
-        btnText="New category"
+        btnText="Добавить"
         btnContextual="btn-primary"
         className="my-custom-class"
         onClick={() => this.handleInsertButtonClick(onClick)}
@@ -63,7 +63,7 @@ export default class CategoriesTable extends React.Component {
   createCustomDeleteButton = () => {
     return (
       <DeleteButton
-        btnText="Delete"
+        btnText="Удалить"
         btnContextual="btn-danger"
         className="my-custom-class"
       />
@@ -79,7 +79,7 @@ export default class CategoriesTable extends React.Component {
       if (this.state.cashCategory.replace(/\d/g, '').length) {
         this.setState({
           cashCategory: '',
-          textErrorCash: 'Error! Incorrect sum of money.',
+          textErrorCash: 'Ошибка! Неверная сумма денег.',
         });
       } else if (this.state.nameCategory.trim().length > 0) {
         this.props.addCategory(this.state.nameCategory, this.state.cashCategory);
@@ -91,12 +91,12 @@ export default class CategoriesTable extends React.Component {
         });
         this.closeModal();
       } else {
-        this.setState({ textError: 'Error! Enter name of category.' });
+        this.setState({ textError: 'Ошибка! Введите название категории.' });
       }
     } else {
       this.setState({
         cashCategory: '',
-        textErrorCash: 'Error! Incorrect sum of money.',
+        textErrorCash: 'Ошибка! Неверная сумма денег.',
       });
     }
   }
@@ -109,7 +109,7 @@ export default class CategoriesTable extends React.Component {
 
   render() {
     const options = {
-      sizePerPage: 5,  // which size per page you want to locate as default
+      sizePerPage: 10,  // which size per page you want to locate as default
       paginationSize: 3,  // the pagination bar size.
       prePage: 'Prev', // Previous page button text
       nextPage: 'Next', // Next page button text
@@ -133,7 +133,7 @@ export default class CategoriesTable extends React.Component {
           pagination
           options={options}
           search
-          searchPlaceholder="Search..."
+          searchPlaceholder="Поиск..."
           selectRow={selectRowProp}
           insertRow
           deleteRow
@@ -153,7 +153,7 @@ export default class CategoriesTable extends React.Component {
             dataAlign="center"
             dataSort
           >
-            Name of category
+            Название категории
           </TableHeaderColumn>
           <TableHeaderColumn
             dataField="moneyPlanned"
@@ -163,7 +163,7 @@ export default class CategoriesTable extends React.Component {
             sortFunc={revertSortFunc}
             width="200"
           >
-            Total money
+            Сумма средств
           </TableHeaderColumn>
         </BootstrapTable>
 
@@ -174,7 +174,7 @@ export default class CategoriesTable extends React.Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              Add new category
+              Добавить новую категорию
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -184,7 +184,7 @@ export default class CategoriesTable extends React.Component {
               placeholder={
                 this.state.textError ?
                   this.state.textError :
-                  'Enter a name of category'
+                  'Введите название категории'
               }
               value={this.state.nameCategory}
               maxLength="10"
@@ -196,7 +196,7 @@ export default class CategoriesTable extends React.Component {
               placeholder={
                 this.state.textErrorCash ?
                   this.state.textErrorCash :
-                  `Enter the sum to : ${this.props.unplannedCash}`
+                  `Введите сумму средств до : ${this.props.unplannedCash}`
               }
               value={this.state.cashCategory}
               maxLength="10"

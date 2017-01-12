@@ -37,7 +37,7 @@ export default class Input extends React.Component {
       if (this.state.value.replace(/\d/g, '').length) {
         this.setState({
           value: '',
-          textError: 'Error! Invalid sum of money.',
+          textError: 'Ошибка! Неверная сумма средств.',
         });
       } else {
         this.props.addCash(this.state.value, this.state.date);
@@ -49,7 +49,7 @@ export default class Input extends React.Component {
         this.closeModal();
       }
     } else {
-      this.setState({ textError: 'Error! Enter sum of money.' });
+      this.setState({ textError: 'Ошибка! Введите сумму средств.' });
     }
   }
 
@@ -61,7 +61,7 @@ export default class Input extends React.Component {
           bsStyle="primary"
           className="btn-block"
         >
-          Add money
+          Внести средства
         </Button>
 
         <Modal
@@ -71,7 +71,7 @@ export default class Input extends React.Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              Please, specify the sum and date of transfer of money!
+              Введите сумму и дату поступления средств!
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -81,7 +81,7 @@ export default class Input extends React.Component {
               placeholder={
                 this.state.textError ?
                   this.state.textError :
-                  'Sum of money'
+                  'Сумма средств'
               }
               value={this.state.value}
               maxLength="10"
@@ -99,10 +99,10 @@ export default class Input extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModal}>
-              Close
+              Закрыть
             </Button>
             <Button bsStyle="primary" onClick={this.saveAndClose}>
-              Save
+              Сохранить
             </Button>
           </Modal.Footer>
         </Modal>

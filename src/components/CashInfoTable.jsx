@@ -16,7 +16,7 @@ function revertSortFunc(a, b, order) {
 export default class CashInfoTable extends React.Component {
   render() {
     const options = {
-      sizePerPage: 5,  // which size per page you want to locate as default
+      sizePerPage: 10,  // which size per page you want to locate as default
       paginationSize: 3,  // the pagination bar size.
       prePage: 'Prev', // Previous page button text
       nextPage: 'Next', // Next page button text
@@ -34,7 +34,7 @@ export default class CashInfoTable extends React.Component {
           pagination
           options={options}
           search
-          searchPlaceholder="Search..."
+          searchPlaceholder="Поиск..."
         >
           <TableHeaderColumn
             dataField="id"
@@ -53,7 +53,7 @@ export default class CashInfoTable extends React.Component {
             dataSort
             sortFunc={revertSortFunc}
           >
-            Sum of money
+            Сумма внесенных средств
           </TableHeaderColumn>
           <TableHeaderColumn
             dataField="date"
@@ -61,7 +61,7 @@ export default class CashInfoTable extends React.Component {
             dataSort
             width="200"
           >
-            Date of receipt
+            Дата внесения
           </TableHeaderColumn>
         </BootstrapTable>
       </div>

@@ -24,7 +24,7 @@ export default class App extends React.Component {
         [],
       visibleHistory: false,
       visibleCategory: true,
-      colorHistory: 'warning',
+      colorHistory: 'danger',
       colorCategory: 'primary',
     };
   }
@@ -80,12 +80,12 @@ export default class App extends React.Component {
     for (let i = 0; i < categoriesData.length; i += 1) {
       if (categoriesData[i].id === +id) {
         this.refs.deleteCategoryDialog.show({
-          title: 'Delete category',
-          body: `You precisely want to remove category (${categoriesData[i].nameCategory})?`,
+          title: 'Удалить категорию',
+          body: `Вы действительно хотите удалить категорию (${categoriesData[i].nameCategory})?`,
           actions: [
             Dialog.CancelAction(),
             Dialog.Action(
-              'ОК',
+              'OK',
               () => {
                 const unplannedCash = localStorage.unplannedCash =
                   +this.state.unplannedCash + +categoriesData[i].moneyPlanned;
@@ -110,8 +110,8 @@ export default class App extends React.Component {
 
   handleCleanAccountHistory = () => {
     this.refs.dialog.show({
-      title: 'Clear accountHistory',
-      body: 'You are precisely sure that you want to remove all history?',
+      title: 'Очистить историю',
+      body: 'Вы действительно хотите очистить всю историю?',
       actions: [
         Dialog.CancelAction(),
         Dialog.Action(
@@ -140,7 +140,7 @@ export default class App extends React.Component {
     this.setState({
       visibleHistory: false,
       visibleCategory: true,
-      colorHistory: 'warning',
+      colorHistory: 'danger',
       colorCategory: 'primary',
     });
   };
@@ -150,14 +150,14 @@ export default class App extends React.Component {
       visibleHistory: true,
       visibleCategory: false,
       colorHistory: 'primary',
-      colorCategory: 'warning',
+      colorCategory: 'danger',
     });
   };
 
   render() {
     return (
-      <div className="container">
-        <div className="row">
+      <div className="container height-100">
+        <div className="row height-100">
           <div className="col-xs-2">
             <div className="row margin-bottom">
               <Input addCash={this.addCash} />
@@ -165,11 +165,11 @@ export default class App extends React.Component {
 
             <div className="row margin-bottom">
               <Button
-                bsStyle="danger"
+                bsStyle="primary"
                 className="btn-block"
                 onClick={() => this.handleCleanAccountHistory()}
               >
-                Clear accountHistory
+                Очистить историю
               </Button>
               <Dialog ref="dialog" />
             </div>
@@ -180,7 +180,7 @@ export default class App extends React.Component {
                   className="btn-block"
                   onClick={() => this.handleViewHistory()}
                 >
-                  History
+                  История пополнения
                 </Button>
               </div>
               <div className="row margin-bottom">
@@ -189,7 +189,7 @@ export default class App extends React.Component {
                   className="btn-block"
                   onClick={() => this.handleViewCategory()}
                 >
-                  Category
+                  Категории
                 </Button>
               </div>
             </div>
@@ -197,18 +197,18 @@ export default class App extends React.Component {
               className={
                 `row text-center alert ${this.state.unplannedCash > 0 ?
                   'alert-danger' :
-                  'alert-success'}`
+                  'alert-info'}`
               }
             >
-              UNPLANNED MONEY<h3><b>{this.state.unplannedCash}</b></h3>
+              Незапланированные средства<h3><b>{this.state.unplannedCash}</b></h3>
             </div>
           </div>
 
-          <div className="col-xs-8 col-xs-offset-1" hidden={this.state.visibleHistory}>
+          <div className="col-xs-8 col-xs-offset-1 background-table height-100" hidden={this.state.visibleHistory}>
             <CashInfoTable accountHistory={this.state.accountHistory} />
           </div>
 
-          <div className="col-xs-8 col-xs-offset-1" hidden={this.state.visibleCategory}>
+          <div className="col-xs-8 col-xs-offset-1 background-table height-100" hidden={this.state.visibleCategory}>
             <CategoriesTable
               categoriesData={this.state.categoriesData}
               addCategory={this.addCategory}
