@@ -87,9 +87,14 @@ export default class App extends React.Component {
             Dialog.Action(
               'ОК',
               () => {
+                const unplannedCash = localStorage.unplannedCash =
+                  +this.state.unplannedCash + +categoriesData[i].moneyPlanned;
                 categoriesData.splice(i, 1);
                 localStorage.setItem('categoriesData', JSON.stringify(this.state.categoriesData));
-                this.setState({ categoriesData });
+                this.setState({
+                  categoriesData,
+                  unplannedCash,
+                });
               },
               'btn-danger',
               ),

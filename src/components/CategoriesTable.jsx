@@ -43,6 +43,8 @@ export default class CategoriesTable extends React.Component {
     this.setState({
       nameCategory: '',
       cashCategory: '',
+      textError: '',
+      textErrorCash: '',
       showModal: true,
     });
   }
