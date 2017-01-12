@@ -20,8 +20,10 @@ export default class CategoriesTable extends React.Component {
     super(props);
     this.state = {
       nameCategory: '',
+      cashCategory: '',
       showModal: false,
       textError: '',
+      textErrorCash: '',
     };
   }
 
@@ -31,8 +33,18 @@ export default class CategoriesTable extends React.Component {
     });
   }
 
+  handleOnChangeCash = () => {
+    this.setState({
+      cashCategory: ReactDOM.findDOMNode(this.refs.cash).value.replace(/\D/, ''),
+    });
+  }
+
   handleInsertButtonClick = () => {
-    this.setState({ showModal: true });
+    this.setState({
+      nameCategory: '',
+      cashCategory: '',
+      showModal: true,
+    });
   }
 
   createCustomInsertButton = (onClick) => {
@@ -61,15 +73,29 @@ export default class CategoriesTable extends React.Component {
   }
 
   saveAndClose = () => {
-    if (this.state.nameCategory.trim().length > 0) {
-      this.props.addCategory(this.state.nameCategory);
-      this.setState({
-        nameCategory: '',
-        textError: '',
-      });
-      this.closeModal();
+    if (this.state.cashCategory.length > 0 && (+this.state.cashCategory <= +this.props.unplannedCash)) {
+      if (this.state.cashCategory.replace(/\d/g, '').length) {
+        this.setState({
+          cashCategory: '',
+          textErrorCash: 'Error! Incorrect sum of money.',
+        });
+      } else if (this.state.nameCategory.trim().length > 0) {
+        this.props.addCategory(this.state.nameCategory, this.state.cashCategory);
+        this.setState({
+          nameCategory: '',
+          cashCategory: '',
+          textError: '',
+          textErrorCash: '',
+        });
+        this.closeModal();
+      } else {
+        this.setState({ textError: 'Error! Enter name of category.' });
+      }
     } else {
-      this.setState({ textError: 'Error! Enter name of category.' });
+      this.setState({
+        cashCategory: '',
+        textErrorCash: 'Error! Incorrect sum of money.',
+      });
     }
   }
 
@@ -115,7 +141,7 @@ export default class CategoriesTable extends React.Component {
             isKey
             dataAlign="center"
             dataSort
-            width="150"
+            width="100"
             hidden
           >
             ID
@@ -133,7 +159,7 @@ export default class CategoriesTable extends React.Component {
             dataAlign="center"
             dataSort
             sortFunc={revertSortFunc}
-            width="300"
+            width="200"
           >
             Total money
           </TableHeaderColumn>
@@ -161,6 +187,18 @@ export default class CategoriesTable extends React.Component {
               value={this.state.nameCategory}
               maxLength="10"
               ref="name"
+            />
+            <input
+              className="form-control text-center margin-bottom"
+              onChange={() => this.handleOnChangeCash()}
+              placeholder={
+                this.state.textErrorCash ?
+                  this.state.textErrorCash :
+                  `Enter the sum to : ${this.props.unplannedCash}`
+              }
+              value={this.state.cashCategory}
+              maxLength="10"
+              ref="cash"
             />
           </Modal.Body>
           <Modal.Footer>

@@ -22,6 +22,10 @@ export default class App extends React.Component {
       categoriesData: JSON.parse(localStorage.getItem('categoriesData')) ?
         JSON.parse(localStorage.getItem('categoriesData')) :
         [],
+      visibleHistory: false,
+      visibleCategory: true,
+      colorHistory: 'warning',
+      colorCategory: 'primary',
     };
   }
 
@@ -46,8 +50,10 @@ export default class App extends React.Component {
     });
   };
 
-  addCategory = (nameCategory) => {
+  addCategory = (nameCategory, cashCategory) => {
     const categoriesData = this.state.categoriesData;
+    const unplannedCash = localStorage.unplannedCash =
+      +this.state.unplannedCash - +cashCategory;
     let id = categoriesData.length + 1;
     for (let i = 0; i < categoriesData.length; i += 1) {
       if (categoriesData[i].id >= id) {
@@ -57,13 +63,16 @@ export default class App extends React.Component {
     const newCategory = {
       id: +id,
       nameCategory: nameCategory.toString(),
-      moneyPlanned: 0,
+      moneyPlanned: cashCategory,
     };
 
     categoriesData.push(newCategory);
 
     localStorage.setItem('categoriesData', JSON.stringify(this.state.categoriesData));
-    this.setState({ categoriesData });
+    this.setState({
+      categoriesData,
+      unplannedCash,
+    });
   };
 
   deleteCategory = (id) => {
@@ -122,6 +131,24 @@ export default class App extends React.Component {
     });
   };
 
+  handleViewHistory = () => {
+    this.setState({
+      visibleHistory: false,
+      visibleCategory: true,
+      colorHistory: 'warning',
+      colorCategory: 'primary',
+    });
+  };
+
+  handleViewCategory = () => {
+    this.setState({
+      visibleHistory: true,
+      visibleCategory: false,
+      colorHistory: 'primary',
+      colorCategory: 'warning',
+    });
+  };
+
   render() {
     return (
       <div className="container">
@@ -141,6 +168,26 @@ export default class App extends React.Component {
               </Button>
               <Dialog ref="dialog" />
             </div>
+            <div className="main-menu">
+              <div className="row margin-bottom">
+                <Button
+                  bsStyle={this.state.colorHistory}
+                  className="btn-block"
+                  onClick={() => this.handleViewHistory()}
+                >
+                  History
+                </Button>
+              </div>
+              <div className="row margin-bottom">
+                <Button
+                  bsStyle={this.state.colorCategory}
+                  className="btn-block"
+                  onClick={() => this.handleViewCategory()}
+                >
+                  Category
+                </Button>
+              </div>
+            </div>
             <div
               className={
                 `row text-center alert ${this.state.unplannedCash > 0 ?
@@ -152,17 +199,19 @@ export default class App extends React.Component {
             </div>
           </div>
 
-          <div className="col-xs-8 col-xs-offset-1">
+          <div className="col-xs-8 col-xs-offset-1" hidden={this.state.visibleHistory}>
             <CashInfoTable accountHistory={this.state.accountHistory} />
           </div>
-        </div>
-        <div className="row">
-          <CategoriesTable
-            categoriesData={this.state.categoriesData}
-            addCategory={this.addCategory}
-            deleteCategory={this.deleteCategory}
-          />
-          <Dialog ref="deleteCategoryDialog" />
+
+          <div className="col-xs-8 col-xs-offset-1" hidden={this.state.visibleCategory}>
+            <CategoriesTable
+              categoriesData={this.state.categoriesData}
+              addCategory={this.addCategory}
+              deleteCategory={this.deleteCategory}
+              unplannedCash={this.state.unplannedCash}
+            />
+            <Dialog ref="deleteCategoryDialog" />
+          </div>
         </div>
       </div>
     );
