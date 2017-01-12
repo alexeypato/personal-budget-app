@@ -42,6 +42,7 @@ export default class CashInfoTable extends React.Component {
             dataAlign="center"
             dataSort
             width="100"
+            hidden
           >
             ID
           </TableHeaderColumn>

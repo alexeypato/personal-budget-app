@@ -35,8 +35,10 @@ export default class Input extends React.Component {
   saveAndClose = () => {
     if (this.state.value.length > 0) {
       if (this.state.value.replace(/\d/g, '').length) {
-        this.setState({ value: '' });
-        this.setState({ textError: 'Error! Invalid sum of money.' });
+        this.setState({
+          value: '',
+          textError: 'Error! Invalid sum of money.',
+        });
       } else {
         this.props.addCash(this.state.value, this.state.date);
         this.setState({

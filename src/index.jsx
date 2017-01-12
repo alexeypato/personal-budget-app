@@ -8,8 +8,6 @@ import './assets/stylesheets/main.scss';
 require('bootstrap/dist/css/bootstrap.min.css');
 require('bootstrap/dist/css/bootstrap-theme.min.css');
 require('react-bootstrap-table/dist/react-bootstrap-table-all.min.css');
-// require('react-bootstrap/dist/react-bootstrap.min.js');
-// require('react-bootstrap-table/dist/react-bootstrap-table.min.js');
 
 render(
   <App />,
