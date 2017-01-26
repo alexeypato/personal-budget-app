@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import { Button, Modal } from 'react-bootstrap';
 
 const DatePicker = require('react-bootstrap-date-picker');
+const date = require('date-and-time');
 
-export default class Input extends React.Component {
+class Input extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,7 +20,7 @@ export default class Input extends React.Component {
 
   handleOnChangeInput = () => {
     this.setState({
-      value: ReactDOM.findDOMNode(this.refs.cash).value.replace(/\D/, ''),
+      value: this.cashInput.value.replace(/\D/, ''),
     });
   }
 
@@ -33,14 +35,18 @@ export default class Input extends React.Component {
   }
 
   saveAndClose = () => {
-    if (this.state.value.length > 0) {
-      if (this.state.value.replace(/\d/g, '').length) {
+    const value = this.state.value;
+
+    if (value.length > 0) {
+      if (value.replace(/\d/g, '').length) {
         this.setState({
           value: '',
           textError: 'Ошибка! Неверная сумма средств.',
         });
       } else {
-        this.props.addCash(this.state.value, this.state.date);
+        const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
+        this.props.onAddMoney(this.props.money.length,
+          value, date.format(dateOut, 'YYYY-MM-DD'));
         this.setState({
           value: '',
           textError: '',
@@ -61,7 +67,7 @@ export default class Input extends React.Component {
           bsStyle="primary"
           className="btn-block"
         >
-          Внести средства
+          <span className="glyphicon glyphicon-plus"> Внести средства</span>
         </Button>
 
         <Modal
@@ -71,7 +77,7 @@ export default class Input extends React.Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              Введите сумму и дату поступления средств!
+              <span className="glyphicon glyphicon-plus"> Внести средства</span>
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -85,7 +91,7 @@ export default class Input extends React.Component {
               }
               value={this.state.value}
               maxLength="10"
-              ref="cash"
+              ref={(input) => { this.cashInput = input; }}
             />
             <DatePicker
               className="text-center"
@@ -102,7 +108,7 @@ export default class Input extends React.Component {
               Закрыть
             </Button>
             <Button bsStyle="primary" onClick={this.saveAndClose}>
-              Сохранить
+              Внести
             </Button>
           </Modal.Footer>
         </Modal>
@@ -110,3 +116,21 @@ export default class Input extends React.Component {
     );
   }
 }
+
+export default connect(
+  (state, ownProps) => ({
+    money: state.money,
+    ownProps,
+  }),
+  dispatch => ({
+    onAddMoney: (id, addMoney, addDate) => {
+      const payload = {
+        id: id + 1,
+        money: addMoney,
+        date: addDate,
+      };
+      dispatch({ type: 'ADD_MONEY', payload });
+      dispatch({ type: 'ADD_UNPLANNED_MONEY', addMoney });
+    },
+  }),
+)(Input);

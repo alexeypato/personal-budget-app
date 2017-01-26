@@ -1,7 +1,7 @@
 var path = require('path');
 var express = require('express');
 var app = express();
-var PORT = process.env.PORT || 8080
+var PORT = process.env.PORT || 5000;
 
 // using webpack-dev-server and middleware in development environment
 if(process.env.NODE_ENV !== 'production') {

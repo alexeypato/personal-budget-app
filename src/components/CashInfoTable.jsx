@@ -1,5 +1,6 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { connect } from 'react-redux';
 
 function priceFormatter(cell) {
   return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
@@ -9,11 +10,10 @@ function revertSortFunc(a, b, order) {
   if (order === 'desc') {
     return a.cash - b.cash;
   }
-
   return b.cash - a.cash;
 }
 
-export default class CashInfoTable extends React.Component {
+class CashInfoTable extends React.Component {
   render() {
     const options = {
       sizePerPage: 10,  // which size per page you want to locate as default
@@ -29,7 +29,7 @@ export default class CashInfoTable extends React.Component {
     return (
       <div>
         <BootstrapTable
-          data={this.props.accountHistory}
+          data={this.props.money}
           striped
           pagination
           options={options}
@@ -47,7 +47,7 @@ export default class CashInfoTable extends React.Component {
             ID
           </TableHeaderColumn>
           <TableHeaderColumn
-            dataField="cash"
+            dataField="money"
             dataFormat={priceFormatter}
             dataAlign="center"
             dataSort
@@ -68,3 +68,12 @@ export default class CashInfoTable extends React.Component {
     );
   }
 }
+
+export default connect(
+  (state, ownProps) => ({
+    money: state.money,
+    ownProps,
+  }),
+  dispatch => ({
+  }),
+)(CashInfoTable);

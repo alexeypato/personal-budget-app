@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BootstrapTable, TableHeaderColumn, InsertButton, DeleteButton } from 'react-bootstrap-table';
+import { connect } from 'react-redux';
+import { BootstrapTable,
+  TableHeaderColumn,
+  InsertButton,
+  DeleteButton,
+} from 'react-bootstrap-table';
 import { Button, Modal } from 'react-bootstrap';
 
 function priceFormatter(cell) {
@@ -11,31 +16,34 @@ function revertSortFunc(a, b, order) {
   if (order === 'desc') {
     return a.cash - b.cash;
   }
-
   return b.cash - a.cash;
 }
 
-export default class CategoriesTable extends React.Component {
+class CategoriesTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       nameCategory: '',
+      nameCategoryDelete: '',
       cashCategory: '',
-      showModal: false,
+      showModalAdd: false,
+      showModalDelete: false,
       textError: '',
       textErrorCash: '',
+      dropRowKeysStrTmp: '',
+      moneyPlannedTmp: '',
     };
   }
 
   handleOnChangeInput = () => {
     this.setState({
-      nameCategory: ReactDOM.findDOMNode(this.refs.name).value,
+      nameCategory: this.nameCategoryInput.value,
     });
   }
 
   handleOnChangeCash = () => {
     this.setState({
-      cashCategory: ReactDOM.findDOMNode(this.refs.cash).value.replace(/\D/, ''),
+      cashCategory: this.cashCategoryInput.value.replace(/\D/, ''),
     });
   }
 
@@ -45,14 +53,14 @@ export default class CategoriesTable extends React.Component {
       cashCategory: '',
       textError: '',
       textErrorCash: '',
-      showModal: true,
+      showModalAdd: true,
     });
   }
 
   createCustomInsertButton = (onClick) => {
     return (
       <InsertButton
-        btnText="Добавить"
+        btnText=" Добавить"
         btnContextual="btn-primary"
         className="my-custom-class"
         onClick={() => this.handleInsertButtonClick(onClick)}
@@ -63,33 +71,48 @@ export default class CategoriesTable extends React.Component {
   createCustomDeleteButton = () => {
     return (
       <DeleteButton
-        btnText="Удалить"
+        btnText=" Удалить"
         btnContextual="btn-danger"
         className="my-custom-class"
       />
     );
   }
 
-  closeModal = () => {
-    this.setState({ showModal: false });
+  closeModalAdd = () => {
+    this.setState({ showModalAdd: false });
+  }
+
+  closeModalDelete = () => {
+    this.setState({ showModalDelete: false });
   }
 
   saveAndClose = () => {
-    if (this.state.cashCategory.length > 0 && (+this.state.cashCategory <= +this.props.unplannedCash)) {
-      if (this.state.cashCategory.replace(/\d/g, '').length) {
+    const cashCategory = this.state.cashCategory;
+    const nameCategory = this.state.nameCategory;
+
+    if (cashCategory.length > 0
+      && (+cashCategory <= +this.props.unplannedMoney)) {
+      if (cashCategory.replace(/\d/g, '').length) {
         this.setState({
           cashCategory: '',
           textErrorCash: 'Ошибка! Неверная сумма денег.',
         });
-      } else if (this.state.nameCategory.trim().length > 0) {
-        this.props.addCategory(this.state.nameCategory, this.state.cashCategory);
+      } else if (nameCategory.trim().length > 0) {
+        const categoriesData = this.props.categories;
+        let id = categoriesData.length + 1;
+        for (let i = 0; i < categoriesData.length; i += 1) {
+          if (categoriesData[i].id >= id) {
+            id = categoriesData[i].id + 1;
+          }
+        }
+        this.props.onAddCategories(id, nameCategory, cashCategory);
         this.setState({
           nameCategory: '',
           cashCategory: '',
           textError: '',
           textErrorCash: '',
         });
-        this.closeModal();
+        this.closeModalAdd();
       } else {
         this.setState({ textError: 'Ошибка! Введите название категории.' });
       }
@@ -101,10 +124,24 @@ export default class CategoriesTable extends React.Component {
     }
   }
 
+  deleteAndClose = () => {
+    this.props.onDeleteCategories(this.state.dropRowKeysStrTmp, this.state.moneyPlannedTmp);
+    this.closeModalDelete();
+  }
+
   customConfirm = (next, dropRowKeys) => {
     const dropRowKeysStr = dropRowKeys.join(',');
-    // confirm(`(It's a custom confirm)Are you sure you want to delete ${dropRowKeysStr}?`);
-    this.props.deleteCategory(dropRowKeysStr);
+    const categoriesData = this.props.categories;
+    for (let i = 0; i < categoriesData.length; i += 1) {
+      if (categoriesData[i].id === +dropRowKeysStr) {
+        this.setState({
+          nameCategoryDelete: categoriesData[i].nameCategory,
+          showModalDelete: true,
+          moneyPlannedTmp: categoriesData[i].moneyPlanned,
+          dropRowKeysStrTmp: dropRowKeysStr,
+        });
+      }
+    }
   }
 
   render() {
@@ -128,7 +165,7 @@ export default class CategoriesTable extends React.Component {
     return (
       <div>
         <BootstrapTable
-          data={this.props.categoriesData}
+          data={this.props.categories}
           striped
           pagination
           options={options}
@@ -168,13 +205,13 @@ export default class CategoriesTable extends React.Component {
         </BootstrapTable>
 
         <Modal
-          show={this.state.showModal}
-          onHide={this.closeModal}
+          show={this.state.showModalAdd}
+          onHide={this.closeModalAdd}
           bsSize="small"
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              Добавить новую категорию
+              <span className="glyphicon glyphicon-plus"> Добавить категорию</span>
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -188,7 +225,7 @@ export default class CategoriesTable extends React.Component {
               }
               value={this.state.nameCategory}
               maxLength="10"
-              ref="name"
+              ref={(input) => { this.nameCategoryInput = input; }}
             />
             <input
               className="form-control text-center margin-bottom"
@@ -196,19 +233,42 @@ export default class CategoriesTable extends React.Component {
               placeholder={
                 this.state.textErrorCash ?
                   this.state.textErrorCash :
-                  `Введите сумму средств до : ${this.props.unplannedCash}`
+                  `Введите сумму средств до : ${this.props.unplannedMoney}`
               }
               value={this.state.cashCategory}
               maxLength="10"
-              ref="cash"
+              ref={(input) => { this.cashCategoryInput = input; }}
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeModal}>
-              Cansel
+            <Button onClick={this.closeModalAdd}>
+              Закрыть
             </Button>
             <Button bsStyle="primary" onClick={this.saveAndClose}>
-              Save
+              Добавить
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={this.state.showModalDelete}
+          onHide={this.closeModalDelete}
+          bsSize="small"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <span className="glyphicon glyphicon-trash"> Удалить категорию</span>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Вы действительно хотите удалить категорию: `{this.state.nameCategoryDelete}`?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeModalDelete}>
+              Закрыть
+            </Button>
+            <Button bsStyle="danger" onClick={this.deleteAndClose}>
+              Удалить
             </Button>
           </Modal.Footer>
         </Modal>
@@ -216,3 +276,26 @@ export default class CategoriesTable extends React.Component {
     );
   }
 }
+
+export default connect(
+  (state, ownProps) => ({
+    categories: state.categories,
+    unplannedMoney: state.unplannedMoney,
+    ownProps,
+  }),
+  dispatch => ({
+    onAddCategories: (id, nameCategory, cashCategory) => {
+      const payload = {
+        id: +id,
+        nameCategory: nameCategory.toString(),
+        moneyPlanned: cashCategory,
+      };
+      dispatch({ type: 'ADD_CATEGORY', payload });
+      dispatch({ type: 'DELETE_UNPLANNED_MONEY', cashCategory });
+    },
+    onDeleteCategories: (id, addMoney) => {
+      dispatch({ type: 'DELETE_CATEGORY', id });
+      dispatch({ type: 'ADD_UNPLANNED_MONEY', addMoney });
+    },
+  }),
+)(CategoriesTable);
