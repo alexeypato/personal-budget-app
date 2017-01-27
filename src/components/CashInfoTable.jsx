@@ -1,5 +1,5 @@
 import React from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { BootstrapTable, TableHeaderColumn, ClearSearchButton } from 'react-bootstrap-table';
 import { connect } from 'react-redux';
 
 function priceFormatter(cell) {
@@ -14,6 +14,15 @@ function revertSortFunc(a, b, order) {
 }
 
 class CashInfoTable extends React.Component {
+  createCustomClearButton = (onClick) => {
+    return (
+      <ClearSearchButton
+        btnText="Очистить"
+        className="my-custom-class"
+      />
+    );
+  }
+
   render() {
     const options = {
       sizePerPage: 10,  // which size per page you want to locate as default
@@ -24,6 +33,7 @@ class CashInfoTable extends React.Component {
       defaultSortName: 'id',  // default sort column name
       defaultSortOrder: 'desc',  // default sort order
       clearSearch: true,
+      clearSearchBtn: this.createCustomClearButton,
     };
 
     return (

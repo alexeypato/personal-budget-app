@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, DropdownButton, MenuItem } from 'react-bootstrap';
 
 const DatePicker = require('react-bootstrap-date-picker');
 const date = require('date-and-time');
@@ -102,6 +102,13 @@ class Input extends React.Component {
               dateFormat="YYYY-MM-DD"
               showClearButton={false}
             />
+            <DropdownButton title="Default button">
+              <MenuItem eventKey="1">Action</MenuItem>
+              <MenuItem eventKey="2">Another action</MenuItem>
+              <MenuItem eventKey="3" active>Active Item</MenuItem>
+              <MenuItem divider />
+              <MenuItem eventKey="4">Separated link</MenuItem>
+            </DropdownButton>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModal}>
@@ -120,6 +127,7 @@ class Input extends React.Component {
 export default connect(
   (state, ownProps) => ({
     money: state.money,
+    categories: state.categories,
     ownProps,
   }),
   dispatch => ({

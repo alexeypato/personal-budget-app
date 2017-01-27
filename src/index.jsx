@@ -19,6 +19,7 @@ import './assets/stylesheets/main.scss';
 require('bootstrap/dist/css/bootstrap.min.css');
 require('bootstrap/dist/css/bootstrap-theme.min.css');
 require('react-bootstrap-table/dist/react-bootstrap-table-all.min.css');
+require('bootstrap-slider/dist/css/bootstrap-slider.min.css');
 
 const persistedState = loadState();
 const store = createStore(

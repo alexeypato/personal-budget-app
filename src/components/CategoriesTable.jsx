@@ -5,8 +5,11 @@ import { BootstrapTable,
   TableHeaderColumn,
   InsertButton,
   DeleteButton,
+  ClearSearchButton,
+  ExportCSVButton,
 } from 'react-bootstrap-table';
 import { Button, Modal } from 'react-bootstrap';
+import ReactBootstrapSlider from 'react-bootstrap-slider';
 
 function priceFormatter(cell) {
   return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
@@ -24,15 +27,26 @@ class CategoriesTable extends React.Component {
     super(props);
     this.state = {
       nameCategory: '',
-      nameCategoryDelete: '',
+      nameCategorySelect: '',
+      dropRowKeysSelect: '',
+      moneyPlannedSelect: '',
+      moneyAll: '',
       cashCategory: '',
       showModalAdd: false,
       showModalDelete: false,
+      showModalEdit: false,
       textError: '',
-      textErrorCash: '',
-      dropRowKeysStrTmp: '',
-      moneyPlannedTmp: '',
     };
+  }
+
+  onRowDoubleClick = (row) => {
+    this.setState({
+      showModalEdit: 'true',
+      dropRowKeysSelect: row.id,
+      nameCategorySelect: row.nameCategory,
+      moneyPlannedSelect: row.moneyPlanned,
+      moneyAll: +row.moneyPlanned + +this.props.unplannedMoney,
+    });
   }
 
   handleOnChangeInput = () => {
@@ -41,18 +55,29 @@ class CategoriesTable extends React.Component {
     });
   }
 
-  handleOnChangeCash = () => {
+  handleOnChangeInputSelect = () => {
     this.setState({
-      cashCategory: this.cashCategoryInput.value.replace(/\D/, ''),
+      nameCategorySelect: this.nameCategoryInputSelect.value,
+    });
+  }
+
+  moneyPlannedSelectChange = (event) => {
+    this.setState({
+      moneyPlannedSelect: event.target.value,
+    });
+  }
+
+  handleOnChangeCash = (event) => {
+    this.setState({
+      cashCategory: event.target.value,
     });
   }
 
   handleInsertButtonClick = () => {
     this.setState({
       nameCategory: '',
-      cashCategory: '',
+      cashCategory: 0,
       textError: '',
-      textErrorCash: '',
       showModalAdd: true,
     });
   }
@@ -62,7 +87,6 @@ class CategoriesTable extends React.Component {
       <InsertButton
         btnText=" Добавить"
         btnContextual="btn-primary"
-        className="my-custom-class"
         onClick={() => this.handleInsertButtonClick(onClick)}
       />
     );
@@ -71,9 +95,16 @@ class CategoriesTable extends React.Component {
   createCustomDeleteButton = () => {
     return (
       <DeleteButton
-        btnText=" Удалить"
+        btnText="Удалить"
         btnContextual="btn-danger"
-        className="my-custom-class"
+      />
+    );
+  }
+
+  createCustomClearButton = (onClick) => {
+    return (
+      <ClearSearchButton
+        btnText="Очистить"
       />
     );
   }
@@ -86,59 +117,100 @@ class CategoriesTable extends React.Component {
     this.setState({ showModalDelete: false });
   }
 
+  closeModalEdit = () => {
+    this.setState({ showModalEdit: false });
+  }
+
   saveAndClose = () => {
     const cashCategory = this.state.cashCategory;
     const nameCategory = this.state.nameCategory;
 
-    if (cashCategory.length > 0
-      && (+cashCategory <= +this.props.unplannedMoney)) {
-      if (cashCategory.replace(/\d/g, '').length) {
-        this.setState({
-          cashCategory: '',
-          textErrorCash: 'Ошибка! Неверная сумма денег.',
-        });
-      } else if (nameCategory.trim().length > 0) {
-        const categoriesData = this.props.categories;
-        let id = categoriesData.length + 1;
-        for (let i = 0; i < categoriesData.length; i += 1) {
-          if (categoriesData[i].id >= id) {
-            id = categoriesData[i].id + 1;
-          }
+    if (nameCategory.trim().length > 0) {
+      let duplicate = false;
+      const categoriesData = this.props.categories;
+
+      let id = categoriesData.length + 1;
+      for (let i = 0; i < categoriesData.length; i += 1) {
+        if (categoriesData[i].id >= id) {
+          id = categoriesData[i].id + 1;
         }
+        if (categoriesData[i].nameCategory === nameCategory) {
+          duplicate = true;
+        }
+      }
+
+      if (!duplicate) {
         this.props.onAddCategories(id, nameCategory, cashCategory);
         this.setState({
           nameCategory: '',
           cashCategory: '',
           textError: '',
-          textErrorCash: '',
         });
         this.closeModalAdd();
       } else {
-        this.setState({ textError: 'Ошибка! Введите название категории.' });
+        this.setState({
+          nameCategory: '',
+          textError: 'Ошибка! Такая категория уже есть.',
+        });
       }
     } else {
-      this.setState({
-        cashCategory: '',
-        textErrorCash: 'Ошибка! Неверная сумма денег.',
-      });
+      this.setState({ textError: 'Ошибка! Введите название категории.' });
     }
   }
 
   deleteAndClose = () => {
-    this.props.onDeleteCategories(this.state.dropRowKeysStrTmp, this.state.moneyPlannedTmp);
+    this.props.onDeleteCategories(this.state.dropRowKeysSelect, this.state.moneyPlannedSelect);
     this.closeModalDelete();
   }
 
+  editAndClose = () => {
+    const nameCategory = this.state.nameCategorySelect;
+    if (nameCategory.trim().length > 0) {
+      let duplicate = false;
+      const categoriesData = this.props.categories;
+
+      for (let i = 0; i < categoriesData.length; i += 1) {
+        if (
+          categoriesData[i].nameCategory === nameCategory
+          && categoriesData[i].id !== this.state.dropRowKeysSelect
+        ) {
+          duplicate = true;
+        }
+      }
+
+      if (!duplicate) {
+        this.setState({
+          nameCategorySelect: '',
+          textError: '',
+        });
+        this.props.onEditCategories(
+          this.state.dropRowKeysSelect,
+          this.state.nameCategorySelect,
+          +this.state.moneyPlannedSelect,
+          this.props.unplannedMoney - (this.state.moneyAll - this.state.moneyPlannedSelect),
+        );
+        this.closeModalEdit();
+      } else {
+        this.setState({
+          nameCategorySelect: '',
+          textError: 'Ошибка! Такая категория уже есть.',
+        });
+      }
+    } else {
+      this.setState({ textError: 'Ошибка! Введите название категории.' });
+    }
+  }
+
   customConfirm = (next, dropRowKeys) => {
-    const dropRowKeysStr = dropRowKeys.join(',');
+    const dropRowKey = dropRowKeys.join(',');
     const categoriesData = this.props.categories;
     for (let i = 0; i < categoriesData.length; i += 1) {
-      if (categoriesData[i].id === +dropRowKeysStr) {
+      if (categoriesData[i].id === +dropRowKey) {
         this.setState({
-          nameCategoryDelete: categoriesData[i].nameCategory,
+          nameCategorySelect: categoriesData[i].nameCategory,
+          moneyPlannedSelect: categoriesData[i].moneyPlanned,
+          dropRowKeysSelect: dropRowKey,
           showModalDelete: true,
-          moneyPlannedTmp: categoriesData[i].moneyPlanned,
-          dropRowKeysStrTmp: dropRowKeysStr,
         });
       }
     }
@@ -148,15 +220,17 @@ class CategoriesTable extends React.Component {
     const options = {
       sizePerPage: 10,  // which size per page you want to locate as default
       paginationSize: 3,  // the pagination bar size.
-      prePage: 'Prev', // Previous page button text
-      nextPage: 'Next', // Next page button text
+      // prePage: 'Prev', // Previous page button text
+      // nextPage: 'Next', // Next page button text
       hideSizePerPage: true,
       defaultSortName: 'nameCategory',  // default sort column name
       defaultSortOrder: 'asc',  // default sort order
       clearSearch: true,
+      clearSearchBtn: this.createCustomClearButton,
       insertBtn: this.createCustomInsertButton,
       deleteBtn: this.createCustomDeleteButton,
       handleConfirmDeleteRow: this.customConfirm,
+      onRowDoubleClick: this.onRowDoubleClick,
     };
 
     const selectRowProp = {
@@ -203,11 +277,12 @@ class CategoriesTable extends React.Component {
             Сумма средств
           </TableHeaderColumn>
         </BootstrapTable>
-
+        <div className="text-right">
+          <em>*Для редактирования категории совершите двойной щелчок по строке таблицы</em>
+        </div>
         <Modal
           show={this.state.showModalAdd}
           onHide={this.closeModalAdd}
-          bsSize="small"
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -224,10 +299,10 @@ class CategoriesTable extends React.Component {
                   'Введите название категории'
               }
               value={this.state.nameCategory}
-              maxLength="10"
+              maxLength="20"
               ref={(input) => { this.nameCategoryInput = input; }}
             />
-            <input
+            {/* <input
               className="form-control text-center margin-bottom"
               onChange={() => this.handleOnChangeCash()}
               placeholder={
@@ -238,7 +313,45 @@ class CategoriesTable extends React.Component {
               value={this.state.cashCategory}
               maxLength="10"
               ref={(input) => { this.cashCategoryInput = input; }}
+            />*/}
+            <input
+              className="form-control text-center margin-bottom"
+              value={this.state.cashCategory}
+              disabled
             />
+            <div className="text-center margin-bottom">
+              <Button
+                bsStyle="primary"
+                onClick={() => this.setState({
+                  cashCategory: this.state.cashCategory > 0
+                      ? +this.state.cashCategory - 1
+                      : +this.state.cashCategory,
+                })}
+              >
+                <span className="glyphicon glyphicon-minus"></span>
+              </Button>
+              &nbsp;&nbsp;
+              <ReactBootstrapSlider
+                className="text-center margin-bottom"
+                value={+this.state.cashCategory}
+                change={this.handleOnChangeCash}
+                slideStop={this.handleOnChangeCash}
+                max={+this.props.unplannedMoney}
+                orientation="horizontal"
+                reverse
+              />
+              &nbsp;&nbsp;
+              <Button
+                bsStyle="primary"
+                onClick={() => this.setState({
+                  cashCategory: this.state.cashCategory < +this.props.unplannedMoney
+                      ? +this.state.cashCategory + 1
+                      : +this.state.cashCategory,
+                })}
+              >
+                <span className="glyphicon glyphicon-plus"></span>
+              </Button>
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModalAdd}>
@@ -261,7 +374,7 @@ class CategoriesTable extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Вы действительно хотите удалить категорию: `{this.state.nameCategoryDelete}`?</p>
+            <p>Вы действительно хотите удалить категорию: `{this.state.nameCategorySelect}`?</p>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModalDelete}>
@@ -269,6 +382,77 @@ class CategoriesTable extends React.Component {
             </Button>
             <Button bsStyle="danger" onClick={this.deleteAndClose}>
               Удалить
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={this.state.showModalEdit}
+          onHide={this.closeModalEdit}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <span className="glyphicon glyphicon-pencil"> Редактировать категорию</span>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              className="form-control text-center margin-bottom"
+              onChange={() => this.handleOnChangeInputSelect()}
+              placeholder={
+                this.state.textError ?
+                  this.state.textError :
+                  'Введите название категории'
+              }
+              value={this.state.nameCategorySelect}
+              maxLength="20"
+              ref={(input) => { this.nameCategoryInputSelect = input; }}
+            />
+            <input
+              className="form-control text-center margin-bottom"
+              value={this.state.moneyPlannedSelect}
+              disabled
+            />
+            <div className="text-center margin-bottom">
+              <Button
+                bsStyle="primary"
+                onClick={() => this.setState({
+                  moneyPlannedSelect: this.state.moneyPlannedSelect > 0
+                      ? +this.state.moneyPlannedSelect - 1
+                      : +this.state.moneyPlannedSelect,
+                })}
+              >
+                <span className="glyphicon glyphicon-minus"></span>
+              </Button>
+              &nbsp;&nbsp;
+              <ReactBootstrapSlider
+                className="text-center margin-bottom"
+                value={+this.state.moneyPlannedSelect}
+                change={this.moneyPlannedSelectChange}
+                slideStop={this.moneyPlannedSelectChange}
+                max={+this.state.moneyAll}
+                orientation="horizontal"
+                reverse
+              />
+              &nbsp;&nbsp;
+              <Button
+                bsStyle="primary"
+                onClick={() => this.setState({
+                  moneyPlannedSelect: this.state.moneyPlannedSelect < +this.state.moneyAll
+                      ? +this.state.moneyPlannedSelect + 1
+                      : +this.state.moneyPlannedSelect,
+                })}
+              >
+                <span className="glyphicon glyphicon-plus"></span>
+              </Button>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeModalEdit}>
+              Закрыть
+            </Button>
+            <Button bsStyle="primary" onClick={this.editAndClose}>
+              Изменить
             </Button>
           </Modal.Footer>
         </Modal>
@@ -291,6 +475,10 @@ export default connect(
         moneyPlanned: cashCategory,
       };
       dispatch({ type: 'ADD_CATEGORY', payload });
+      dispatch({ type: 'DELETE_UNPLANNED_MONEY', cashCategory });
+    },
+    onEditCategories: (id, nameCategory, moneyPlanned, cashCategory) => {
+      dispatch({ type: 'EDIT_CATEGORY', id, nameCategory, moneyPlanned });
       dispatch({ type: 'DELETE_UNPLANNED_MONEY', cashCategory });
     },
     onDeleteCategories: (id, addMoney) => {
