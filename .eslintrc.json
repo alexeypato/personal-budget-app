@@ -29,7 +29,6 @@
       "no-unused-vars": 0,
       "no-underscore-dangle": 0,
       "import/prefer-default-export": 0,
-      "react/no-string-refs": 0,
-      "import/no-extraneous-dependencies": 0
+      "react/no-string-refs": 0
     }
 }

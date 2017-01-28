@@ -12,6 +12,12 @@ export default function actionCategories(state = initialState, action) {
         { ...todo, nameCategory: action.nameCategory, moneyPlanned: action.moneyPlanned } :
         todo
     )
+  } else if (action.type === 'ADD_MONEY_CATEGORY') {
+    return state.map(todo =>
+      todo.id === action.id ?
+        { ...todo, moneyPlanned: Number(todo.moneyPlanned) + Number(action.moneyPlanned) } :
+        todo
+    )
   } else if (action.type === 'DELETE_CATEGORY') {
     return state.filter(todo =>
       todo.id !== Number(action.id)

@@ -25,13 +25,13 @@ class CashInfoTable extends React.Component {
 
   render() {
     const options = {
-      sizePerPage: 10,  // which size per page you want to locate as default
-      paginationSize: 3,  // the pagination bar size.
-      prePage: 'Prev', // Previous page button text
-      nextPage: 'Next', // Next page button text
+      sizePerPage: 10,
+      paginationSize: 3,
+      prePage: 'Prev',
+      nextPage: 'Next',
       hideSizePerPage: true,
-      defaultSortName: 'id',  // default sort column name
-      defaultSortOrder: 'desc',  // default sort order
+      defaultSortName: 'id',
+      defaultSortOrder: 'desc',
       clearSearch: true,
       clearSearchBtn: this.createCustomClearButton,
     };

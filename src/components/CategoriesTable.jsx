@@ -9,7 +9,6 @@ import { BootstrapTable,
   ExportCSVButton,
 } from 'react-bootstrap-table';
 import { Button, Modal } from 'react-bootstrap';
-import ReactBootstrapSlider from 'react-bootstrap-slider';
 
 function priceFormatter(cell) {
   return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
@@ -61,15 +60,15 @@ class CategoriesTable extends React.Component {
     });
   }
 
-  moneyPlannedSelectChange = (event) => {
+  moneyPlannedSelectChange = () => {
     this.setState({
-      moneyPlannedSelect: event.target.value,
+      moneyPlannedSelect: this.ChangeCashSlider.value,
     });
   }
 
-  handleOnChangeCash = (event) => {
+  handleOnChangeCash = () => {
     this.setState({
-      cashCategory: event.target.value,
+      cashCategory: this.AddCashSlider.value,
     });
   }
 
@@ -218,13 +217,11 @@ class CategoriesTable extends React.Component {
 
   render() {
     const options = {
-      sizePerPage: 10,  // which size per page you want to locate as default
-      paginationSize: 3,  // the pagination bar size.
-      // prePage: 'Prev', // Previous page button text
-      // nextPage: 'Next', // Next page button text
+      sizePerPage: 10,
+      paginationSize: 3,
       hideSizePerPage: true,
-      defaultSortName: 'nameCategory',  // default sort column name
-      defaultSortOrder: 'asc',  // default sort order
+      defaultSortName: 'nameCategory',
+      defaultSortOrder: 'asc',
       clearSearch: true,
       clearSearchBtn: this.createCustomClearButton,
       insertBtn: this.createCustomInsertButton,
@@ -299,59 +296,49 @@ class CategoriesTable extends React.Component {
                   'Введите название категории'
               }
               value={this.state.nameCategory}
-              maxLength="20"
+              maxLength="30"
               ref={(input) => { this.nameCategoryInput = input; }}
             />
-            {/* <input
-              className="form-control text-center margin-bottom"
-              onChange={() => this.handleOnChangeCash()}
-              placeholder={
-                this.state.textErrorCash ?
-                  this.state.textErrorCash :
-                  `Введите сумму средств до : ${this.props.unplannedMoney}`
-              }
-              value={this.state.cashCategory}
-              maxLength="10"
-              ref={(input) => { this.cashCategoryInput = input; }}
-            />*/}
-            <input
-              className="form-control text-center margin-bottom"
-              value={this.state.cashCategory}
-              disabled
-            />
-            <div className="text-center margin-bottom">
-              <Button
-                bsStyle="primary"
-                onClick={() => this.setState({
-                  cashCategory: this.state.cashCategory > 0
-                      ? +this.state.cashCategory - 1
-                      : +this.state.cashCategory,
-                })}
-              >
-                <span className="glyphicon glyphicon-minus"></span>
-              </Button>
-              &nbsp;&nbsp;
-              <ReactBootstrapSlider
-                className="text-center margin-bottom"
-                value={+this.state.cashCategory}
-                change={this.handleOnChangeCash}
-                slideStop={this.handleOnChangeCash}
-                max={+this.props.unplannedMoney}
-                orientation="horizontal"
-                reverse
+            <div className="input-group margin-bottom">
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-primary btn-secondary"
+                  type="button"
+                  onClick={() => this.setState({
+                    cashCategory: this.state.cashCategory > 0
+                        ? +this.state.cashCategory - 1
+                        : +this.state.cashCategory,
+                  })}
+                >
+                  <span className="glyphicon glyphicon-minus"></span>
+                </button>
+              </span>
+              <input
+                className="form-control text-center"
+                value={this.state.cashCategory}
+                disabled
               />
-              &nbsp;&nbsp;
-              <Button
-                bsStyle="primary"
-                onClick={() => this.setState({
-                  cashCategory: this.state.cashCategory < +this.props.unplannedMoney
-                      ? +this.state.cashCategory + 1
-                      : +this.state.cashCategory,
-                })}
-              >
-                <span className="glyphicon glyphicon-plus"></span>
-              </Button>
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-primary btn-secondary"
+                  type="button"
+                  onClick={() => this.setState({
+                    cashCategory: this.state.cashCategory < +this.props.unplannedMoney
+                        ? +this.state.cashCategory + 1
+                        : +this.state.cashCategory,
+                  })}
+                >
+                  <span className="glyphicon glyphicon-plus"></span>
+                </button>
+              </span>
             </div>
+            <input
+              type="range"
+              value={+this.state.cashCategory}
+              max={+this.props.unplannedMoney}
+              onChange={this.handleOnChangeCash}
+              ref={(input) => { this.AddCashSlider = input; }}
+            />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModalAdd}>
@@ -408,44 +395,47 @@ class CategoriesTable extends React.Component {
               maxLength="20"
               ref={(input) => { this.nameCategoryInputSelect = input; }}
             />
-            <input
-              className="form-control text-center margin-bottom"
-              value={this.state.moneyPlannedSelect}
-              disabled
-            />
-            <div className="text-center margin-bottom">
-              <Button
-                bsStyle="primary"
-                onClick={() => this.setState({
-                  moneyPlannedSelect: this.state.moneyPlannedSelect > 0
+
+            <div className="input-group margin-bottom">
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-primary btn-secondary"
+                  type="button"
+                  onClick={() => this.setState({
+                    moneyPlannedSelect: this.state.moneyPlannedSelect > 0
                       ? +this.state.moneyPlannedSelect - 1
                       : +this.state.moneyPlannedSelect,
-                })}
-              >
-                <span className="glyphicon glyphicon-minus"></span>
-              </Button>
-              &nbsp;&nbsp;
-              <ReactBootstrapSlider
-                className="text-center margin-bottom"
-                value={+this.state.moneyPlannedSelect}
-                change={this.moneyPlannedSelectChange}
-                slideStop={this.moneyPlannedSelectChange}
-                max={+this.state.moneyAll}
-                orientation="horizontal"
-                reverse
+                  })}
+                >
+                  <span className="glyphicon glyphicon-minus"></span>
+                </button>
+              </span>
+              <input
+                className="form-control text-center"
+                value={this.state.moneyPlannedSelect}
+                disabled
               />
-              &nbsp;&nbsp;
-              <Button
-                bsStyle="primary"
-                onClick={() => this.setState({
-                  moneyPlannedSelect: this.state.moneyPlannedSelect < +this.state.moneyAll
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-primary btn-secondary"
+                  type="button"
+                  onClick={() => this.setState({
+                    moneyPlannedSelect: this.state.moneyPlannedSelect < +this.state.moneyAll
                       ? +this.state.moneyPlannedSelect + 1
                       : +this.state.moneyPlannedSelect,
-                })}
-              >
-                <span className="glyphicon glyphicon-plus"></span>
-              </Button>
+                  })}
+                >
+                  <span className="glyphicon glyphicon-plus"></span>
+                </button>
+              </span>
             </div>
+            <input
+              type="range"
+              value={+this.state.moneyPlannedSelect}
+              max={+this.state.moneyAll}
+              onChange={this.moneyPlannedSelectChange}
+              ref={(input) => { this.ChangeCashSlider = input; }}
+            />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModalEdit}>
