@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Dropdown, MenuItem } from 'react-bootstrap';
+import '../assets/stylesheets/main.scss';
 
 const DatePicker = require('react-bootstrap-date-picker');
 const date = require('date-and-time');
@@ -15,6 +16,8 @@ class Input extends React.Component {
       date: new Date().toISOString(),
       focused: false,
       showModal: false,
+      titleDropdown: 'Выберите категорию',
+      idDropdown: -1,
     };
   }
 
@@ -45,12 +48,18 @@ class Input extends React.Component {
         });
       } else {
         const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
+        const idDropdown = this.state.idDropdown;
         this.props.onAddMoney(this.props.money.length,
           value, date.format(dateOut, 'YYYY-MM-DD'));
+        if (idDropdown !== -1) {
+          this.props.onEditCategories(idDropdown, value, value);
+        }
         this.setState({
           value: '',
           textError: '',
           date: new Date().toISOString(),
+          titleDropdown: 'Выберите категорию',
+          idDropdown: -1,
         });
         this.closeModal();
       }
@@ -94,7 +103,7 @@ class Input extends React.Component {
               ref={(input) => { this.cashInput = input; }}
             />
             <DatePicker
-              className="text-center"
+              className="text-center margin-bottom"
               onChange={this.handleOnChangeDate}
               value={this.state.date}
               onFocus={() => { this.setState({ focused: true }); }}
@@ -102,6 +111,40 @@ class Input extends React.Component {
               dateFormat="YYYY-MM-DD"
               showClearButton={false}
             />
+            <Dropdown
+              vertical
+              block
+              id="dropdown-categories"
+            >
+              <Dropdown.Toggle block>
+                {this.state.titleDropdown}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <MenuItem
+                  onClick={() => {
+                    this.setState({
+                      titleDropdown: 'Выберите категорию',
+                      idDropdown: -1,
+                    });
+                  }}
+                >
+                  Выберите категорию
+                </MenuItem>
+                <MenuItem divider />
+                {this.props.categories.map((category, index) =>
+                  <MenuItem
+                    key={index}
+                    onClick={() => {
+                      this.setState({
+                        titleDropdown: category.nameCategory,
+                        idDropdown: category.id,
+                      });
+                    }}
+                  >
+                    {category.nameCategory}</MenuItem>,
+                )}
+              </Dropdown.Menu>
+            </Dropdown>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModal}>
@@ -120,6 +163,7 @@ class Input extends React.Component {
 export default connect(
   (state, ownProps) => ({
     money: state.money,
+    categories: state.categories,
     ownProps,
   }),
   dispatch => ({
@@ -131,6 +175,10 @@ export default connect(
       };
       dispatch({ type: 'ADD_MONEY', payload });
       dispatch({ type: 'ADD_UNPLANNED_MONEY', addMoney });
+    },
+    onEditCategories: (id, moneyPlanned, cashCategory) => {
+      dispatch({ type: 'ADD_MONEY_CATEGORY', id, moneyPlanned });
+      dispatch({ type: 'DELETE_UNPLANNED_MONEY', cashCategory });
     },
   }),
 )(Input);
