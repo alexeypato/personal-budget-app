@@ -2,24 +2,21 @@ import React from 'react';
 import { BootstrapTable, TableHeaderColumn, ClearSearchButton } from 'react-bootstrap-table';
 import { connect } from 'react-redux';
 
-function priceFormatter(cell) {
-  return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
-}
-
-function revertSortFunc(a, b, order) {
-  if (order === 'desc') {
-    return a.cash - b.cash;
+class ExpensesTable extends React.Component {
+  priceFormatter = (cell, row) => {
+    return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
   }
-  return b.cash - a.cash;
-}
 
-class CashInfoTable extends React.Component {
+  revertSortFunc = (a, b, order) => {
+    if (order === 'desc') {
+      return a.moneyExpense - b.moneyExpense;
+    }
+    return b.moneyExpense - a.moneyExpense;
+  }
+
   createCustomClearButton = (onClick) => {
     return (
-      <ClearSearchButton
-        btnText="Очистить"
-        className="my-custom-class"
-      />
+      <ClearSearchButton btnText="Очистить" />
     );
   }
 
@@ -27,10 +24,8 @@ class CashInfoTable extends React.Component {
     const options = {
       sizePerPage: 10,
       paginationSize: 3,
-      prePage: 'Prev',
-      nextPage: 'Next',
       hideSizePerPage: true,
-      defaultSortName: 'id',
+      defaultSortName: 'date',
       defaultSortOrder: 'desc',
       clearSearch: true,
       clearSearchBtn: this.createCustomClearButton,
@@ -39,7 +34,7 @@ class CashInfoTable extends React.Component {
     return (
       <div>
         <BootstrapTable
-          data={this.props.money}
+          data={this.props.expenses}
           striped
           pagination
           options={options}
@@ -49,29 +44,41 @@ class CashInfoTable extends React.Component {
           <TableHeaderColumn
             dataField="id"
             isKey
-            dataAlign="center"
-            dataSort
             width="100"
             hidden
           >
             ID
           </TableHeaderColumn>
           <TableHeaderColumn
-            dataField="money"
-            dataFormat={priceFormatter}
+            dataField="idCategory"
+            hidden
+          >
+            ID категории
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            dataField="nameCategory"
             dataAlign="center"
             dataSort
-            sortFunc={revertSortFunc}
           >
-            Сумма внесенных средств
+            Название категории
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            dataField="moneyExpense"
+            dataFormat={this.priceFormatter}
+            dataAlign="center"
+            dataSort
+            width="200"
+            sortFunc={this.revertSortFunc}
+          >
+            Сумма расходов
           </TableHeaderColumn>
           <TableHeaderColumn
             dataField="date"
             dataAlign="center"
             dataSort
-            width="200"
+            width="150"
           >
-            Дата внесения
+            Дата
           </TableHeaderColumn>
         </BootstrapTable>
       </div>
@@ -81,9 +88,9 @@ class CashInfoTable extends React.Component {
 
 export default connect(
   (state, ownProps) => ({
-    money: state.money,
+    expenses: state.expenses,
     ownProps,
   }),
   dispatch => ({
   }),
-)(CashInfoTable);
+)(ExpensesTable);

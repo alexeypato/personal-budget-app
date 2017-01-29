@@ -4,7 +4,7 @@ export default function actionMoney(state = initialState, action) {
   if (action.type === 'ADD_MONEY') {
     return [
       ...state,
-      action.payload,
+      action.newDeposit,
     ];
   } else if (action.type === 'CLEAR_MONEY') {
     return (state = []);

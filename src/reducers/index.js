@@ -3,6 +3,7 @@ import { routerReducer } from 'react-router-redux';
 
 import money from './money';
 import categories from './categories';
+import expenses from './expenses';
 import unplannedMoney from './unplannedMoney';
 
 export default combineReducers({
@@ -10,4 +11,5 @@ export default combineReducers({
   money,
   categories,
   unplannedMoney,
+  expenses,
 });
