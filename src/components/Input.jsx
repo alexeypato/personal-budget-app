@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { Button, Modal, Dropdown, MenuItem } from 'react-bootstrap';
+import { Modal, Dropdown, MenuItem } from 'react-bootstrap';
 import '../assets/stylesheets/main.scss';
 
 const DatePicker = require('react-bootstrap-date-picker');
@@ -40,7 +40,7 @@ class Input extends React.Component {
   saveAndClose = () => {
     const value = this.state.value;
 
-    if (value.length > 0) {
+    if (value.length > 0 && Number(value) !== 0) {
       if (value.replace(/\d/g, '').length) {
         this.setState({
           value: '',
@@ -64,20 +64,23 @@ class Input extends React.Component {
         this.closeModal();
       }
     } else {
-      this.setState({ textError: 'Ошибка! Введите сумму средств.' });
+      this.setState({
+        textError: 'Ошибка! Введите сумму средств.',
+        value: '',
+      });
     }
   }
 
   render() {
     return (
       <div>
-        <Button
+        <button
+          className="btn btn-primary btn-block"
+          type="button"
           onClick={() => this.setState({ showModal: true })}
-          bsStyle="primary"
-          className="btn-block"
         >
           <span className="glyphicon glyphicon-plus"> Внести средства</span>
-        </Button>
+        </button>
 
         <Modal
           show={this.state.showModal}
@@ -101,6 +104,8 @@ class Input extends React.Component {
               value={this.state.value}
               maxLength="10"
               ref={(input) => { this.cashInput = input; }}
+              data-toggle="tooltip"
+              title="Сумма средств"
             />
             <DatePicker
               className="text-center margin-bottom"
@@ -147,12 +152,20 @@ class Input extends React.Component {
             </Dropdown>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeModal}>
+            <button
+              className="btn btn-default"
+              type="button"
+              onClick={this.closeModal}
+            >
               Закрыть
-            </Button>
-            <Button bsStyle="primary" onClick={this.saveAndClose}>
+            </button>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={this.saveAndClose}
+            >
               Внести
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -167,18 +180,18 @@ export default connect(
     ownProps,
   }),
   dispatch => ({
-    onAddMoney: (id, addMoney, addDate) => {
-      const payload = {
+    onAddMoney: (id, deposit, addDate) => {
+      const newDeposit = {
         id: id + 1,
-        money: addMoney,
+        money: deposit,
         date: addDate,
       };
-      dispatch({ type: 'ADD_MONEY', payload });
-      dispatch({ type: 'ADD_UNPLANNED_MONEY', addMoney });
+      dispatch({ type: 'ADD_MONEY', newDeposit });
+      dispatch({ type: 'ADD_UNPLANNED_MONEY', deposit });
     },
-    onEditCategories: (id, moneyPlanned, cashCategory) => {
-      dispatch({ type: 'ADD_MONEY_CATEGORY', id, moneyPlanned });
-      dispatch({ type: 'DELETE_UNPLANNED_MONEY', cashCategory });
+    onEditCategories: (id, moneyCategory, withdrawal) => {
+      dispatch({ type: 'ADD_MONEY_TO_CATEGORY', id, moneyCategory });
+      dispatch({ type: 'DELETE_UNPLANNED_MONEY', withdrawal });
     },
   }),
 )(Input);

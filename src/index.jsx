@@ -6,14 +6,17 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { Router, Route, hashHistory } from 'react-router';
+import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 
 import { loadState, saveState } from './reducers/localStore';
 import reducer from './reducers';
 import App from './containers/App';
-import CashInfoTable from './components/CashInfoTable';
+import NotFound from './containers/NotFound';
+import HomeTable from './components/HomeTable';
+import DepositsTable from './components/DepositsTable';
 import CategoriesTable from './components/CategoriesTable';
+import ExpensesTable from './components/ExpensesTable';
 import './assets/stylesheets/main.scss';
 
 require('bootstrap/dist/css/bootstrap.min.css');
@@ -39,9 +42,12 @@ render(
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={App}>
-        <Route path="/history" component={CashInfoTable} />
+        <IndexRoute component={HomeTable} />
+        <Route path="/deposits" component={DepositsTable} />
         <Route path="/categories" component={CategoriesTable} />
+        <Route path="/expenses" component={ExpensesTable} />
       </Route>
+      <Route path="*" component={NotFound} />
     </Router>
   </Provider>,
   document.getElementById('root'),

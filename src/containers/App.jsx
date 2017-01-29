@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import Input from '../components/Input';
-import CashInfoTable from '../components/CashInfoTable';
-import CategoriesTable from '../components/CategoriesTable';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,7 +19,7 @@ class App extends React.Component {
   }
 
   clearAndClose = () => {
-    this.props.onClearMoney(this.props.unplannedMoney);
+    this.props.onClearState();
     this.closeModalClear();
   }
 
@@ -35,13 +33,13 @@ class App extends React.Component {
             </div>
 
             <div className="row margin-bottom">
-              <Button
-                bsStyle="primary"
-                className="btn-block"
+              <button
+                className="btn btn-primary btn-block"
+                type="button"
                 onClick={() => this.setState({ showModalClear: true })}
               >
                 <span className="glyphicon glyphicon-trash"> Очистить историю</span>
-              </Button>
+              </button>
               <Modal
                 show={this.state.showModalClear}
                 onHide={this.closeModalClear}
@@ -55,12 +53,20 @@ class App extends React.Component {
                   <p>Вы действительно хотите очистить всю историю?</p>
                 </Modal.Body>
                 <Modal.Footer>
-                  <Button onClick={this.closeModalClear}>
+                  <button
+                    className="btn btn-default"
+                    type="button"
+                    onClick={this.closeModalClear}
+                  >
                     Закрыть
-                  </Button>
-                  <Button bsStyle="danger" onClick={this.clearAndClose}>
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    type="button"
+                    onClick={this.clearAndClose}
+                  >
                     Очистить
-                  </Button>
+                  </button>
                 </Modal.Footer>
               </Modal>
             </div>
@@ -82,13 +88,13 @@ class App extends React.Component {
                     </Link>
                   </li>
                   <li
-                    className={this.props.ownProps.location.pathname === '/history'
+                    className={this.props.ownProps.location.pathname === '/deposits'
                       ? 'active'
                       : ''
                     }
                   >
                     <Link
-                      to={'/history'}
+                      to={'/deposits'}
                       className="link btn-block"
                     >
                       <span className="glyphicon glyphicon-usd"> История пополнения</span>
@@ -107,6 +113,19 @@ class App extends React.Component {
                       <span className="glyphicon glyphicon-th-list"> Категории</span>
                     </Link>
                   </li>
+                  <li
+                    className={this.props.ownProps.location.pathname === '/expenses'
+                      ? 'active'
+                      : ''
+                    }
+                  >
+                    <Link
+                      to={'/expenses'}
+                      className="link btn-block"
+                    >
+                      <span className="glyphicon glyphicon-shopping-cart"> Расходы</span>
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -120,7 +139,6 @@ class App extends React.Component {
               Незапланированные средства<h3><b>{this.props.unplannedMoney}</b></h3>
             </div>
           </div>
-
           <div
             className="col-md-8 col-md-offset-1 background-table height-100"
           >
@@ -139,9 +157,10 @@ export default connect(
     ownProps,
   }),
   dispatch => ({
-    onClearMoney: (deleteMoney) => {
+    onClearState: () => {
       dispatch({ type: 'CLEAR_MONEY' });
       dispatch({ type: 'CLEAR_CATEGORY' });
+      dispatch({ type: 'CLEAR_EXPENSE' });
       dispatch({ type: 'CLEAR_UNPLANNED_MONEY' });
     },
   }),

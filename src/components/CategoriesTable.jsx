@@ -4,33 +4,25 @@ import { connect } from 'react-redux';
 import { BootstrapTable,
   TableHeaderColumn,
   InsertButton,
-  DeleteButton,
   ClearSearchButton,
-  ExportCSVButton,
 } from 'react-bootstrap-table';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
-function priceFormatter(cell) {
-  return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
-}
-
-function revertSortFunc(a, b, order) {
-  if (order === 'desc') {
-    return a.cash - b.cash;
-  }
-  return b.cash - a.cash;
-}
+const DatePicker = require('react-bootstrap-date-picker');
+const date = require('date-and-time');
 
 class CategoriesTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      date: new Date().toISOString(),
+      focused: false,
+      idSelect: '',
       nameCategory: '',
       nameCategorySelect: '',
-      dropRowKeysSelect: '',
       moneyPlannedSelect: '',
       moneyAll: '',
-      cashCategory: '',
+      moneyCategory: '',
       showModalAdd: false,
       showModalDelete: false,
       showModalEdit: false,
@@ -38,13 +30,76 @@ class CategoriesTable extends React.Component {
     };
   }
 
-  onRowDoubleClick = (row) => {
+  priceFormatter = (cell, row) => {
+    return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
+  }
+
+  buttonEditFormatter = (cell, row) => {
+    return (
+      <button
+        className="btn btn-xs btn-primary"
+        type="button"
+        onClick={() => this.handleEditButtonClick(row)}
+        data-toggle="tooltip"
+        title="Редактировать"
+      >
+        <span className="glyphicon glyphicon-pencil"></span>
+      </button>
+    );
+  }
+
+  buttonDeleteFormatter = (cell, row) => {
+    return (
+      <button
+        className="btn btn-xs btn-danger"
+        type="button"
+        onClick={() => this.handleDeleteButtonClick(row)}
+        data-toggle="tooltip"
+        title="Удалить"
+      >
+        <span className="glyphicon glyphicon-trash"></span>
+      </button>
+    );
+  }
+
+  buttonToExpensesFormatter = (cell, row) => {
+    return (
+      <button
+        className="btn btn-xs btn-primary"
+        type="button"
+        onClick={() => this.handleToExpensesButtonClick(row)}
+        data-toggle="tooltip"
+        title="Внести расход"
+      >
+        <span className="glyphicon glyphicon-shopping-cart"></span>
+      </button>
+    );
+  }
+
+  revertSortFunc = (a, b, order) => {
+    if (order === 'desc') {
+      return a.moneyCategory - b.moneyCategory;
+    }
+    return b.moneyCategory - a.moneyCategory;
+  }
+
+  // Add categories
+  createCustomInsertButton = (onClick) => {
+    return (
+      <InsertButton
+        btnText=" Добавить категорию"
+        btnContextual="btn-primary"
+        onClick={() => this.handleInsertButtonClick(onClick)}
+      />
+    );
+  }
+
+  handleInsertButtonClick = () => {
     this.setState({
-      showModalEdit: 'true',
-      dropRowKeysSelect: row.id,
-      nameCategorySelect: row.nameCategory,
-      moneyPlannedSelect: row.moneyPlanned,
-      moneyAll: +row.moneyPlanned + +this.props.unplannedMoney,
+      nameCategory: '',
+      moneyCategory: 0,
+      textError: '',
+      showModalAdd: true,
     });
   }
 
@@ -54,74 +109,14 @@ class CategoriesTable extends React.Component {
     });
   }
 
-  handleOnChangeInputSelect = () => {
+  handleOnChangeMoney = () => {
     this.setState({
-      nameCategorySelect: this.nameCategoryInputSelect.value,
+      moneyCategory: this.addMoneySlider.value,
     });
-  }
-
-  moneyPlannedSelectChange = () => {
-    this.setState({
-      moneyPlannedSelect: this.ChangeCashSlider.value,
-    });
-  }
-
-  handleOnChangeCash = () => {
-    this.setState({
-      cashCategory: this.AddCashSlider.value,
-    });
-  }
-
-  handleInsertButtonClick = () => {
-    this.setState({
-      nameCategory: '',
-      cashCategory: 0,
-      textError: '',
-      showModalAdd: true,
-    });
-  }
-
-  createCustomInsertButton = (onClick) => {
-    return (
-      <InsertButton
-        btnText=" Добавить"
-        btnContextual="btn-primary"
-        onClick={() => this.handleInsertButtonClick(onClick)}
-      />
-    );
-  }
-
-  createCustomDeleteButton = () => {
-    return (
-      <DeleteButton
-        btnText="Удалить"
-        btnContextual="btn-danger"
-      />
-    );
-  }
-
-  createCustomClearButton = (onClick) => {
-    return (
-      <ClearSearchButton
-        btnText="Очистить"
-      />
-    );
-  }
-
-  closeModalAdd = () => {
-    this.setState({ showModalAdd: false });
-  }
-
-  closeModalDelete = () => {
-    this.setState({ showModalDelete: false });
-  }
-
-  closeModalEdit = () => {
-    this.setState({ showModalEdit: false });
   }
 
   saveAndClose = () => {
-    const cashCategory = this.state.cashCategory;
+    const moneyCategory = this.state.moneyCategory;
     const nameCategory = this.state.nameCategory;
 
     if (nameCategory.trim().length > 0) {
@@ -139,10 +134,10 @@ class CategoriesTable extends React.Component {
       }
 
       if (!duplicate) {
-        this.props.onAddCategories(id, nameCategory, cashCategory);
+        this.props.onAddCategories(id, nameCategory, moneyCategory);
         this.setState({
           nameCategory: '',
-          cashCategory: '',
+          moneyCategory: '',
           textError: '',
         });
         this.closeModalAdd();
@@ -153,13 +148,38 @@ class CategoriesTable extends React.Component {
         });
       }
     } else {
-      this.setState({ textError: 'Ошибка! Введите название категории.' });
+      this.setState({
+        nameCategory: '',
+        textError: 'Ошибка! Введите название категории.',
+      });
     }
   }
 
-  deleteAndClose = () => {
-    this.props.onDeleteCategories(this.state.dropRowKeysSelect, this.state.moneyPlannedSelect);
-    this.closeModalDelete();
+  closeModalAdd = () => {
+    this.setState({ showModalAdd: false });
+  }
+
+  // Edit categories
+  handleEditButtonClick = (row) => {
+    this.setState({
+      showModalEdit: true,
+      idSelect: row.id,
+      nameCategorySelect: row.nameCategory,
+      moneyPlannedSelect: row.moneyCategory,
+      moneyAll: +row.moneyCategory + +this.props.unplannedMoney,
+    });
+  }
+
+  handleOnChangeInputSelect = () => {
+    this.setState({
+      nameCategorySelect: this.nameCategoryInputSelect.value,
+    });
+  }
+
+  moneyPlannedSelectChange = () => {
+    this.setState({
+      moneyPlannedSelect: this.editMoneySlider.value,
+    });
   }
 
   editAndClose = () => {
@@ -171,7 +191,7 @@ class CategoriesTable extends React.Component {
       for (let i = 0; i < categoriesData.length; i += 1) {
         if (
           categoriesData[i].nameCategory === nameCategory
-          && categoriesData[i].id !== this.state.dropRowKeysSelect
+          && categoriesData[i].id !== this.state.idSelect
         ) {
           duplicate = true;
         }
@@ -183,7 +203,7 @@ class CategoriesTable extends React.Component {
           textError: '',
         });
         this.props.onEditCategories(
-          this.state.dropRowKeysSelect,
+          this.state.idSelect,
           this.state.nameCategorySelect,
           +this.state.moneyPlannedSelect,
           this.props.unplannedMoney - (this.state.moneyAll - this.state.moneyPlannedSelect),
@@ -196,23 +216,88 @@ class CategoriesTable extends React.Component {
         });
       }
     } else {
-      this.setState({ textError: 'Ошибка! Введите название категории.' });
+      this.setState({
+        nameCategorySelect: '',
+        textError: 'Ошибка! Введите название категории.',
+      });
     }
   }
 
-  customConfirm = (next, dropRowKeys) => {
-    const dropRowKey = dropRowKeys.join(',');
-    const categoriesData = this.props.categories;
-    for (let i = 0; i < categoriesData.length; i += 1) {
-      if (categoriesData[i].id === +dropRowKey) {
-        this.setState({
-          nameCategorySelect: categoriesData[i].nameCategory,
-          moneyPlannedSelect: categoriesData[i].moneyPlanned,
-          dropRowKeysSelect: dropRowKey,
-          showModalDelete: true,
-        });
+  closeModalEdit = () => {
+    this.setState({ showModalEdit: false });
+  }
+
+  // Delete categories
+  handleDeleteButtonClick = (row) => {
+    this.setState({
+      showModalDelete: true,
+      idSelect: row.id,
+      nameCategorySelect: row.nameCategory,
+      moneyPlannedSelect: row.moneyCategory,
+    });
+  }
+
+  deleteAndClose = () => {
+    this.props.onDeleteCategories(this.state.idSelect, this.state.moneyPlannedSelect);
+    this.closeModalDelete();
+  }
+
+  closeModalDelete = () => {
+    this.setState({ showModalDelete: false });
+  }
+
+  // ToExpenses
+  handleToExpensesButtonClick = (row) => {
+    this.setState({
+      showModalToExpenses: true,
+      idSelect: row.id,
+      nameCategorySelect: row.nameCategory,
+      moneyPlannedSelect: row.moneyCategory,
+      moneyToExpenses: row.moneyCategory,
+    });
+  }
+
+  handleOnChangeDate = (value) => {
+    this.setState({
+      date: value,
+    });
+  }
+
+  moneyToExpensesChange = () => {
+    this.setState({
+      moneyToExpenses: this.moneyToExpensesSlider.value,
+    });
+  }
+
+  toExpensesAndClose = () => {
+    const expenses = this.props.expenses;
+    let id = expenses.length + 1;
+    for (let i = 0; i < expenses.length; i += 1) {
+      if (expenses[i].id >= id) {
+        id = expenses[i].id + 1;
       }
     }
+    const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
+    this.props.onAddExpenses(
+      id,
+      this.state.idSelect,
+      this.state.nameCategorySelect,
+      this.state.moneyToExpenses,
+      date.format(dateOut, 'YYYY-MM-DD'),
+    );
+    this.closeModalToExpenses();
+  }
+
+  closeModalToExpenses = () => {
+    this.setState({ showModalToExpenses: false });
+  }
+
+  createCustomClearButton = (onClick) => {
+    return (
+      <ClearSearchButton
+        btnText="Очистить"
+      />
+    );
   }
 
   render() {
@@ -225,14 +310,8 @@ class CategoriesTable extends React.Component {
       clearSearch: true,
       clearSearchBtn: this.createCustomClearButton,
       insertBtn: this.createCustomInsertButton,
-      deleteBtn: this.createCustomDeleteButton,
-      handleConfirmDeleteRow: this.customConfirm,
-      onRowDoubleClick: this.onRowDoubleClick,
     };
 
-    const selectRowProp = {
-      mode: 'radio',
-    };
     return (
       <div>
         <BootstrapTable
@@ -242,9 +321,7 @@ class CategoriesTable extends React.Component {
           options={options}
           search
           searchPlaceholder="Поиск..."
-          selectRow={selectRowProp}
           insertRow
-          deleteRow
         >
           <TableHeaderColumn
             dataField="id"
@@ -264,19 +341,37 @@ class CategoriesTable extends React.Component {
             Название категории
           </TableHeaderColumn>
           <TableHeaderColumn
-            dataField="moneyPlanned"
-            dataFormat={priceFormatter}
+            dataField="moneyCategory"
+            dataFormat={this.priceFormatter}
             dataAlign="center"
             dataSort
-            sortFunc={revertSortFunc}
-            width="200"
+            sortFunc={this.revertSortFunc}
+            width="150"
           >
             Сумма средств
           </TableHeaderColumn>
+          <TableHeaderColumn
+            dataAlign="center"
+            dataField="buttonDelete"
+            dataFormat={this.buttonEditFormatter}
+            width="50"
+          >
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            dataAlign="center"
+            dataField="buttonEdit"
+            dataFormat={this.buttonDeleteFormatter}
+            width="50"
+          >
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            dataAlign="center"
+            dataField="buttonToExpenses"
+            dataFormat={this.buttonToExpensesFormatter}
+            width="50"
+          >
+          </TableHeaderColumn>
         </BootstrapTable>
-        <div className="text-right">
-          <em>*Для редактирования категории совершите двойной щелчок по строке таблицы</em>
-        </div>
         <Modal
           show={this.state.showModalAdd}
           onHide={this.closeModalAdd}
@@ -298,6 +393,8 @@ class CategoriesTable extends React.Component {
               value={this.state.nameCategory}
               maxLength="30"
               ref={(input) => { this.nameCategoryInput = input; }}
+              data-toggle="tooltip"
+              title="Название категории"
             />
             <div className="input-group margin-bottom">
               <span className="input-group-btn">
@@ -305,9 +402,9 @@ class CategoriesTable extends React.Component {
                   className="btn btn-primary btn-secondary"
                   type="button"
                   onClick={() => this.setState({
-                    cashCategory: this.state.cashCategory > 0
-                        ? +this.state.cashCategory - 1
-                        : +this.state.cashCategory,
+                    moneyCategory: this.state.moneyCategory > 0
+                        ? +this.state.moneyCategory - 1
+                        : +this.state.moneyCategory,
                   })}
                 >
                   <span className="glyphicon glyphicon-minus"></span>
@@ -315,17 +412,19 @@ class CategoriesTable extends React.Component {
               </span>
               <input
                 className="form-control text-center"
-                value={this.state.cashCategory}
+                value={this.state.moneyCategory}
                 disabled
+                data-toggle="tooltip"
+                title="Сумма средств"
               />
               <span className="input-group-btn">
                 <button
                   className="btn btn-primary btn-secondary"
                   type="button"
                   onClick={() => this.setState({
-                    cashCategory: this.state.cashCategory < +this.props.unplannedMoney
-                        ? +this.state.cashCategory + 1
-                        : +this.state.cashCategory,
+                    moneyCategory: this.state.moneyCategory < +this.props.unplannedMoney
+                        ? +this.state.moneyCategory + 1
+                        : +this.state.moneyCategory,
                   })}
                 >
                   <span className="glyphicon glyphicon-plus"></span>
@@ -334,26 +433,33 @@ class CategoriesTable extends React.Component {
             </div>
             <input
               type="range"
-              value={+this.state.cashCategory}
+              value={+this.state.moneyCategory}
               max={+this.props.unplannedMoney}
-              onChange={this.handleOnChangeCash}
-              ref={(input) => { this.AddCashSlider = input; }}
+              onChange={this.handleOnChangeMoney}
+              ref={(input) => { this.addMoneySlider = input; }}
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeModalAdd}>
+            <button
+              className="btn btn-default"
+              type="button"
+              onClick={this.closeModalAdd}
+            >
               Закрыть
-            </Button>
-            <Button bsStyle="primary" onClick={this.saveAndClose}>
+            </button>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={this.saveAndClose}
+            >
               Добавить
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
 
         <Modal
           show={this.state.showModalDelete}
           onHide={this.closeModalDelete}
-          bsSize="small"
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -364,12 +470,20 @@ class CategoriesTable extends React.Component {
             <p>Вы действительно хотите удалить категорию: `{this.state.nameCategorySelect}`?</p>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeModalDelete}>
+            <button
+              className="btn btn-default"
+              type="button"
+              onClick={this.closeModalDelete}
+            >
               Закрыть
-            </Button>
-            <Button bsStyle="danger" onClick={this.deleteAndClose}>
+            </button>
+            <button
+              className="btn btn-danger"
+              type="button"
+              onClick={this.deleteAndClose}
+            >
               Удалить
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
 
@@ -392,8 +506,10 @@ class CategoriesTable extends React.Component {
                   'Введите название категории'
               }
               value={this.state.nameCategorySelect}
-              maxLength="20"
+              maxLength="30"
               ref={(input) => { this.nameCategoryInputSelect = input; }}
+              data-toggle="tooltip"
+              title="Название категории"
             />
 
             <div className="input-group margin-bottom">
@@ -414,6 +530,8 @@ class CategoriesTable extends React.Component {
                 className="form-control text-center"
                 value={this.state.moneyPlannedSelect}
                 disabled
+                data-toggle="tooltip"
+                title="Сумма средств"
               />
               <span className="input-group-btn">
                 <button
@@ -434,16 +552,111 @@ class CategoriesTable extends React.Component {
               value={+this.state.moneyPlannedSelect}
               max={+this.state.moneyAll}
               onChange={this.moneyPlannedSelectChange}
-              ref={(input) => { this.ChangeCashSlider = input; }}
+              ref={(input) => { this.editMoneySlider = input; }}
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeModalEdit}>
+            <button
+              className="btn btn-default"
+              type="button"
+              onClick={this.closeModalEdit}
+            >
               Закрыть
-            </Button>
-            <Button bsStyle="primary" onClick={this.editAndClose}>
+            </button>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={this.editAndClose}
+            >
               Изменить
-            </Button>
+            </button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={this.state.showModalToExpenses}
+          onHide={this.closeModalToExpenses}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <span className="glyphicon glyphicon-shopping-cart"> Внести раход</span>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              className="form-control text-center margin-bottom"
+              value={this.state.nameCategorySelect}
+              disabled
+              data-toggle="tooltip"
+              title="Категория"
+            />
+            <DatePicker
+              className="text-center margin-bottom"
+              onChange={this.handleOnChangeDate}
+              value={this.state.date}
+              onFocus={() => { this.setState({ focused: true }); }}
+              onBlur={() => { this.setState({ focused: false }); }}
+              dateFormat="YYYY-MM-DD"
+              showClearButton={false}
+            />
+            <div className="input-group margin-bottom">
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-primary btn-secondary"
+                  type="button"
+                  onClick={() => this.setState({
+                    moneyPlannedSelect: this.state.moneyToExpenses > 0
+                      ? +this.state.moneyToExpenses - 1
+                      : +this.state.moneyToExpenses,
+                  })}
+                >
+                  <span className="glyphicon glyphicon-minus"></span>
+                </button>
+              </span>
+              <input
+                className="form-control text-center"
+                value={this.state.moneyToExpenses}
+                disabled
+                data-toggle="tooltip"
+                title="Сумма расходов"
+              />
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-primary btn-secondary"
+                  type="button"
+                  onClick={() => this.setState({
+                    moneyPlannedSelect: this.state.moneyToExpenses < +this.state.moneyPlannedSelect
+                      ? +this.state.moneyToExpenses + 1
+                      : +this.state.moneyToExpenses,
+                  })}
+                >
+                  <span className="glyphicon glyphicon-plus"></span>
+                </button>
+              </span>
+            </div>
+            <input
+              type="range"
+              value={+this.state.moneyToExpenses}
+              max={+this.state.moneyPlannedSelect}
+              onChange={this.moneyToExpensesChange}
+              ref={(input) => { this.moneyToExpensesSlider = input; }}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-default"
+              type="button"
+              onClick={this.closeModalToExpenses}
+            >
+              Закрыть
+            </button>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={this.toExpensesAndClose}
+            >
+              Внести
+            </button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -455,25 +668,38 @@ export default connect(
   (state, ownProps) => ({
     categories: state.categories,
     unplannedMoney: state.unplannedMoney,
+    expenses: state.expenses,
     ownProps,
   }),
   dispatch => ({
-    onAddCategories: (id, nameCategory, cashCategory) => {
-      const payload = {
-        id: +id,
+    onAddCategories: (id, nameCategory, withdrawal) => {
+      const category = {
+        id: Number(id),
         nameCategory: nameCategory.toString(),
-        moneyPlanned: cashCategory,
+        moneyCategory: withdrawal,
       };
-      dispatch({ type: 'ADD_CATEGORY', payload });
-      dispatch({ type: 'DELETE_UNPLANNED_MONEY', cashCategory });
+      dispatch({ type: 'ADD_CATEGORY', category });
+      dispatch({ type: 'DELETE_UNPLANNED_MONEY', withdrawal });
     },
-    onEditCategories: (id, nameCategory, moneyPlanned, cashCategory) => {
-      dispatch({ type: 'EDIT_CATEGORY', id, nameCategory, moneyPlanned });
-      dispatch({ type: 'DELETE_UNPLANNED_MONEY', cashCategory });
+    onEditCategories: (id, nameCategory, moneyCategory, withdrawal) => {
+      dispatch({ type: 'EDIT_CATEGORY', id, nameCategory, moneyCategory });
+      dispatch({ type: 'DELETE_UNPLANNED_MONEY', withdrawal });
     },
-    onDeleteCategories: (id, addMoney) => {
+    onDeleteCategories: (id, deposit) => {
       dispatch({ type: 'DELETE_CATEGORY', id });
-      dispatch({ type: 'ADD_UNPLANNED_MONEY', addMoney });
+      dispatch({ type: 'DELETE_EXPENSE', id });
+      dispatch({ type: 'ADD_UNPLANNED_MONEY', deposit });
+    },
+    onAddExpenses: (id, idCategory, nameCategory, moneyToExpenses, dateExpense) => {
+      const expense = {
+        id: Number(id),
+        idCategory: Number(idCategory),
+        nameCategory: nameCategory.toString(),
+        moneyExpense: moneyToExpenses,
+        date: dateExpense,
+      };
+      dispatch({ type: 'ADD_EXPENSE', expense });
+      dispatch({ type: 'DELETE_MONEY_TO_CATEGORY', idCategory, moneyToExpenses });
     },
   }),
 )(CategoriesTable);
