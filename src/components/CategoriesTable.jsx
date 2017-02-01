@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { BootstrapTable,
@@ -11,21 +11,34 @@ import { Modal } from 'react-bootstrap';
 const DatePicker = require('react-bootstrap-date-picker');
 const date = require('date-and-time');
 
-class CategoriesTable extends React.Component {
+class CategoriesTable extends Component {
+  static propTypes = {
+    categories: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      nameCategory: PropTypes.string,
+      moneyCategory: PropTypes.number,
+    })),
+    onAddCategories: PropTypes.func.isRequired,
+    onEditCategories: PropTypes.func.isRequired,
+    onDeleteCategories: PropTypes.func.isRequired,
+    onAddExpenses: PropTypes.func.isRequired,
+    unplannedMoney: PropTypes.number.isRequired,
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       date: new Date().toISOString(),
       focused: false,
-      idSelect: '',
+      idCategorySelect: -1,
       nameCategory: '',
       nameCategorySelect: '',
-      moneyPlannedSelect: '',
-      moneyAll: '',
-      moneyCategory: '',
-      showModalAdd: false,
-      showModalDelete: false,
-      showModalEdit: false,
+      moneyPlannedSelect: 0,
+      moneyCategoryAndUnplanned: 0,
+      moneyCategory: 0,
+      showModalAddCategory: false,
+      showModalDeleteCategory: false,
+      showModalEditCategory: false,
       textError: '',
     };
   }
@@ -99,7 +112,7 @@ class CategoriesTable extends React.Component {
       nameCategory: '',
       moneyCategory: 0,
       textError: '',
-      showModalAdd: true,
+      showModalAddCategory: true,
     });
   }
 
@@ -111,7 +124,7 @@ class CategoriesTable extends React.Component {
 
   handleOnChangeMoney = () => {
     this.setState({
-      moneyCategory: this.addMoneySlider.value,
+      moneyCategory: Number(this.addMoneySlider.value),
     });
   }
 
@@ -123,24 +136,20 @@ class CategoriesTable extends React.Component {
       let duplicate = false;
       const categoriesData = this.props.categories;
 
-      let id = categoriesData.length + 1;
       for (let i = 0; i < categoriesData.length; i += 1) {
-        if (categoriesData[i].id >= id) {
-          id = categoriesData[i].id + 1;
-        }
         if (categoriesData[i].nameCategory === nameCategory) {
           duplicate = true;
         }
       }
 
       if (!duplicate) {
-        this.props.onAddCategories(id, nameCategory, moneyCategory);
+        this.props.onAddCategories(nameCategory, moneyCategory);
         this.setState({
           nameCategory: '',
-          moneyCategory: '',
+          moneyCategory: 0,
           textError: '',
         });
-        this.closeModalAdd();
+        this.closeModalAddCategory();
       } else {
         this.setState({
           nameCategory: '',
@@ -155,18 +164,18 @@ class CategoriesTable extends React.Component {
     }
   }
 
-  closeModalAdd = () => {
-    this.setState({ showModalAdd: false });
+  closeModalAddCategory = () => {
+    this.setState({ showModalAddCategory: false });
   }
 
   // Edit categories
   handleEditButtonClick = (row) => {
     this.setState({
-      showModalEdit: true,
-      idSelect: row.id,
+      showModalEditCategory: true,
+      idCategorySelect: row.id,
       nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
-      moneyAll: +row.moneyCategory + +this.props.unplannedMoney,
+      moneyCategoryAndUnplanned: +row.moneyCategory + +this.props.unplannedMoney,
     });
   }
 
@@ -178,7 +187,7 @@ class CategoriesTable extends React.Component {
 
   moneyPlannedSelectChange = () => {
     this.setState({
-      moneyPlannedSelect: this.editMoneySlider.value,
+      moneyPlannedSelect: Number(this.editMoneySlider.value),
     });
   }
 
@@ -191,7 +200,7 @@ class CategoriesTable extends React.Component {
       for (let i = 0; i < categoriesData.length; i += 1) {
         if (
           categoriesData[i].nameCategory === nameCategory
-          && categoriesData[i].id !== this.state.idSelect
+          && categoriesData[i].id !== this.state.idCategorySelect
         ) {
           duplicate = true;
         }
@@ -203,10 +212,11 @@ class CategoriesTable extends React.Component {
           textError: '',
         });
         this.props.onEditCategories(
-          this.state.idSelect,
+          this.state.idCategorySelect,
           this.state.nameCategorySelect,
           +this.state.moneyPlannedSelect,
-          this.props.unplannedMoney - (this.state.moneyAll - this.state.moneyPlannedSelect),
+          this.props.unplannedMoney -
+            (this.state.moneyCategoryAndUnplanned - this.state.moneyPlannedSelect),
         );
         this.closeModalEdit();
       } else {
@@ -224,36 +234,36 @@ class CategoriesTable extends React.Component {
   }
 
   closeModalEdit = () => {
-    this.setState({ showModalEdit: false });
+    this.setState({ showModalEditCategory: false });
   }
 
   // Delete categories
   handleDeleteButtonClick = (row) => {
     this.setState({
-      showModalDelete: true,
-      idSelect: row.id,
+      showModalDeleteCategory: true,
+      idCategorySelect: Number(row.id),
       nameCategorySelect: row.nameCategory,
-      moneyPlannedSelect: row.moneyCategory,
+      moneyPlannedSelect: Number(row.moneyCategory),
     });
   }
 
   deleteAndClose = () => {
-    this.props.onDeleteCategories(this.state.idSelect, this.state.moneyPlannedSelect);
+    this.props.onDeleteCategories(this.state.idCategorySelect, this.state.moneyPlannedSelect);
     this.closeModalDelete();
   }
 
   closeModalDelete = () => {
-    this.setState({ showModalDelete: false });
+    this.setState({ showModalDeleteCategory: false });
   }
 
   // ToExpenses
   handleToExpensesButtonClick = (row) => {
     this.setState({
       showModalToExpenses: true,
-      idSelect: row.id,
+      idCategorySelect: row.id,
       nameCategorySelect: row.nameCategory,
-      moneyPlannedSelect: row.moneyCategory,
-      moneyToExpenses: row.moneyCategory,
+      moneyPlannedSelect: Number(row.moneyCategory),
+      moneyToExpenses: Number(row.moneyCategory),
     });
   }
 
@@ -265,22 +275,14 @@ class CategoriesTable extends React.Component {
 
   moneyToExpensesChange = () => {
     this.setState({
-      moneyToExpenses: this.moneyToExpensesSlider.value,
+      moneyToExpenses: Number(this.moneyToExpensesSlider.value),
     });
   }
 
   toExpensesAndClose = () => {
-    const expenses = this.props.expenses;
-    let id = expenses.length + 1;
-    for (let i = 0; i < expenses.length; i += 1) {
-      if (expenses[i].id >= id) {
-        id = expenses[i].id + 1;
-      }
-    }
     const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
     this.props.onAddExpenses(
-      id,
-      this.state.idSelect,
+      this.state.idCategorySelect,
       this.state.nameCategorySelect,
       this.state.moneyToExpenses,
       date.format(dateOut, 'YYYY-MM-DD'),
@@ -373,8 +375,8 @@ class CategoriesTable extends React.Component {
           </TableHeaderColumn>
         </BootstrapTable>
         <Modal
-          show={this.state.showModalAdd}
-          onHide={this.closeModalAdd}
+          show={this.state.showModalAddCategory}
+          onHide={this.closeModalAddCategory}
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -443,7 +445,7 @@ class CategoriesTable extends React.Component {
             <button
               className="btn btn-default"
               type="button"
-              onClick={this.closeModalAdd}
+              onClick={this.closeModalAddCategory}
             >
               Закрыть
             </button>
@@ -458,7 +460,7 @@ class CategoriesTable extends React.Component {
         </Modal>
 
         <Modal
-          show={this.state.showModalDelete}
+          show={this.state.showModalDeleteCategory}
           onHide={this.closeModalDelete}
         >
           <Modal.Header closeButton>
@@ -488,7 +490,7 @@ class CategoriesTable extends React.Component {
         </Modal>
 
         <Modal
-          show={this.state.showModalEdit}
+          show={this.state.showModalEditCategory}
           onHide={this.closeModalEdit}
         >
           <Modal.Header closeButton>
@@ -538,9 +540,10 @@ class CategoriesTable extends React.Component {
                   className="btn btn-primary btn-secondary"
                   type="button"
                   onClick={() => this.setState({
-                    moneyPlannedSelect: this.state.moneyPlannedSelect < +this.state.moneyAll
-                      ? +this.state.moneyPlannedSelect + 1
-                      : +this.state.moneyPlannedSelect,
+                    moneyPlannedSelect:
+                      this.state.moneyPlannedSelect < +this.state.moneyCategoryAndUnplanned
+                        ? +this.state.moneyPlannedSelect + 1
+                        : +this.state.moneyPlannedSelect,
                   })}
                 >
                   <span className="glyphicon glyphicon-plus"></span>
@@ -550,7 +553,7 @@ class CategoriesTable extends React.Component {
             <input
               type="range"
               value={+this.state.moneyPlannedSelect}
-              max={+this.state.moneyAll}
+              max={+this.state.moneyCategoryAndUnplanned}
               onChange={this.moneyPlannedSelectChange}
               ref={(input) => { this.editMoneySlider = input; }}
             />
@@ -668,17 +671,10 @@ export default connect(
   (state, ownProps) => ({
     categories: state.categories,
     unplannedMoney: state.unplannedMoney,
-    expenses: state.expenses,
-    ownProps,
   }),
   dispatch => ({
-    onAddCategories: (id, nameCategory, withdrawal) => {
-      const category = {
-        id: Number(id),
-        nameCategory: nameCategory.toString(),
-        moneyCategory: withdrawal,
-      };
-      dispatch({ type: 'ADD_CATEGORY', category });
+    onAddCategories: (nameCategory, withdrawal) => {
+      dispatch({ type: 'ADD_CATEGORY', nameCategory, withdrawal });
       dispatch({ type: 'DELETE_UNPLANNED_MONEY', withdrawal });
     },
     onEditCategories: (id, nameCategory, moneyCategory, withdrawal) => {
@@ -687,18 +683,16 @@ export default connect(
     },
     onDeleteCategories: (id, deposit) => {
       dispatch({ type: 'DELETE_CATEGORY', id });
-      dispatch({ type: 'DELETE_EXPENSE', id });
       dispatch({ type: 'ADD_UNPLANNED_MONEY', deposit });
     },
-    onAddExpenses: (id, idCategory, nameCategory, moneyToExpenses, dateExpense) => {
-      const expense = {
-        id: Number(id),
-        idCategory: Number(idCategory),
-        nameCategory: nameCategory.toString(),
-        moneyExpense: moneyToExpenses,
-        date: dateExpense,
-      };
-      dispatch({ type: 'ADD_EXPENSE', expense });
+    onAddExpenses: (idCategory, nameCategory, moneyToExpenses, dateExpense) => {
+      dispatch({
+        type: 'ADD_EXPENSE',
+        idCategory,
+        nameCategory,
+        moneyToExpenses,
+        dateExpense,
+      });
       dispatch({ type: 'DELETE_MONEY_TO_CATEGORY', idCategory, moneyToExpenses });
     },
   }),

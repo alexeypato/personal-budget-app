@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { Modal, Dropdown, MenuItem } from 'react-bootstrap';
@@ -7,7 +7,16 @@ import '../assets/stylesheets/main.scss';
 const DatePicker = require('react-bootstrap-date-picker');
 const date = require('date-and-time');
 
-class Input extends React.Component {
+class Input extends Component {
+  static propTypes = {
+    categories: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      nameCategory: PropTypes.string,
+      moneyCategory: PropTypes.number,
+    })),
+    onAddMoney: PropTypes.func.isRequired,
+    onEditCategories: PropTypes.func.isRequired,
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -38,31 +47,23 @@ class Input extends React.Component {
   }
 
   saveAndClose = () => {
-    const value = this.state.value;
+    const value = Number(this.state.value);
 
-    if (value.length > 0 && Number(value) !== 0) {
-      if (value.replace(/\d/g, '').length) {
-        this.setState({
-          value: '',
-          textError: 'Ошибка! Неверная сумма средств.',
-        });
-      } else {
-        const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
-        const idDropdown = this.state.idDropdown;
-        this.props.onAddMoney(this.props.money.length,
-          value, date.format(dateOut, 'YYYY-MM-DD'));
-        if (idDropdown !== -1) {
-          this.props.onEditCategories(idDropdown, value, value);
-        }
-        this.setState({
-          value: '',
-          textError: '',
-          date: new Date().toISOString(),
-          titleDropdown: 'Выберите категорию',
-          idDropdown: -1,
-        });
-        this.closeModal();
+    if (value > 0) {
+      const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
+      const idDropdown = this.state.idDropdown;
+      this.props.onAddMoney(value, date.format(dateOut, 'YYYY-MM-DD'));
+      if (idDropdown !== -1) {
+        this.props.onEditCategories(idDropdown, value, value);
       }
+      this.setState({
+        value: '',
+        textError: '',
+        date: new Date().toISOString(),
+        titleDropdown: 'Выберите категорию',
+        idDropdown: -1,
+      });
+      this.closeModal();
     } else {
       this.setState({
         textError: 'Ошибка! Введите сумму средств.',
@@ -175,18 +176,11 @@ class Input extends React.Component {
 
 export default connect(
   (state, ownProps) => ({
-    money: state.money,
     categories: state.categories,
-    ownProps,
   }),
   dispatch => ({
-    onAddMoney: (id, deposit, addDate) => {
-      const newDeposit = {
-        id: id + 1,
-        money: deposit,
-        date: addDate,
-      };
-      dispatch({ type: 'ADD_MONEY', newDeposit });
+    onAddMoney: (deposit, addDate) => {
+      dispatch({ type: 'ADD_MONEY', deposit, addDate });
       dispatch({ type: 'ADD_UNPLANNED_MONEY', deposit });
     },
     onEditCategories: (id, moneyCategory, withdrawal) => {

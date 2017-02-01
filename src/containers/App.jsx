@@ -1,29 +1,39 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router';
 
 import Input from '../components/Input';
 
-class App extends React.Component {
+class App extends Component {
+  static propTypes = {
+    children: PropTypes.element.isRequired,
+    onClearState: PropTypes.func.isRequired,
+    ownProps: PropTypes.object.isRequired,
+    unplannedMoney: PropTypes.number.isRequired,
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      showModalClear: false,
+      showModalClearState: false,
     };
   }
 
-  closeModalClear = () => {
-    this.setState({ showModalClear: false });
+  closeModalClearState = () => {
+    this.setState({ showModalClearState: false });
   }
 
   clearAndClose = () => {
     this.props.onClearState();
-    this.closeModalClear();
+    this.closeModalClearState();
   }
 
   render() {
+    const pathname = this.props.ownProps.location.pathname;
+    const unplannedMoney = this.props.unplannedMoney;
+
     return (
       <div className="container height-100">
         <div className="row height-100">
@@ -36,13 +46,13 @@ class App extends React.Component {
               <button
                 className="btn btn-primary btn-block"
                 type="button"
-                onClick={() => this.setState({ showModalClear: true })}
+                onClick={() => this.setState({ showModalClearState: true })}
               >
                 <span className="glyphicon glyphicon-trash"> Очистить историю</span>
               </button>
               <Modal
-                show={this.state.showModalClear}
-                onHide={this.closeModalClear}
+                show={this.state.showModalClearState}
+                onHide={this.closeModalClearState}
               >
                 <Modal.Header closeButton>
                   <Modal.Title>
@@ -56,7 +66,7 @@ class App extends React.Component {
                   <button
                     className="btn btn-default"
                     type="button"
-                    onClick={this.closeModalClear}
+                    onClick={this.closeModalClearState}
                   >
                     Закрыть
                   </button>
@@ -75,7 +85,7 @@ class App extends React.Component {
               <div className="row margin-bottom">
                 <ul className="nav nav-pills nav-stacked">
                   <li
-                    className={this.props.ownProps.location.pathname === '/'
+                    className={pathname === '/'
                       ? 'active'
                       : ''
                     }
@@ -88,7 +98,7 @@ class App extends React.Component {
                     </Link>
                   </li>
                   <li
-                    className={this.props.ownProps.location.pathname === '/deposits'
+                    className={pathname === '/deposits'
                       ? 'active'
                       : ''
                     }
@@ -101,7 +111,7 @@ class App extends React.Component {
                     </Link>
                   </li>
                   <li
-                    className={this.props.ownProps.location.pathname === '/categories'
+                    className={pathname === '/categories'
                       ? 'active'
                       : ''
                     }
@@ -114,7 +124,7 @@ class App extends React.Component {
                     </Link>
                   </li>
                   <li
-                    className={this.props.ownProps.location.pathname === '/expenses'
+                    className={pathname === '/expenses'
                       ? 'active'
                       : ''
                     }
@@ -131,12 +141,12 @@ class App extends React.Component {
             </div>
             <div
               className={
-                `row text-center alert ${this.props.unplannedMoney > 0 ?
+                `row text-center alert ${unplannedMoney > 0 ?
                   'alert-danger' :
                   'alert-info'}`
               }
             >
-              Незапланированные средства<h3><b>{this.props.unplannedMoney}</b></h3>
+              Незапланированные средства<h3><b>{unplannedMoney}</b></h3>
             </div>
           </div>
           <div
@@ -152,7 +162,6 @@ class App extends React.Component {
 
 export default connect(
   (state, ownProps) => ({
-    money: state.money,
     unplannedMoney: state.unplannedMoney,
     ownProps,
   }),

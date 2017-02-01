@@ -1,17 +1,23 @@
 const initialState = [];
 
 export default function actionExpenses(state = initialState, action) {
-  if (action.type === 'ADD_EXPENSE') {
-    return [
-      ...state,
-      action.expense
-    ];
-  } else if (action.type === 'DELETE_EXPENSE') {
-    return state.filter(expense =>
-      expense.idCategory !== Number(action.id)
-    );
-  } else if (action.type === 'CLEAR_EXPENSE') {
-    return (state = []);
+  switch (action.type) {
+    case 'ADD_EXPENSE':
+      return [
+        ...state,
+        {
+          id: state.reduce((maxId, expense) => Math.max(expense.id, maxId), -1) + 1,
+          idCategory: action.idCategory,
+          nameCategory: action.nameCategory,
+          moneyExpense: action.moneyToExpenses,
+          date: action.dateExpense,
+        },
+      ];
+
+    case 'CLEAR_EXPENSE':
+      return (state = []);
+
+    default:
+      return state;
   }
-  return state;
 }
