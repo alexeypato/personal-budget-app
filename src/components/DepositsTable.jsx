@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { BootstrapTable, TableHeaderColumn, ClearSearchButton } from 'react-bootstrap-table';
 import { connect } from 'react-redux';
 
-class DepositsTable extends React.Component {
+class DepositsTable extends Component {
+  static propTypes = {
+    money: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      money: PropTypes.number,
+      date: PropTypes.string,
+    })),
+  }
   priceFormatter = (cell, row) => {
     return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
   }
@@ -77,7 +84,6 @@ class DepositsTable extends React.Component {
 export default connect(
   (state, ownProps) => ({
     money: state.money,
-    ownProps,
   }),
   dispatch => ({
   }),
