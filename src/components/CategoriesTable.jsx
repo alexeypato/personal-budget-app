@@ -175,7 +175,7 @@ class CategoriesTable extends Component {
       idCategorySelect: row.id,
       nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
-      moneyCategoryAndUnplanned: +row.moneyCategory + +this.props.unplannedMoney,
+      moneyCategoryAndUnplanned: row.moneyCategory + this.props.unplannedMoney,
     });
   }
 
@@ -241,9 +241,9 @@ class CategoriesTable extends Component {
   handleDeleteButtonClick = (row) => {
     this.setState({
       showModalDeleteCategory: true,
-      idCategorySelect: Number(row.id),
+      idCategorySelect: row.id,
       nameCategorySelect: row.nameCategory,
-      moneyPlannedSelect: Number(row.moneyCategory),
+      moneyPlannedSelect: row.moneyCategory,
     });
   }
 
@@ -262,8 +262,8 @@ class CategoriesTable extends Component {
       showModalToExpenses: true,
       idCategorySelect: row.id,
       nameCategorySelect: row.nameCategory,
-      moneyPlannedSelect: Number(row.moneyCategory),
-      moneyToExpenses: Number(row.moneyCategory),
+      moneyPlannedSelect: row.moneyCategory,
+      moneyToExpenses: row.moneyCategory,
     });
   }
 
