@@ -29,7 +29,7 @@ export default function actionCategories(state = initialState, action) {
         return (category.id === action.id
           ? {
             ...category,
-            moneyCategory: Number(category.moneyCategory) + Number(action.moneyCategory),
+            moneyCategory: category.moneyCategory + action.moneyCategory,
           }
           : category
         );
@@ -40,7 +40,7 @@ export default function actionCategories(state = initialState, action) {
         return (category.id === action.idCategory
           ? {
             ...category,
-            moneyCategory: Number(category.moneyCategory) - Number(action.moneyToExpenses),
+            moneyCategory: category.moneyCategory - action.moneyToExpenses,
           }
           : category
         );
