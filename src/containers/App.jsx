@@ -41,45 +41,49 @@ class App extends Component {
             <div className="row margin-bottom">
               <Input />
             </div>
-
             <div className="row margin-bottom">
-              <button
-                className="btn btn-primary btn-block"
-                type="button"
-                onClick={() => this.setState({ showModalClearState: true })}
-              >
-                <span className="glyphicon glyphicon-trash"> Очистить историю</span>
-              </button>
-              <Modal
-                show={this.state.showModalClearState}
-                onHide={this.closeModalClearState}
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title>
+              <ul className="nav nav-pills nav-stacked">
+                <li>
+                  <a
+                    className="link text-center btn-block"
+                    href={undefined}
+                    onClick={() => this.setState({ showModalClearState: true })}
+                    tabIndex={0}
+                  >
                     <span className="glyphicon glyphicon-trash"> Очистить историю</span>
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <p>Вы действительно хотите очистить всю историю?</p>
-                </Modal.Body>
-                <Modal.Footer>
-                  <button
-                    className="btn btn-default"
-                    type="button"
-                    onClick={this.closeModalClearState}
-                  >
-                    Закрыть
-                  </button>
-                  <button
-                    className="btn btn-danger"
-                    type="button"
-                    onClick={this.clearAndClose}
-                  >
-                    Очистить
-                  </button>
-                </Modal.Footer>
-              </Modal>
+                  </a>
+                </li>
+              </ul>
             </div>
+            <Modal
+              show={this.state.showModalClearState}
+              onHide={this.closeModalClearState}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  <span className="glyphicon glyphicon-trash"> Очистить все</span>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p>Вы действительно хотите очистить всю историю?</p>
+              </Modal.Body>
+              <Modal.Footer>
+                <button
+                  className="btn btn-default"
+                  type="button"
+                  onClick={this.closeModalClearState}
+                >
+                  Закрыть
+                </button>
+                <button
+                  className="btn btn-danger"
+                  type="button"
+                  onClick={this.clearAndClose}
+                >
+                  Очистить
+                </button>
+              </Modal.Footer>
+            </Modal>
 
             <div className="main-menu">
               <div className="row margin-bottom">
@@ -150,7 +154,7 @@ class App extends Component {
             </div>
           </div>
           <div
-            className="col-md-8 col-md-offset-1 background-table height-100"
+            className="col-md-8 col-md-offset-1 height-100"
           >
             {this.props.children}
           </div>
