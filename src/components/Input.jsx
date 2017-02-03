@@ -75,13 +75,20 @@ class Input extends Component {
   render() {
     return (
       <div>
-        <button
-          className="btn btn-primary btn-block"
-          type="button"
-          onClick={() => this.setState({ showModal: true })}
-        >
-          <span className="glyphicon glyphicon-plus"> Внести средства</span>
-        </button>
+        <ul className="nav nav-pills nav-stacked">
+          <li
+            className="active"
+          >
+            <a
+              className="link text-center btn-block"
+              href={undefined}
+              onClick={() => this.setState({ showModal: true })}
+              tabIndex={0}
+            >
+              <span className="glyphicon glyphicon-plus"> Внести средства</span>
+            </a>
+          </li>
+        </ul>
 
         <Modal
           show={this.state.showModal}

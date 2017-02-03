@@ -17,7 +17,7 @@ class HomeTable extends React.Component {
       return 0;
     });
     return (
-      <div className="vertical-parent height-100">
+      <div className="vertical-parent height-100 background-table">
         <div
           className="vertical-child"
           hidden={categoriesSort.length !== 0}
@@ -25,13 +25,10 @@ class HomeTable extends React.Component {
           <h1>Список категорий пуст</h1>
         </div>
         <div
-          className="row text-center panel panel-primary height-100"
+          className="row text-center height-100 padding-top"
           hidden={categoriesSort.length === 0}
         >
-          <div className="panel-heading">
-            <h3 className="panel-title">Запланированно</h3>
-          </div>
-          <div className="panel-body">
+          <div className="col-md-10 col-md-offset-1 text-center">
             {categoriesSort.map((category, index) =>
               <div
                 className={(categoriesSort.length % 2) === 1 &&
