@@ -17,32 +17,39 @@ class HomeTable extends React.Component {
       return 0;
     });
     return (
-      <div className="vertical-parent height-100 background-table">
+      <div>
         <div
-          className="vertical-child"
+          className="row text-center"
           hidden={categoriesSort.length !== 0}
         >
-          <h1>Список категорий пуст</h1>
+          <h2>Список категорий пуст</h2>
         </div>
         <div
-          className="row text-center height-100 padding-top"
+          className="row text-center"
           hidden={categoriesSort.length === 0}
         >
-          <div className="col-md-10 col-md-offset-1 text-center">
-            {categoriesSort.map((category, index) =>
-              <div
-                className={(categoriesSort.length % 2) === 1 &&
-                  (categoriesSort.length === index + 1)
-                    ? 'col-md-6 col-md-offset-3 text-center alert alert-info'
-                    : 'col-md-6 text-center alert alert-info'
-                }
-                key={index}
-              >
+          <hr></hr>
+          {categoriesSort.map((category, index) =>
+            <div
+              className={(categoriesSort.length % 2) === 1 &&
+                (categoriesSort.length === index + 1)
+                  ? 'col-md-6 col-md-offset-3'
+                  : 'col-md-6'
+              }
+              key={index}
+            >
+              <div className="text-center backgroun-categories">
                 {category.nameCategory}
-                <h3><b>{category.moneyCategory}</b></h3>
-              </div>,
-            )}
-          </div>
+                <h3>
+                  <span
+                    className="glyphicon glyphicon-usd"
+                  >
+                    <b>{category.moneyCategory}</b>
+                  </span>
+                </h3>
+              </div>
+            </div>,
+          )}
         </div>
       </div>
     );
