@@ -35,8 +35,8 @@ class App extends Component {
     const unplannedMoney = this.props.unplannedMoney;
 
     return (
-      <div className="container height-100">
-        <div className="row height-100">
+      <div className="container">
+        <div className="row">
           <div className="col-md-2">
             <div className="row margin-bottom">
               <Input />
@@ -154,7 +154,7 @@ class App extends Component {
             </div>
           </div>
           <div
-            className="col-md-8 col-md-offset-1 height-100"
+            className="col-md-8 col-md-offset-1"
           >
             {this.props.children}
           </div>

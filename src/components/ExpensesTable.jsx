@@ -54,7 +54,7 @@ class ExpensesTable extends Component {
           <TableHeaderColumn
             dataField="id"
             isKey
-            width="100"
+            width="100px"
             hidden
           >
             ID
@@ -77,7 +77,7 @@ class ExpensesTable extends Component {
             dataFormat={this.priceFormatter}
             dataAlign="center"
             dataSort
-            width="200"
+            width="200px"
             sortFunc={this.revertSortFunc}
           >
             Сумма расходов
@@ -86,7 +86,7 @@ class ExpensesTable extends Component {
             dataField="date"
             dataAlign="center"
             dataSort
-            width="150"
+            width="150px"
           >
             Дата
           </TableHeaderColumn>

@@ -330,7 +330,7 @@ class CategoriesTable extends Component {
             isKey
             dataAlign="center"
             dataSort
-            width="100"
+            width="100px"
             hidden
           >
             ID
@@ -348,7 +348,7 @@ class CategoriesTable extends Component {
             dataAlign="center"
             dataSort
             sortFunc={this.revertSortFunc}
-            width="150"
+            width="150px"
           >
             Сумма средств
           </TableHeaderColumn>
@@ -356,21 +356,21 @@ class CategoriesTable extends Component {
             dataAlign="center"
             dataField="buttonDelete"
             dataFormat={this.buttonEditFormatter}
-            width="50"
+            width="50px"
           >
           </TableHeaderColumn>
           <TableHeaderColumn
             dataAlign="center"
             dataField="buttonEdit"
             dataFormat={this.buttonDeleteFormatter}
-            width="50"
+            width="50px"
           >
           </TableHeaderColumn>
           <TableHeaderColumn
             dataAlign="center"
             dataField="buttonToExpenses"
             dataFormat={this.buttonToExpensesFormatter}
-            width="50"
+            width="50px"
           >
           </TableHeaderColumn>
         </BootstrapTable>

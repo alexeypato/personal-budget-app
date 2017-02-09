@@ -53,7 +53,7 @@ class DepositsTable extends Component {
             isKey
             dataAlign="center"
             dataSort
-            width="100"
+            width="100px"
             hidden
           >
             ID
@@ -71,7 +71,7 @@ class DepositsTable extends Component {
             dataField="date"
             dataAlign="center"
             dataSort
-            width="200"
+            width="200px"
           >
             Дата
           </TableHeaderColumn>
