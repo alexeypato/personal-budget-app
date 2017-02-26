@@ -1,6 +1,6 @@
 {
   "name": "personal-butget-app",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "This task is made for training, but not an examination.",
   "main": "server.js",
   "scripts": {
@@ -28,6 +28,8 @@
     "eslint-plugin-react": "^6.8.0",
     "express": "^4.13.4",
     "file-loader": "^0.9.0",
+    "firebase": "^3.6.9",
+    "immutable": "^3.8.1",
     "jquery": "^3.1.1",
     "node-sass": "^3.4.2",
     "react": "^15.0.1",
@@ -41,8 +43,8 @@
     "react-router": "^3.0.2",
     "react-router-redux": "^4.0.7",
     "redux": "^3.6.0",
-    "redux-devtools-extension": "^1.0.0",
     "redux-thunk": "^2.2.0",
+    "reselect": "^2.5.4",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",

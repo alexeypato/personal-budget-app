@@ -1,26 +1,14 @@
 html, body {
+  font-family: Comic Sans, Comic Sans MS, cursive !important;
   background-color: whitesmoke !important;
 }
 
-#root {
-  margin: 0 2em 0 2em;
+.root {
   padding: 1em 2em 1em 2em;
 }
 
 .margin-bottom {
   margin-bottom: 5px !important;
-}
-
-.main-menu {
-  margin: 5em 0 5em 0;
-}
-
-.link {
-  cursor: pointer;
-  box-shadow: inset 0 0 6px;
-  &:hover {
-    box-shadow: 0 0 5px 2px;
-  }
 }
 
 .backgroun-categories {
@@ -31,4 +19,78 @@ html, body {
   margin-bottom: 2em;
   box-shadow: 5px 5px rgba(181,181,181,0.5);
   color: steelblue;
+}
+
+.form-login {
+  background-color: white;
+  border-radius: 2px;
+  padding: 25px 20px;
+  margin: 50px auto;
+  box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+}
+
+.form-login p {
+  font-size: 22px;
+}
+
+.nav-item {
+  cursor: pointer;
+  &:active {
+    outline: none;
+  }
+}
+
+.cbm_wrap {
+  background: white;
+  padding:20px;
+  margin-bottom: 20px; 
+} 
+
+.cbm_wrap h1 {
+  background: #a8c4c0;
+  background: -moz-linear-gradient(top,  #a8c4c0 0%, #7aa5a2 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a8c4c0), color-stop(100%,#7aa5a2));
+  background: -webkit-linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
+  background: -o-linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
+  background: -ms-linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
+  background: linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a8c4c0', endColorstr='#7aa5a2',GradientType=0 );
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+  padding: 0 20px;  
+  line-height: 50px;
+  height: 50px;
+  margin-top: 5px; 
+  margin-left: -35px;  
+  position: relative;  
+  box-shadow: 0px 3px 4px 0px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0px 3px 4px 0px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0px 3px 4px 0px rgba(0,0,0,0.3);
+  color: #3b3a3b;  
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);  
+}  
+
+.cbm_wrap h1:after {
+  position: absolute;
+  content: '';
+  width: 0; height: 0; 
+  line-height: 0;  
+  border-left: 15px solid transparent; 
+  border-top: 10px solid #729c9a;  
+  bottom: -10px;  
+  left: 0;  
+  position: absolute;  
+  z-index: -1;
+}
+
+.cbm_wrap h1:before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  height: 39px;
+  border-top: 1px solid rgba(255,255,255,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+  width: 100%;
+  left: 0;
 }

@@ -16,6 +16,8 @@ class Input extends Component {
     })),
     onAddMoney: PropTypes.func.isRequired,
     onEditCategories: PropTypes.func.isRequired,
+    showModal: PropTypes.bool,
+    closeModal: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
@@ -24,7 +26,6 @@ class Input extends Component {
       textError: '',
       date: new Date().toISOString(),
       focused: false,
-      showModal: false,
       titleDropdown: 'Выберите категорию',
       idDropdown: -1,
     };
@@ -40,10 +41,6 @@ class Input extends Component {
     this.setState({
       date: value,
     });
-  }
-
-  closeModal = () => {
-    this.setState({ showModal: false });
   }
 
   saveAndClose = () => {
@@ -63,7 +60,7 @@ class Input extends Component {
         titleDropdown: 'Выберите категорию',
         idDropdown: -1,
       });
-      this.closeModal();
+      this.props.closeModal();
     } else {
       this.setState({
         textError: 'Ошибка! Введите сумму средств.',
@@ -75,29 +72,14 @@ class Input extends Component {
   render() {
     return (
       <div>
-        <ul className="nav nav-pills nav-stacked">
-          <li
-            className="active"
-          >
-            <a
-              className="link text-center btn-block"
-              href={undefined}
-              onClick={() => this.setState({ showModal: true })}
-              tabIndex={0}
-            >
-              <span className="glyphicon glyphicon-plus"> Внести средства</span>
-            </a>
-          </li>
-        </ul>
-
         <Modal
-          show={this.state.showModal}
-          onHide={this.closeModal}
+          show={this.props.showModal}
+          onHide={this.props.closeModal}
           bsSize="small"
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-plus"> Внести средства</span>
+              <span className="glyphicon glyphicon-plus"></span> Внести средства
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -163,7 +145,7 @@ class Input extends Component {
             <button
               className="btn btn-default"
               type="button"
-              onClick={this.closeModal}
+              onClick={this.props.closeModal}
             >
               Закрыть
             </button>
@@ -182,7 +164,7 @@ class Input extends Component {
 }
 
 export default connect(
-  (state, ownProps) => ({
+  state => ({
     categories: state.categories,
   }),
   dispatch => ({

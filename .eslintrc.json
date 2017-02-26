@@ -29,7 +29,12 @@
       "no-unused-vars": 0,
       "no-underscore-dangle": 0,
       "import/prefer-default-export": 0,
+      "import/no-named-as-default": 0,
       "react/forbid-prop-types": 0,
-      "no-param-reassign": 0
+      "no-param-reassign": 0,
+      "prefer-const": 0,
+      "no-shadow": 0,
+      "global-require": 0,
+      "react/no-render-return-value": 0
     }
 }

@@ -330,7 +330,7 @@ class CategoriesTable extends Component {
             isKey
             dataAlign="center"
             dataSort
-            width="100"
+            width="100px"
             hidden
           >
             ID
@@ -348,7 +348,7 @@ class CategoriesTable extends Component {
             dataAlign="center"
             dataSort
             sortFunc={this.revertSortFunc}
-            width="150"
+            width="150px"
           >
             Сумма средств
           </TableHeaderColumn>
@@ -356,21 +356,21 @@ class CategoriesTable extends Component {
             dataAlign="center"
             dataField="buttonDelete"
             dataFormat={this.buttonEditFormatter}
-            width="50"
+            width="50px"
           >
           </TableHeaderColumn>
           <TableHeaderColumn
             dataAlign="center"
             dataField="buttonEdit"
             dataFormat={this.buttonDeleteFormatter}
-            width="50"
+            width="50px"
           >
           </TableHeaderColumn>
           <TableHeaderColumn
             dataAlign="center"
             dataField="buttonToExpenses"
             dataFormat={this.buttonToExpensesFormatter}
-            width="50"
+            width="50px"
           >
           </TableHeaderColumn>
         </BootstrapTable>
@@ -380,7 +380,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-plus"> Добавить категорию</span>
+              <span className="glyphicon glyphicon-plus"></span> Добавить категорию
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -465,7 +465,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-trash"> Удалить категорию</span>
+              <span className="glyphicon glyphicon-trash"></span> Удалить категорию
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -495,7 +495,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-pencil"> Редактировать категорию</span>
+              <span className="glyphicon glyphicon-pencil"></span> Редактировать категорию
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -582,7 +582,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-shopping-cart"> Внести раход</span>
+              <span className="glyphicon glyphicon-shopping-cart"></span> Внести раход
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -668,7 +668,7 @@ class CategoriesTable extends Component {
 }
 
 export default connect(
-  (state, ownProps) => ({
+  state => ({
     categories: state.categories,
     unplannedMoney: state.unplannedMoney,
   }),
