@@ -339,6 +339,7 @@ class CategoriesTable extends Component {
             dataField="nameCategory"
             dataAlign="center"
             dataSort
+            width="250px"
           >
             Название категории
           </TableHeaderColumn>
@@ -380,7 +381,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-plus"> Добавить категорию</span>
+              <span className="glyphicon glyphicon-plus"></span> Добавить категорию
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -465,7 +466,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-trash"> Удалить категорию</span>
+              <span className="glyphicon glyphicon-trash"></span> Удалить категорию
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -495,7 +496,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-pencil"> Редактировать категорию</span>
+              <span className="glyphicon glyphicon-pencil"></span> Редактировать категорию
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -582,7 +583,7 @@ class CategoriesTable extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-shopping-cart"> Внести раход</span>
+              <span className="glyphicon glyphicon-shopping-cart"></span> Внести раход
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -668,7 +669,7 @@ class CategoriesTable extends Component {
 }
 
 export default connect(
-  (state, ownProps) => ({
+  state => ({
     categories: state.categories,
     unplannedMoney: state.unplannedMoney,
   }),

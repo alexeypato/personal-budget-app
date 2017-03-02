@@ -97,9 +97,8 @@ class ExpensesTable extends Component {
 }
 
 export default connect(
-  (state, ownProps) => ({
+  state => ({
     expenses: state.expenses,
   }),
-  dispatch => ({
-  }),
+  null,
 )(ExpensesTable);

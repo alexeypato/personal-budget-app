@@ -28,7 +28,6 @@ class HomeTable extends React.Component {
           className="row text-center"
           hidden={categoriesSort.length === 0}
         >
-          <hr></hr>
           {categoriesSort.map((category, index) =>
             <div
               className={(categoriesSort.length % 2) === 1 &&
@@ -39,14 +38,13 @@ class HomeTable extends React.Component {
               key={index}
             >
               <div className="text-center backgroun-categories">
-                {category.nameCategory}
-                <h3>
+                <h1>{category.nameCategory}</h1>
+                <h4>
                   <span
                     className="glyphicon glyphicon-usd"
                   >
-                    <b>{category.moneyCategory}</b>
-                  </span>
-                </h3>
+                  </span> <b>{category.moneyCategory}</b>
+                </h4>
               </div>
             </div>,
           )}
@@ -57,9 +55,8 @@ class HomeTable extends React.Component {
 }
 
 export default connect(
-  (state, ownProps) => ({
+  state => ({
     categories: state.categories,
   }),
-  dispatch => ({
-  }),
+  null,
 )(HomeTable);
