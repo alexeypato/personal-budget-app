@@ -7,12 +7,10 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
-        <div className="root">
+      <div className="intro-header">
+        <div className="container">
           <div className="row">
-            <div
-              className="col-md-8 col-md-offset-2"
-            >
+            <div className="col-md-10 col-md-offset-1">
               {this.props.children}
             </div>
           </div>

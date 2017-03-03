@@ -36,7 +36,6 @@ class App extends Component {
         {
           this.props.auth.authenticated
           ? <Header
-            authenticated={this.props.auth.authenticated}
             signOut={this.props.signOut}
             unplannedMoney={this.props.unplannedMoney}
           />

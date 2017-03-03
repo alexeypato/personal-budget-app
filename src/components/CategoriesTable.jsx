@@ -1,12 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { BootstrapTable,
-  TableHeaderColumn,
-  InsertButton,
-  ClearSearchButton,
-} from 'react-bootstrap-table';
 import { Modal } from 'react-bootstrap';
+import $ from 'jquery';
 
 const DatePicker = require('react-bootstrap-date-picker');
 const date = require('date-and-time');
@@ -43,70 +39,56 @@ class CategoriesTable extends Component {
     };
   }
 
-  priceFormatter = (cell, row) => {
-    return `<i class="glyphicon glyphicon-usd"></i> ${cell}`;
+  componentDidMount = () => {
+    this.dataTableCreate();
   }
 
-  buttonEditFormatter = (cell, row) => {
-    return (
-      <button
-        className="btn btn-xs btn-primary"
-        type="button"
-        onClick={() => this.handleEditButtonClick(row)}
-        data-toggle="tooltip"
-        title="Редактировать"
-      >
-        <span className="glyphicon glyphicon-pencil"></span>
-      </button>
-    );
+  componentWillUpdate = () => {
+    $('#datatable').DataTable().destroy();
   }
 
-  buttonDeleteFormatter = (cell, row) => {
-    return (
-      <button
-        className="btn btn-xs btn-danger"
-        type="button"
-        onClick={() => this.handleDeleteButtonClick(row)}
-        data-toggle="tooltip"
-        title="Удалить"
-      >
-        <span className="glyphicon glyphicon-trash"></span>
-      </button>
-    );
+  componentDidUpdate = () => {
+    this.dataTableCreate();
   }
 
-  buttonToExpensesFormatter = (cell, row) => {
-    return (
-      <button
-        className="btn btn-xs btn-primary"
-        type="button"
-        onClick={() => this.handleToExpensesButtonClick(row)}
-        data-toggle="tooltip"
-        title="Внести расход"
-      >
-        <span className="glyphicon glyphicon-shopping-cart"></span>
-      </button>
-    );
-  }
-
-  revertSortFunc = (a, b, order) => {
-    if (order === 'desc') {
-      return a.moneyCategory - b.moneyCategory;
-    }
-    return b.moneyCategory - a.moneyCategory;
+  dataTableCreate = () => {
+    $('#datatable').dataTable({
+      aoColumns: [
+        null,
+        null,
+        { bSortable: false },
+        { bSortable: false },
+        { bSortable: false },
+      ],
+      iDisplayLength: 20,
+      language: {
+        processing: 'Подождите...',
+        search: 'Поиск:',
+        lengthMenu: 'Показать _MENU_ записей',
+        info: 'Записи с _START_ до _END_ из _TOTAL_ записей',
+        infoEmpty: 'Записи с 0 до 0 из 0 записей',
+        infoFiltered: '(отфильтровано из _MAX_ записей)',
+        infoPostFix: '',
+        loadingRecords: 'Загрузка записей...',
+        zeroRecords: 'Записи отсутствуют.',
+        emptyTable: 'В таблице отсутствуют данные',
+        paginate: {
+          first: 'Первая',
+          previous: 'Предыдущая',
+          next: 'Следующая',
+          last: 'Последняя',
+        },
+        aria: {
+          sortAscending: ': активировать для сортировки столбца по возрастанию',
+          sortDescending: ': активировать для сортировки столбца по убыванию',
+        },
+      },
+      order: [[0, 'ask']],
+      stateSave: true,
+    });
   }
 
   // Add categories
-  createCustomInsertButton = (onClick) => {
-    return (
-      <InsertButton
-        btnText=" Добавить категорию"
-        btnContextual="btn-primary"
-        onClick={() => this.handleInsertButtonClick(onClick)}
-      />
-    );
-  }
-
   handleInsertButtonClick = () => {
     this.setState({
       nameCategory: '',
@@ -294,86 +276,74 @@ class CategoriesTable extends Component {
     this.setState({ showModalToExpenses: false });
   }
 
-  createCustomClearButton = (onClick) => {
-    return (
-      <ClearSearchButton
-        btnText="Очистить"
-      />
-    );
-  }
-
   render() {
-    const options = {
-      sizePerPage: 10,
-      paginationSize: 3,
-      hideSizePerPage: true,
-      defaultSortName: 'nameCategory',
-      defaultSortOrder: 'asc',
-      clearSearch: true,
-      clearSearchBtn: this.createCustomClearButton,
-      insertBtn: this.createCustomInsertButton,
-    };
-
     return (
       <div>
-        <BootstrapTable
-          data={this.props.categories}
-          striped
-          pagination
-          options={options}
-          search
-          searchPlaceholder="Поиск..."
-          insertRow
-        >
-          <TableHeaderColumn
-            dataField="id"
-            isKey
-            dataAlign="center"
-            dataSort
-            width="100px"
-            hidden
+        <div style={{ marginTop: '10px' }}>
+          <button className="btn btn-primary" onClick={this.handleInsertButtonClick}>
+            Добавить категорию
+          </button>
+        </div>
+        <div className="table-responsive" style={{ marginTop: '10px' }}>
+          <table
+            id="datatable"
+            className="table table-bordered table-hover table-striped table-condensed"
           >
-            ID
-          </TableHeaderColumn>
-          <TableHeaderColumn
-            dataField="nameCategory"
-            dataAlign="center"
-            dataSort
-          >
-            Название категории
-          </TableHeaderColumn>
-          <TableHeaderColumn
-            dataField="moneyCategory"
-            dataFormat={this.priceFormatter}
-            dataAlign="center"
-            dataSort
-            sortFunc={this.revertSortFunc}
-            width="150px"
-          >
-            Сумма средств
-          </TableHeaderColumn>
-          <TableHeaderColumn
-            dataAlign="center"
-            dataField="buttonDelete"
-            dataFormat={this.buttonEditFormatter}
-            width="50px"
-          >
-          </TableHeaderColumn>
-          <TableHeaderColumn
-            dataAlign="center"
-            dataField="buttonEdit"
-            dataFormat={this.buttonDeleteFormatter}
-            width="50px"
-          >
-          </TableHeaderColumn>
-          <TableHeaderColumn
-            dataAlign="center"
-            dataField="buttonToExpenses"
-            dataFormat={this.buttonToExpensesFormatter}
-            width="50px"
-          >
-          </TableHeaderColumn>
-        </BootstrapTable>
+            <thead>
+              <tr>
+                <th className="text-center">Название категории</th>
+                <th className="text-center" style={{ width: '250px' }}>Сумма средств</th>
+                <th className="text-center" style={{ width: '10px' }}></th>
+                <th className="text-center" style={{ width: '10px' }}></th>
+                <th className="text-center" style={{ width: '10px' }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.categories.map((category, index) =>
+                <tr key={index}>
+                  <td className="text-center">{category.nameCategory}</td>
+                  <td className="text-center">
+                    {category.moneyCategory}<i className="glyphicon glyphicon-usd"></i>
+                  </td>
+                  <td className="text-center">
+                    <button
+                      className="btn btn-xs btn-primary"
+                      type="button"
+                      onClick={() => this.handleEditButtonClick(category)}
+                      data-toggle="tooltip"
+                      title="Редактировать"
+                    >
+                      <span className="glyphicon glyphicon-pencil"></span>
+                    </button>
+                  </td>
+                  <td className="text-center">
+                    <button
+                      className="btn btn-xs btn-danger"
+                      type="button"
+                      onClick={() => this.handleDeleteButtonClick(category)}
+                      data-toggle="tooltip"
+                      title="Удалить"
+                    >
+                      <span className="glyphicon glyphicon-trash"></span>
+                    </button>
+                  </td>
+                  <td className="text-center">
+                    <button
+                      className="btn btn-xs btn-primary"
+                      type="button"
+                      onClick={() => this.handleToExpensesButtonClick(category)}
+                      data-toggle="tooltip"
+                      title="Внести расход"
+                    >
+                      <span className="glyphicon glyphicon-shopping-cart"></span>
+                    </button>
+                  </td>
+                </tr>,
+              )}
+            </tbody>
+          </table>
+        </div>
+
         <Modal
           show={this.state.showModalAddCategory}
           onHide={this.closeModalAddCategory}
