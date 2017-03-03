@@ -4,10 +4,20 @@ html, body {
 }
 
 .intro-header {
-    padding-top: 50px;
+  padding-top: 50px;
 }
 
-@media (max-width: 991px) {
+@media (min-width: 992px) and (max-width: 1051px) {
+  .my-navbar {
+    display: none!important;
+  }
+}
+
+@media (max-width: 1051px) {
+  .my-navbar-two {
+    display: none!important;
+  }
+
   .navbar-nav .open .dropdown-menu {
     position: static;
     float: none;
@@ -112,7 +122,13 @@ html, body {
   margin-bottom: 20px; 
 } 
 
-.backgroun-categories h1 {
+@media (max-width: 767px) {
+  .backgroun-categories p {
+    font-size: 12px !important;
+  }
+}
+
+.backgroun-categories p {
   background: #a8c4c0;
   background: -moz-linear-gradient(top,  #a8c4c0 0%, #7aa5a2 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a8c4c0), color-stop(100%,#7aa5a2));
@@ -121,14 +137,14 @@ html, body {
   background: -ms-linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
   background: linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a8c4c0', endColorstr='#7aa5a2',GradientType=0 );
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
   padding: 0 20px;  
   line-height: 50px;
   height: 50px;
   margin-top: 5px; 
-  margin-left: -35px;  
+  margin-left: -25px;  
   position: relative;  
   box-shadow: 0px 3px 4px 0px rgba(0,0,0,0.3);
   -moz-box-shadow: 0px 3px 4px 0px rgba(0,0,0,0.3);
@@ -137,7 +153,7 @@ html, body {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);  
 }  
 
-.backgroun-categories h1:after {
+.backgroun-categories p:after {
   position: absolute;
   content: '';
   width: 0; height: 0; 
@@ -150,7 +166,7 @@ html, body {
   z-index: -1;
 }
 
-.backgroun-categories h1:before {
+.backgroun-categories p:before {
   content: '';
   position: absolute;
   top: 5px;

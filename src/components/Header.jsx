@@ -52,15 +52,15 @@ class Header extends Component {
             <div className="navbar-header">
               <a className="navbar-brand">Личный бюджет</a>
               <a
-                className="navbar-brand navbar-right visible-sm"
+                className="navbar-brand navbar-right visible-sm visible-md my-navbar-two"
                 href="/sign-in"
                 onClick={this.props.signOut}
               >
                 <span className="glyphicon glyphicon-log-out"></span> Выйти
               </a>
-              <div className="dropdown navbar-right visible-sm">
+              <div className="dropdown navbar-right visible-sm visible-md my-navbar-two">
                 <a
-                  className="dropdown-toggle navbar-brand"
+                  className="dropdown-toggle navbar-brand nav-item"
                   data-toggle="dropdown"
                 >
                   Баланс : {this.props.unplannedMoney}
@@ -154,15 +154,15 @@ class Header extends Component {
                 </li>
               </ul>
               <a
-                className="navbar-brand navbar-right visible-md visible-lg"
+                className="navbar-brand navbar-right visible-md visible-lg my-navbar"
                 href="/sign-in"
                 onClick={this.props.signOut}
               >
                 <span className="glyphicon glyphicon-log-out"></span> Выйти
               </a>
-              <div className="dropdown navbar-right visible-md visible-lg">
+              <div className="dropdown navbar-right visible-md visible-lg my-navbar">
                 <a
-                  className="dropdown-toggle navbar-brand"
+                  className="dropdown-toggle navbar-brand nav-item"
                   data-toggle="dropdown"
                 >
                   Баланс : {this.props.unplannedMoney}
@@ -196,8 +196,7 @@ class Header extends Component {
               <ul className="nav navbar-nav navbar-header navbar-right visible-xs">
                 <li className="dropdown">
                   <a
-                    href="1"
-                    className="dropdown-toggle"
+                    className="dropdown-toggle nav-item"
                     data-toggle="dropdown"
                   >
                     Баланс : {this.props.unplannedMoney}

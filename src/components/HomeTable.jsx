@@ -27,6 +27,7 @@ class HomeTable extends React.Component {
         <div
           className="row text-center"
           hidden={categoriesSort.length === 0}
+          style={{ marginTop: '10px' }}
         >
           {categoriesSort.map((category, index) =>
             <div
@@ -37,8 +38,8 @@ class HomeTable extends React.Component {
               }
               key={index}
             >
-              <div className="text-center backgroun-categories">
-                <h1>{category.nameCategory}</h1>
+              <div className="text-center backgroun-categories text-hidden">
+                <p>{category.nameCategory}</p>
                 <h4>
                   <span
                     className="glyphicon glyphicon-usd"

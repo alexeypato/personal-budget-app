@@ -75,7 +75,7 @@ class Input extends Component {
         <Modal
           show={this.props.showModal}
           onHide={this.props.closeModal}
-          bsSize="small"
+          // bsSize="small"
         >
           <Modal.Header closeButton>
             <Modal.Title>
