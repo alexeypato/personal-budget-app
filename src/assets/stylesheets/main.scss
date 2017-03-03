@@ -13,11 +13,13 @@ html, body {
   }
 }
 
-@media (max-width: 1051px) {
+@media (min-width: 1051px) {
   .my-navbar-two {
     display: none!important;
   }
+}
 
+@media (max-width: 1051px) {
   .navbar-nav .open .dropdown-menu {
     position: static;
     float: none;
