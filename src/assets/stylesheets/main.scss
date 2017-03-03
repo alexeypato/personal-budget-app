@@ -1,6 +1,6 @@
 html, body {
-  font-family: Comic Sans, Comic Sans MS, cursive !important;
-  background-color: whitesmoke !important;
+  font-family: Comic Sans, Comic Sans MS, cursive;
+  background-color: whitesmoke;
 }
 
 .intro-header {
@@ -13,11 +13,13 @@ html, body {
   }
 }
 
-@media (max-width: 1051px) {
+@media (min-width: 1051px) {
   .my-navbar-two {
     display: none!important;
   }
+}
 
+@media (max-width: 1051px) {
   .navbar-nav .open .dropdown-menu {
     position: static;
     float: none;
