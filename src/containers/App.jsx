@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { createSelector } from 'reselect';
 import { authActions, getAuth } from '../auth';
 import { getUnplannedMoney } from '../reducers';
-import { paths } from '../routes';
+import { paths } from '../constants';
 import Header from '../components/Header';
 
 class App extends Component {
@@ -24,7 +24,7 @@ class App extends Component {
     const { auth } = this.props;
 
     if (auth.authenticated && !nextProps.auth.authenticated) {
-      router.replace(paths.ROOT);
+      router.replace(paths.SIGN_IN);
     } else if (!auth.authenticated && nextProps.auth.authenticated) {
       router.replace(paths.HOME);
     }

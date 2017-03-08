@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import Input from '../components/Input';
 import ClearHistory from '../components/ClearHistory';
+import { paths } from '../constants';
 
 class Header extends Component {
   static propTypes = {
@@ -53,7 +54,7 @@ class Header extends Component {
               <a className="navbar-brand">Личный бюджет</a>
               <a
                 className="navbar-brand navbar-right visible-sm visible-md my-navbar-two"
-                href="/sign-in"
+                href={paths.SIGN_IN}
                 onClick={this.props.signOut}
               >
                 <span className="glyphicon glyphicon-log-out"></span> Выйти
@@ -105,49 +106,49 @@ class Header extends Component {
             <div className="navbar-collapse collapse">
               <ul className="nav navbar-nav">
                 <li
-                  className={pathname === '/home'
+                  className={pathname === paths.HOME
                     ? 'active'
                     : ''
                   }
                 >
                   <Link
-                    to={'/home'}
+                    to={paths.HOME}
                   >
                     <span className="glyphicon glyphicon-home"></span> Главная
                   </Link>
                 </li>
                 <li
-                  className={pathname === '/deposits'
+                  className={pathname === paths.DEPOSITS
                     ? 'active'
                     : ''
                   }
                 >
                   <Link
-                    to={'/deposits'}
+                    to={paths.DEPOSITS}
                   >
                     <span className="glyphicon glyphicon-usd"></span> История пополнения
                   </Link>
                 </li>
                 <li
-                  className={pathname === '/categories'
+                  className={pathname === paths.CATEGORIES
                     ? 'active'
                     : ''
                   }
                 >
                   <Link
-                    to={'/categories'}
+                    to={paths.CATEGORIES}
                   >
                     <span className="glyphicon glyphicon-th-list"></span> Категории
                   </Link>
                 </li>
                 <li
-                  className={pathname === '/expenses'
+                  className={pathname === paths.EXPENSES
                     ? 'active'
                     : ''
                   }
                 >
                   <Link
-                    to={'/expenses'}
+                    to={paths.EXPENSES}
                   >
                     <span className="glyphicon glyphicon-shopping-cart"></span> Расходы
                   </Link>
@@ -155,7 +156,7 @@ class Header extends Component {
               </ul>
               <a
                 className="navbar-brand navbar-right visible-md visible-lg my-navbar"
-                href="/sign-in"
+                href={paths.SIGN_IN}
                 onClick={this.props.signOut}
               >
                 <span className="glyphicon glyphicon-log-out"></span> Выйти
@@ -228,7 +229,7 @@ class Header extends Component {
                   </ul>
                 </li>
                 <li>
-                  <Link to={'/sign-in'} onClick={this.props.signOut}>
+                  <Link to={paths.SIGN_IN} onClick={this.props.signOut}>
                     <span className="glyphicon glyphicon-log-out"></span> Выйти
                   </Link>
                 </li>

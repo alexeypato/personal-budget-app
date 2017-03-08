@@ -32,6 +32,7 @@ class CategoriesTable extends Component {
       moneyPlannedSelect: 0,
       moneyCategoryAndUnplanned: 0,
       moneyCategory: 0,
+      refreshTable: false,
       showModalAddCategory: false,
       showModalDeleteCategory: false,
       showModalEditCategory: false,
@@ -43,12 +44,13 @@ class CategoriesTable extends Component {
     this.dataTableCreate();
   }
 
-  componentWillUpdate = () => {
-    $('#datatable').DataTable().destroy();
-  }
-
   componentDidUpdate = () => {
-    this.dataTableCreate();
+    if (this.state.refreshTable) {
+      this.dataTableCreate();
+      this.setState({
+        refreshTable: false,
+      });
+    }
   }
 
   dataTableCreate = () => {
@@ -130,6 +132,7 @@ class CategoriesTable extends Component {
           nameCategory: '',
           moneyCategory: 0,
           textError: '',
+          refreshTable: true,
         });
         this.closeModalAddCategory();
       } else {
@@ -192,6 +195,7 @@ class CategoriesTable extends Component {
         this.setState({
           nameCategorySelect: '',
           textError: '',
+          refreshTable: true,
         });
         this.props.onEditCategories(
           this.state.idCategorySelect,
@@ -277,6 +281,9 @@ class CategoriesTable extends Component {
   }
 
   render() {
+    if (this.state.refreshTable) {
+      $('#datatable').DataTable().destroy();
+    }
     return (
       <div>
         <div style={{ marginTop: '10px' }}>

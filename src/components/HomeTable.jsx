@@ -39,7 +39,10 @@ class HomeTable extends React.Component {
               key={index}
             >
               <div className="text-center backgroun-categories">
-                <p>{category.nameCategory}</p>
+                <p
+                  data-toggle="tooltip"
+                  title={category.nameCategory}
+                >{category.nameCategory}</p>
                 <h4>
                   <span
                     className="glyphicon glyphicon-usd"

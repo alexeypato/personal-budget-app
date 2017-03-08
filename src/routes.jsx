@@ -9,16 +9,7 @@ import HomeTable from './components/HomeTable';
 import DepositsTable from './components/DepositsTable';
 import CategoriesTable from './components/CategoriesTable';
 import ExpensesTable from './components/ExpensesTable';
-
-export const paths = {
-  ROOT: '/',
-  SIGN_IN: '/sign-in',
-  HOME: '/home',
-  DEPOSITS: '/deposits',
-  CATEGORIES: '/categories',
-  EXPENSES: '/expenses',
-  NOTFOUND: '*',
-};
+import { paths } from './constants';
 
 const requireAuth = (getState) => {
   return (nextState, replace) => {
