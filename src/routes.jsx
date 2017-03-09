@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from 'react-router';
-import { isAuthenticated } from './auth';
+import { isAuthenticated } from './reducers/auth';
 
 import App from './containers/App';
 import LogIn from './containers/LogIn';

@@ -38,7 +38,7 @@ class HomeTable extends React.Component {
               }
               key={index}
             >
-              <div className="text-center backgroun-categories text-hidden">
+              <div className="text-center backgroun-categories">
                 <p
                   data-toggle="tooltip"
                   title={category.nameCategory}

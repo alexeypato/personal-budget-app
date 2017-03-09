@@ -1,6 +1,6 @@
-const initialState = [];
+export const initialState = [];
 
-export default function actionExpenses(state = initialState, action) {
+export function expensesReducer(state = initialState, action) {
   switch (action.type) {
     case 'ADD_EXPENSE':
       return [

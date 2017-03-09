@@ -1,6 +1,6 @@
-const initialState = [];
+export const initialState = [];
 
-export default function actionCategories(state = initialState, action) {
+export function categoriesReducer(state = initialState, action) {
   switch (action.type) {
     case 'ADD_CATEGORY':
       return [

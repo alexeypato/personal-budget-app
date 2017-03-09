@@ -1,6 +1,6 @@
-const initialState = [];
+export const initialState = [];
 
-export default function actionMoney(state = initialState, action) {
+export function moneyReducer(state = initialState, action) {
   switch (action.type) {
     case 'ADD_MONEY':
       return [

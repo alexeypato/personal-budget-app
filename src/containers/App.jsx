@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { createSelector } from 'reselect';
-import { authActions, getAuth } from '../auth';
-import { getUnplannedMoney } from '../reducers';
+import { authActions, getAuth } from '../reducers/auth';
+import { getUnplannedMoney } from '../reducers/unplannedMoney';
 import { paths } from '../constants';
 import Header from '../components/Header';
 

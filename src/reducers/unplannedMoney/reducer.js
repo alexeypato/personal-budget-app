@@ -1,6 +1,6 @@
-const initialState = 0;
+export const initialState = 0;
 
-export default function actionUnplannedMoney(state = initialState, action) {
+export function unplannedMoneyReducer(state = initialState, action) {
   switch (action.type) {
     case 'ADD_UNPLANNED_MONEY':
       return (state += action.deposit);
