@@ -1,22 +1,13 @@
 import { moneyList } from './money-list';
 import {
-  CREATE_MONEY_ERROR,
   CREATE_MONEY_SUCCESS,
   LOAD_MONEYS_SUCCESS,
-  UNLOAD_MONEYS_SUCCESS,
 } from './action-types';
 
-export function createMoneyError(error) {
-  return {
-    type: CREATE_MONEY_ERROR,
-    payload: error,
-  };
-}
-
 export function createMoney(date, money) {
-  return (dispatch) => {
+  return () => {
     moneyList.push({ date, money })
-      .catch(error => dispatch(createMoneyError(error)));
+      .catch(error => console.log(`createMoney: ${error}`));
   };
 }
 
@@ -43,8 +34,7 @@ export function loadMoneys() {
 }
 
 export function unloadMoneys() {
-  moneyList.unsubscribe();
-  return {
-    type: UNLOAD_MONEYS_SUCCESS,
+  return () => {
+    moneyList.unsubscribe();
   };
 }

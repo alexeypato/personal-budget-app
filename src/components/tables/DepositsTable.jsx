@@ -58,8 +58,8 @@ class DepositsTable extends Component {
       <div>
         <div className="table-responsive" style={{ marginTop: '10px' }}>
           <table
-            id="datatable"
             className="table table-bordered table-hover table-striped table-condensed"
+            id="datatable"
           >
             <thead>
               <tr>

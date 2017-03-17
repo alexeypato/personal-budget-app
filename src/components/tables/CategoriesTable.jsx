@@ -36,11 +36,11 @@ class CategoriesTable extends Component {
       date: new Date().toISOString(),
       focused: false,
       idCategorySelect: -1,
-      nameCategory: '',
-      nameCategorySelect: '',
-      moneyPlannedSelect: 0,
       moneyCategoryAndUnplanned: 0,
       moneyCategory: 0,
+      moneyPlannedSelect: 0,
+      nameCategory: '',
+      nameCategorySelect: '',
       refreshTable: false,
       showModalAddCategory: false,
       showModalDeleteCategory: false,
@@ -108,8 +108,8 @@ class CategoriesTable extends Component {
   // Add categories
   handleInsertButtonClick = () => {
     this.setState({
-      nameCategory: '',
       moneyCategory: 0,
+      nameCategory: '',
       textError: '',
       showModalAddCategory: true,
     });
@@ -143,9 +143,10 @@ class CategoriesTable extends Component {
 
       if (!duplicate) {
         this.props.createCategory(moneyCategory, nameCategory);
+        this.props.updateUnplannedMoney(-moneyCategory);
         this.setState({
-          nameCategory: '',
           moneyCategory: 0,
+          nameCategory: '',
           textError: '',
         });
         this.closeModalAddCategory();
@@ -170,11 +171,11 @@ class CategoriesTable extends Component {
   // Edit categories
   handleEditButtonClick = (row) => {
     this.setState({
-      showModalEditCategory: true,
       idCategorySelect: row,
-      nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
       moneyCategoryAndUnplanned: row.moneyCategory + this.props.unplannedMoney,
+      nameCategorySelect: row.nameCategory,
+      showModalEditCategory: true,
     });
   }
 
@@ -241,10 +242,10 @@ class CategoriesTable extends Component {
   // Delete categories
   handleDeleteButtonClick = (row) => {
     this.setState({
-      showModalDeleteCategory: true,
       idCategorySelect: row,
-      nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
+      nameCategorySelect: row.nameCategory,
+      showModalDeleteCategory: true,
     });
   }
 
@@ -261,11 +262,11 @@ class CategoriesTable extends Component {
   // ToExpenses
   handleToExpensesButtonClick = (row) => {
     this.setState({
-      showModalToExpenses: true,
       idCategorySelect: row,
-      nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
       moneyToExpenses: row.moneyCategory,
+      nameCategorySelect: row.nameCategory,
+      showModalToExpenses: true,
     });
   }
 
@@ -316,8 +317,8 @@ class CategoriesTable extends Component {
         </div>
         <div className="table-responsive" style={{ marginTop: '10px' }}>
           <table
-            id="datatable"
             className="table table-bordered table-hover table-striped table-condensed"
+            id="datatable"
           >
             <thead>
               <tr>
@@ -338,10 +339,10 @@ class CategoriesTable extends Component {
                   <td className="text-center">
                     <button
                       className="btn btn-xs btn-primary"
-                      type="button"
-                      onClick={() => this.handleEditButtonClick(category)}
                       data-toggle="tooltip"
+                      onClick={() => this.handleEditButtonClick(category)}
                       title="Редактировать"
+                      type="button"
                     >
                       <span className="glyphicon glyphicon-pencil"></span>
                     </button>
@@ -349,10 +350,10 @@ class CategoriesTable extends Component {
                   <td className="text-center">
                     <button
                       className="btn btn-xs btn-danger"
-                      type="button"
-                      onClick={() => this.handleDeleteButtonClick(category)}
                       data-toggle="tooltip"
+                      onClick={() => this.handleDeleteButtonClick(category)}
                       title="Удалить"
+                      type="button"
                     >
                       <span className="glyphicon glyphicon-trash"></span>
                     </button>
@@ -360,10 +361,10 @@ class CategoriesTable extends Component {
                   <td className="text-center">
                     <button
                       className="btn btn-xs btn-primary"
-                      type="button"
-                      onClick={() => this.handleToExpensesButtonClick(category)}
                       data-toggle="tooltip"
+                      onClick={() => this.handleToExpensesButtonClick(category)}
                       title="Внести расход"
+                      type="button"
                     >
                       <span className="glyphicon glyphicon-shopping-cart"></span>
                     </button>
@@ -375,8 +376,8 @@ class CategoriesTable extends Component {
         </div>
 
         <Modal
-          show={this.state.showModalAddCategory}
           onHide={this.closeModalAddCategory}
+          show={this.state.showModalAddCategory}
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -386,73 +387,73 @@ class CategoriesTable extends Component {
           <Modal.Body>
             <input
               className="form-control text-center margin-bottom"
+              data-toggle="tooltip"
+              maxLength="30"
               onChange={() => this.handleOnChangeInput()}
               placeholder={
                 this.state.textError ?
                   this.state.textError :
                   'Введите название категории'
               }
-              value={this.state.nameCategory}
-              maxLength="30"
               ref={(input) => { this.nameCategoryInput = input; }}
-              data-toggle="tooltip"
               title="Название категории"
+              value={this.state.nameCategory}
             />
             <div className="input-group margin-bottom">
               <span className="input-group-btn">
                 <button
                   className="btn btn-primary btn-secondary"
-                  type="button"
                   onClick={() => this.setState({
                     moneyCategory: this.state.moneyCategory > 0
                         ? +this.state.moneyCategory - 1
                         : +this.state.moneyCategory,
                   })}
+                  type="button"
                 >
                   <span className="glyphicon glyphicon-minus"></span>
                 </button>
               </span>
               <input
                 className="form-control text-center"
-                value={this.state.moneyCategory}
-                disabled
                 data-toggle="tooltip"
+                disabled
                 title="Сумма средств"
+                value={this.state.moneyCategory}
               />
               <span className="input-group-btn">
                 <button
                   className="btn btn-primary btn-secondary"
-                  type="button"
                   onClick={() => this.setState({
                     moneyCategory: this.state.moneyCategory < this.props.unplannedMoney
                         ? +this.state.moneyCategory + 1
                         : +this.state.moneyCategory,
                   })}
+                  type="button"
                 >
                   <span className="glyphicon glyphicon-plus"></span>
                 </button>
               </span>
             </div>
             <input
-              type="range"
-              value={+this.state.moneyCategory}
               max={this.props.unplannedMoney}
               onChange={this.handleOnChangeMoney}
               ref={(input) => { this.addMoneySlider = input; }}
+              type="range"
+              value={+this.state.moneyCategory}
             />
           </Modal.Body>
           <Modal.Footer>
             <button
               className="btn btn-default"
-              type="button"
               onClick={this.closeModalAddCategory}
+              type="button"
             >
               Закрыть
             </button>
             <button
               className="btn btn-primary"
-              type="button"
               onClick={this.saveAndClose}
+              type="button"
             >
               Добавить
             </button>
@@ -460,8 +461,8 @@ class CategoriesTable extends Component {
         </Modal>
 
         <Modal
-          show={this.state.showModalDeleteCategory}
           onHide={this.closeModalDelete}
+          show={this.state.showModalDeleteCategory}
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -474,15 +475,15 @@ class CategoriesTable extends Component {
           <Modal.Footer>
             <button
               className="btn btn-default"
-              type="button"
               onClick={this.closeModalDelete}
+              type="button"
             >
               Закрыть
             </button>
             <button
               className="btn btn-danger"
-              type="button"
               onClick={this.deleteAndClose}
+              type="button"
             >
               Удалить
             </button>
@@ -490,8 +491,8 @@ class CategoriesTable extends Component {
         </Modal>
 
         <Modal
-          show={this.state.showModalEditCategory}
           onHide={this.closeModalEdit}
+          show={this.state.showModalEditCategory}
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -501,75 +502,75 @@ class CategoriesTable extends Component {
           <Modal.Body>
             <input
               className="form-control text-center margin-bottom"
+              data-toggle="tooltip"
+              maxLength="30"
               onChange={() => this.handleOnChangeInputSelect()}
               placeholder={
                 this.state.textError ?
                   this.state.textError :
                   'Введите название категории'
               }
-              value={this.state.nameCategorySelect}
-              maxLength="30"
               ref={(input) => { this.nameCategoryInputSelect = input; }}
-              data-toggle="tooltip"
               title="Название категории"
+              value={this.state.nameCategorySelect}
             />
 
             <div className="input-group margin-bottom">
               <span className="input-group-btn">
                 <button
                   className="btn btn-primary btn-secondary"
-                  type="button"
                   onClick={() => this.setState({
                     moneyPlannedSelect: this.state.moneyPlannedSelect > 0
                       ? +this.state.moneyPlannedSelect - 1
                       : +this.state.moneyPlannedSelect,
                   })}
+                  type="button"
                 >
                   <span className="glyphicon glyphicon-minus"></span>
                 </button>
               </span>
               <input
                 className="form-control text-center"
-                value={this.state.moneyPlannedSelect}
-                disabled
                 data-toggle="tooltip"
+                disabled
                 title="Сумма средств"
+                value={this.state.moneyPlannedSelect}
               />
               <span className="input-group-btn">
                 <button
                   className="btn btn-primary btn-secondary"
-                  type="button"
                   onClick={() => this.setState({
                     moneyPlannedSelect:
                       this.state.moneyPlannedSelect < +this.state.moneyCategoryAndUnplanned
                         ? +this.state.moneyPlannedSelect + 1
                         : +this.state.moneyPlannedSelect,
                   })}
+                  type="button"
                 >
                   <span className="glyphicon glyphicon-plus"></span>
                 </button>
               </span>
             </div>
             <input
-              type="range"
-              value={+this.state.moneyPlannedSelect}
               max={+this.state.moneyCategoryAndUnplanned}
               onChange={this.moneyPlannedSelectChange}
               ref={(input) => { this.editMoneySlider = input; }}
+              type="range"
+              value={+this.state.moneyPlannedSelect}
             />
           </Modal.Body>
           <Modal.Footer>
             <button
               className="btn btn-default"
-              type="button"
               onClick={this.closeModalEdit}
+              type="button"
             >
               Закрыть
             </button>
             <button
               className="btn btn-primary"
-              type="button"
               onClick={this.editAndClose}
+              type="button"
             >
               Изменить
             </button>
@@ -577,8 +578,8 @@ class CategoriesTable extends Component {
         </Modal>
 
         <Modal
-          show={this.state.showModalToExpenses}
           onHide={this.closeModalToExpenses}
+          show={this.state.showModalToExpenses}
         >
           <Modal.Header closeButton>
             <Modal.Title>
@@ -588,80 +589,80 @@ class CategoriesTable extends Component {
           <Modal.Body>
             <input
               className="form-control text-center margin-bottom"
-              value={this.state.nameCategorySelect}
-              disabled
               data-toggle="tooltip"
+              disabled
               title="Категория"
+              value={this.state.nameCategorySelect}
             />
             <DatePicker
               className="text-center margin-bottom"
-              weekStartsOnMonday
+              dateFormat="YYYY-MM-DD"
               dayLabels={dayLabels}
               monthLabels={monthLabels}
+              onChange={this.handleOnChangeDate}
+              onBlur={() => { this.setState({ focused: false }); }}
+              onFocus={() => { this.setState({ focused: true }); }}
+              showClearButton={false}
               showTodayButton
               todayButtonLabel={'Сегодня'}
-              onChange={this.handleOnChangeDate}
               value={this.state.date}
-              onFocus={() => { this.setState({ focused: true }); }}
-              onBlur={() => { this.setState({ focused: false }); }}
-              dateFormat="YYYY-MM-DD"
-              showClearButton={false}
+              weekStartsOnMonday
             />
             <div className="input-group margin-bottom">
               <span className="input-group-btn">
                 <button
                   className="btn btn-primary btn-secondary"
-                  type="button"
                   onClick={() => this.setState({
                     moneyPlannedSelect: this.state.moneyToExpenses > 0
                       ? +this.state.moneyToExpenses - 1
                       : +this.state.moneyToExpenses,
                   })}
+                  type="button"
                 >
                   <span className="glyphicon glyphicon-minus"></span>
                 </button>
               </span>
               <input
                 className="form-control text-center"
-                value={this.state.moneyToExpenses}
-                disabled
                 data-toggle="tooltip"
+                disabled
                 title="Сумма расходов"
+                value={this.state.moneyToExpenses}
               />
               <span className="input-group-btn">
                 <button
                   className="btn btn-primary btn-secondary"
-                  type="button"
                   onClick={() => this.setState({
                     moneyPlannedSelect: this.state.moneyToExpenses < +this.state.moneyPlannedSelect
                       ? +this.state.moneyToExpenses + 1
                       : +this.state.moneyToExpenses,
                   })}
+                  type="button"
                 >
                   <span className="glyphicon glyphicon-plus"></span>
                 </button>
               </span>
             </div>
             <input
-              type="range"
-              value={+this.state.moneyToExpenses}
               max={+this.state.moneyPlannedSelect}
               onChange={this.moneyToExpensesChange}
               ref={(input) => { this.moneyToExpensesSlider = input; }}
+              type="range"
+              value={+this.state.moneyToExpenses}
             />
           </Modal.Body>
           <Modal.Footer>
             <button
               className="btn btn-default"
-              type="button"
               onClick={this.closeModalToExpenses}
+              type="button"
             >
               Закрыть
             </button>
             <button
               className="btn btn-primary"
-              type="button"
               onClick={this.toExpensesAndClose}
+              type="button"
             >
               Внести
             </button>

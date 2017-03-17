@@ -2,7 +2,6 @@ import firebase from 'firebase';
 import { firebaseAuth } from '../../firebase';
 import {
   INIT_AUTH,
-  SIGN_IN_ERROR,
   SIGN_IN_SUCCESS,
   SIGN_OUT_SUCCESS,
 } from './action-types';
@@ -11,13 +10,6 @@ export function initAuth(user) {
   return {
     type: INIT_AUTH,
     payload: user,
-  };
-}
-
-export function signInError(error) {
-  return {
-    type: SIGN_IN_ERROR,
-    payload: error,
   };
 }
 
@@ -45,7 +37,7 @@ function authenticate(provider) {
   return (dispatch) => {
     firebaseAuth.signInWithPopup(provider)
       .then(result => dispatch(signInSuccess(result)))
-      .catch(error => dispatch(signInError(error)));
+      .catch(error => console.log(`authenticate: ${error}`));
   };
 }
 

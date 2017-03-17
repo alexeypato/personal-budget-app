@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import { createSelector } from 'reselect';
+import { Link } from 'react-router';
 
 import { authActions, getAuth } from '../reducers/auth';
 import { paths } from '../constants';

@@ -22,22 +22,22 @@ class InputModal extends Component {
   static propTypes = {
     categories: PropTypes.instanceOf(List).isRequired,
     clearState: PropTypes.bool.isRequired,
+    closeModal: PropTypes.func.isRequired,
     createMoney: PropTypes.func.isRequired,
     showModal: PropTypes.bool,
     updateCategory: PropTypes.func.isRequired,
     updateUnplannedMoney: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
     this.state = {
       clearState: false,
-      value: '',
-      textError: '',
       date: new Date().toISOString(),
       focused: false,
-      titleDropdown: 'Выберите категорию',
       idDropdown: -1,
+      textError: '',
+      titleDropdown: 'Выберите категорию',
+      value: '',
     };
   }
 
@@ -48,12 +48,12 @@ class InputModal extends Component {
     if (this.props.clearState) {
       this.setState({
         clearState: false,
-        value: '',
-        textError: '',
         date: new Date().toISOString(),
         focused: false,
-        titleDropdown: 'Выберите категорию',
         idDropdown: -1,
+        textError: '',
+        titleDropdown: 'Выберите категорию',
+        value: '',
       });
     }
   }
@@ -123,22 +123,22 @@ class InputModal extends Component {
             />
             <DatePicker
               className="text-center margin-bottom"
-              weekStartsOnMonday
+              dateFormat="YYYY-MM-DD"
               dayLabels={dayLabels}
               monthLabels={monthLabels}
+              onChange={this.handleOnChangeDate}
+              onBlur={() => { this.setState({ focused: false }); }}
+              onFocus={() => { this.setState({ focused: true }); }}
+              showClearButton={false}
               showTodayButton
               todayButtonLabel={'Сегодня'}
-              onChange={this.handleOnChangeDate}
               value={this.state.date}
-              onFocus={() => { this.setState({ focused: true }); }}
-              onBlur={() => { this.setState({ focused: false }); }}
-              dateFormat="YYYY-MM-DD"
-              showClearButton={false}
+              weekStartsOnMonday
             />
             <Dropdown
-              vertical
               block
               id="dropdown-categories"
+              vertical
             >
               <Dropdown.Toggle block>
                 {this.state.titleDropdown}
@@ -147,8 +147,8 @@ class InputModal extends Component {
                 <MenuItem
                   onClick={() => {
                     this.setState({
-                      titleDropdown: 'Выберите категорию',
                       idDropdown: -1,
+                      titleDropdown: 'Выберите категорию',
                     });
                   }}
                 >
@@ -160,8 +160,8 @@ class InputModal extends Component {
                     key={index}
                     onClick={() => {
                       this.setState({
-                        titleDropdown: category.nameCategory,
                         idDropdown: category,
+                        titleDropdown: category.nameCategory,
                       });
                     }}
                   >
@@ -173,15 +173,15 @@ class InputModal extends Component {
           <Modal.Footer>
             <button
               className="btn btn-default"
-              type="button"
               onClick={this.props.closeModal}
+              type="button"
             >
               Закрыть
             </button>
             <button
               className="btn btn-primary"
-              type="button"
               onClick={this.saveAndClose}
+              type="button"
             >
               Внести
             </button>
