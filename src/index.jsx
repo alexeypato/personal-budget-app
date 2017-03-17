@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'babel-polyfill';
 import 'jquery';
 import 'bootstrap/dist/js/bootstrap';
 import 'datatables.net/js/jquery.dataTables';

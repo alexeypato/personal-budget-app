@@ -1,13 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 
-import Input from '../components/Input';
-import ClearHistory from '../components/ClearHistory';
+import InputModal from '../components/modal/InputModal';
+import ClearHistoryModal from '../components/modal/ClearHistoryModal';
 import { paths } from '../constants';
+
+import { getUnplannedMoney, unplannedMoneyActions } from '../reducers/unplannedMoney';
 
 class Header extends Component {
   static propTypes = {
+    pathname: PropTypes.string.isRequired,
     signOut: PropTypes.func.isRequired,
     unplannedMoney: PropTypes.number.isRequired,
   }
@@ -45,7 +49,7 @@ class Header extends Component {
   }
 
   render() {
-    const pathname = window.location.pathname;
+    const pathname = this.props.pathname;
     return (
       <div>
         <nav className="navbar navbar-default navbar-fixed-top">
@@ -74,9 +78,10 @@ class Header extends Component {
                     tabIndex={0}
                   >
                     <span className="glyphicon glyphicon-plus"></span>  Внести средства
-                    <Input
-                      showModal={this.state.ModalInput}
+                    <InputModal
+                      clearState
                       closeModal={this.closeModalInput}
+                      showModal={this.state.ModalInput}
                     />
                   </a></li>
                   <li><a
@@ -85,7 +90,7 @@ class Header extends Component {
                     tabIndex={0}
                   >
                     <span className="glyphicon glyphicon-trash"></span>  Очистить историю
-                    <ClearHistory
+                    <ClearHistoryModal
                       showModal={this.state.ModalClearHistory}
                       closeModal={this.closeModalClearHistory}
                     />
@@ -176,9 +181,10 @@ class Header extends Component {
                     tabIndex={0}
                   >
                     <span className="glyphicon glyphicon-plus"></span>  Внести средства
-                    <Input
-                      showModal={this.state.ModalInput}
+                    <InputModal
+                      clearState
                       closeModal={this.closeModalInput}
+                      showModal={this.state.ModalInput}
                     />
                   </a></li>
                   <li><a
@@ -187,7 +193,7 @@ class Header extends Component {
                     tabIndex={0}
                   >
                     <span className="glyphicon glyphicon-trash"></span>  Очистить историю
-                    <ClearHistory
+                    <ClearHistoryModal
                       showModal={this.state.ModalClearHistory}
                       closeModal={this.closeModalClearHistory}
                     />
@@ -210,9 +216,10 @@ class Header extends Component {
                       tabIndex={0}
                     >
                       <span className="glyphicon glyphicon-plus"></span>  Внести средства
-                      <Input
-                        showModal={this.state.ModalInput}
+                      <InputModal
+                        clearState
                         closeModal={this.closeModalInput}
+                        showModal={this.state.ModalInput}
                       />
                     </a></li>
                     <li><a
@@ -221,7 +228,7 @@ class Header extends Component {
                       tabIndex={0}
                     >
                       <span className="glyphicon glyphicon-trash"></span>  Очистить историю
-                      <ClearHistory
+                      <ClearHistoryModal
                         showModal={this.state.ModalClearHistory}
                         closeModal={this.closeModalClearHistory}
                       />
@@ -242,4 +249,14 @@ class Header extends Component {
   }
 }
 
-export default Header;
+const mapStateToProps = createSelector(
+  getUnplannedMoney,
+  unplannedMoney => ({
+    unplannedMoney,
+  }),
+);
+
+export default connect(
+  mapStateToProps,
+  null,
+)(Header);

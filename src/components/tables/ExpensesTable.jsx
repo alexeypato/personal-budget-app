@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
+import { List } from 'immutable';
 import $ from 'jquery';
 
-class DepositsTable extends Component {
+import { getExpenseList } from '../../reducers/expenses';
+
+class ExpensesTable extends Component {
   static propTypes = {
-    money: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number,
-      money: PropTypes.number,
-      date: PropTypes.string,
-    })),
+    expenses: PropTypes.instanceOf(List).isRequired,
   }
 
   componentDidMount = () => {
@@ -48,7 +48,7 @@ class DepositsTable extends Component {
           sortDescending: ': активировать для сортировки столбца по убыванию',
         },
       },
-      order: [[1, 'desc']],
+      order: [[2, 'desc']],
       stateSave: true,
     });
   }
@@ -63,17 +63,19 @@ class DepositsTable extends Component {
           >
             <thead>
               <tr>
-                <th className="text-center" style={{ width: '60%' }}>Сумма внесенных средств</th>
-                <th className="text-center" style={{ width: '40%' }}>Дата</th>
+                <th className="text-center" style={{ width: '50%' }}>Название категории</th>
+                <th className="text-center" style={{ width: '25%' }}>Сумма расходов</th>
+                <th className="text-center" style={{ width: '25%' }}>Дата</th>
               </tr>
             </thead>
             <tbody>
-              {this.props.money.map((money, index) =>
+              {this.props.expenses.map((expense, index) =>
                 <tr key={index}>
+                  <td className="text-center">{expense.nameCategory}</td>
                   <td className="text-center">
-                    {money.money}<i className="glyphicon glyphicon-usd"></i>
+                    {expense.moneyExpense}<i className="glyphicon glyphicon-usd"></i>
                   </td>
-                  <td className="text-center">{money.date}</td>
+                  <td className="text-center">{expense.date}</td>
                 </tr>,
               )}
             </tbody>
@@ -84,9 +86,14 @@ class DepositsTable extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    money: state.money,
+const mapStateToProps = createSelector(
+  getExpenseList,
+  expenses => ({
+    expenses,
   }),
+);
+
+export default connect(
+  mapStateToProps,
   null,
-)(DepositsTable);
+)(ExpensesTable);

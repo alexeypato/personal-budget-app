@@ -1,21 +1,22 @@
 import { List, Record } from 'immutable';
 
 import {
-  CREATE_EXPENSE_SUCCESS,
-  LOAD_EXPENSES_SUCCESS,
+  CREATE_MONEY_SUCCESS,
+  LOAD_MONEYS_SUCCESS,
 } from './action-types';
 
 import { DELETE_UNPLANNEDMONEY_SUCCESS } from '../unplannedMoney';
 
-export const ExpensesState = new Record({
+
+export const MoneysState = new Record({
   deleted: null,
   list: new List(),
   previous: null,
 });
 
-export function expensesReducer(state = new ExpensesState(), { payload, type }) {
+export function moneysReducer(state = new MoneysState(), { payload, type }) {
   switch (type) {
-    case CREATE_EXPENSE_SUCCESS:
+    case CREATE_MONEY_SUCCESS:
       return state.merge({
         deleted: null,
         previous: null,
@@ -25,9 +26,9 @@ export function expensesReducer(state = new ExpensesState(), { payload, type }) 
       });
 
     case DELETE_UNPLANNEDMONEY_SUCCESS:
-      return new ExpensesState();
+      return new MoneysState();
 
-    case LOAD_EXPENSES_SUCCESS:
+    case LOAD_MONEYS_SUCCESS:
       return state.set('list', new List(payload.reverse()));
 
     default:

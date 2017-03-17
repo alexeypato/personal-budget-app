@@ -1,23 +1,32 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
+import { List } from 'immutable';
 import { Modal } from 'react-bootstrap';
 import $ from 'jquery';
+
+import { getCategoryList, categorieActions } from '../../reducers/categories';
+import { expensesActions } from '../../reducers/expenses';
+import { getUnplannedMoney, unplannedMoneyActions } from '../../reducers/unplannedMoney';
 
 const DatePicker = require('react-bootstrap-date-picker');
 const date = require('date-and-time');
 
+const dayLabels = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
+const monthLabels = [
+  'Январь', 'Февраль', 'Март', 'Апрель',
+  'Май', 'Июнь', 'Июль', 'Август',
+  'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+];
+
 class CategoriesTable extends Component {
   static propTypes = {
-    categories: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number,
-      nameCategory: PropTypes.string,
-      moneyCategory: PropTypes.number,
-    })),
-    onAddCategories: PropTypes.func.isRequired,
-    onEditCategories: PropTypes.func.isRequired,
-    onDeleteCategories: PropTypes.func.isRequired,
-    onAddExpenses: PropTypes.func.isRequired,
+    categories: PropTypes.instanceOf(List).isRequired,
+    createCategory: PropTypes.func.isRequired,
+    createExpense: PropTypes.func.isRequired,
+    deleteCategory: PropTypes.func.isRequired,
+    updateCategory: PropTypes.func.isRequired,
+    updateUnplannedMoney: PropTypes.func.isRequired,
     unplannedMoney: PropTypes.number.isRequired,
   }
 
@@ -42,6 +51,12 @@ class CategoriesTable extends Component {
 
   componentDidMount = () => {
     this.dataTableCreate();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      refreshTable: true,
+    });
   }
 
   componentDidUpdate = () => {
@@ -127,12 +142,11 @@ class CategoriesTable extends Component {
       }
 
       if (!duplicate) {
-        this.props.onAddCategories(nameCategory, moneyCategory);
+        this.props.createCategory(moneyCategory, nameCategory);
         this.setState({
           nameCategory: '',
           moneyCategory: 0,
           textError: '',
-          refreshTable: true,
         });
         this.closeModalAddCategory();
       } else {
@@ -157,7 +171,7 @@ class CategoriesTable extends Component {
   handleEditButtonClick = (row) => {
     this.setState({
       showModalEditCategory: true,
-      idCategorySelect: row.id,
+      idCategorySelect: row,
       nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
       moneyCategoryAndUnplanned: row.moneyCategory + this.props.unplannedMoney,
@@ -195,15 +209,16 @@ class CategoriesTable extends Component {
         this.setState({
           nameCategorySelect: '',
           textError: '',
-          refreshTable: true,
         });
-        this.props.onEditCategories(
+        this.props.updateCategory(
           this.state.idCategorySelect,
-          this.state.nameCategorySelect,
-          +this.state.moneyPlannedSelect,
-          this.props.unplannedMoney -
-            (this.state.moneyCategoryAndUnplanned - this.state.moneyPlannedSelect),
+          {
+            moneyCategory: +this.state.moneyPlannedSelect,
+            nameCategory: this.state.nameCategorySelect,
+          },
         );
+        this.props.updateUnplannedMoney(-(this.props.unplannedMoney -
+          (this.state.moneyCategoryAndUnplanned - this.state.moneyPlannedSelect)));
         this.closeModalEdit();
       } else {
         this.setState({
@@ -227,14 +242,15 @@ class CategoriesTable extends Component {
   handleDeleteButtonClick = (row) => {
     this.setState({
       showModalDeleteCategory: true,
-      idCategorySelect: row.id,
+      idCategorySelect: row,
       nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
     });
   }
 
   deleteAndClose = () => {
-    this.props.onDeleteCategories(this.state.idCategorySelect, this.state.moneyPlannedSelect);
+    this.props.deleteCategory(this.state.idCategorySelect);
+    this.props.updateUnplannedMoney(this.state.moneyPlannedSelect);
     this.closeModalDelete();
   }
 
@@ -246,7 +262,7 @@ class CategoriesTable extends Component {
   handleToExpensesButtonClick = (row) => {
     this.setState({
       showModalToExpenses: true,
-      idCategorySelect: row.id,
+      idCategorySelect: row,
       nameCategorySelect: row.nameCategory,
       moneyPlannedSelect: row.moneyCategory,
       moneyToExpenses: row.moneyCategory,
@@ -267,11 +283,18 @@ class CategoriesTable extends Component {
 
   toExpensesAndClose = () => {
     const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
-    this.props.onAddExpenses(
-      this.state.idCategorySelect,
-      this.state.nameCategorySelect,
-      this.state.moneyToExpenses,
+    const category = this.state.idCategorySelect;
+    this.props.createExpense(
       date.format(dateOut, 'YYYY-MM-DD'),
+      category.key,
+      this.state.moneyToExpenses,
+      this.state.nameCategorySelect,
+    );
+    this.props.updateCategory(
+      category,
+      {
+        moneyCategory: (category.moneyCategory - this.state.moneyToExpenses),
+      },
     );
     this.closeModalToExpenses();
   }
@@ -401,7 +424,7 @@ class CategoriesTable extends Component {
                   className="btn btn-primary btn-secondary"
                   type="button"
                   onClick={() => this.setState({
-                    moneyCategory: this.state.moneyCategory < +this.props.unplannedMoney
+                    moneyCategory: this.state.moneyCategory < this.props.unplannedMoney
                         ? +this.state.moneyCategory + 1
                         : +this.state.moneyCategory,
                   })}
@@ -413,7 +436,7 @@ class CategoriesTable extends Component {
             <input
               type="range"
               value={+this.state.moneyCategory}
-              max={+this.props.unplannedMoney}
+              max={this.props.unplannedMoney}
               onChange={this.handleOnChangeMoney}
               ref={(input) => { this.addMoneySlider = input; }}
             />
@@ -572,6 +595,11 @@ class CategoriesTable extends Component {
             />
             <DatePicker
               className="text-center margin-bottom"
+              weekStartsOnMonday
+              dayLabels={dayLabels}
+              monthLabels={monthLabels}
+              showTodayButton
+              todayButtonLabel={'Сегодня'}
               onChange={this.handleOnChangeDate}
               value={this.state.date}
               onFocus={() => { this.setState({ focused: true }); }}
@@ -644,33 +672,23 @@ class CategoriesTable extends Component {
   }
 }
 
+const mapStateToProps = createSelector(
+  getCategoryList,
+  getUnplannedMoney,
+  (categories, unplannedMoney) => ({
+    categories,
+    unplannedMoney,
+  }),
+);
+
+const mapDispatchToProps = Object.assign(
+  {},
+  categorieActions,
+  expensesActions,
+  unplannedMoneyActions,
+);
+
 export default connect(
-  state => ({
-    categories: state.categories,
-    unplannedMoney: state.unplannedMoney,
-  }),
-  dispatch => ({
-    onAddCategories: (nameCategory, withdrawal) => {
-      dispatch({ type: 'ADD_CATEGORY', nameCategory, withdrawal });
-      dispatch({ type: 'DELETE_UNPLANNED_MONEY', withdrawal });
-    },
-    onEditCategories: (id, nameCategory, moneyCategory, withdrawal) => {
-      dispatch({ type: 'EDIT_CATEGORY', id, nameCategory, moneyCategory });
-      dispatch({ type: 'DELETE_UNPLANNED_MONEY', withdrawal });
-    },
-    onDeleteCategories: (id, deposit) => {
-      dispatch({ type: 'DELETE_CATEGORY', id });
-      dispatch({ type: 'ADD_UNPLANNED_MONEY', deposit });
-    },
-    onAddExpenses: (idCategory, nameCategory, moneyToExpenses, dateExpense) => {
-      dispatch({
-        type: 'ADD_EXPENSE',
-        idCategory,
-        nameCategory,
-        moneyToExpenses,
-        dateExpense,
-      });
-      dispatch({ type: 'DELETE_MONEY_TO_CATEGORY', idCategory, moneyToExpenses });
-    },
-  }),
+  mapStateToProps,
+  mapDispatchToProps,
 )(CategoriesTable);

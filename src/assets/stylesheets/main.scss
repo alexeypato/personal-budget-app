@@ -131,14 +131,14 @@ html, body {
 }
 
 .backgroun-categories p {
-  background: #a8c4c0;
-  background: -moz-linear-gradient(top,  #a8c4c0 0%, #7aa5a2 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a8c4c0), color-stop(100%,#7aa5a2));
-  background: -webkit-linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
-  background: -o-linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
-  background: -ms-linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
-  background: linear-gradient(top,  #a8c4c0 0%,#7aa5a2 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a8c4c0', endColorstr='#7aa5a2',GradientType=0 );
+  background: steelblue;
+  background: -moz-linear-gradient(top,  steelblue 0%, #7aa5a2 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,steelblue), color-stop(100%,#7aa5a2));
+  background: -webkit-linear-gradient(top,  steelblue 0%,#7aa5a2 100%);
+  background: -o-linear-gradient(top,  steelblue 0%,#7aa5a2 100%);
+  background: -ms-linear-gradient(top,  steelblue 0%,#7aa5a2 100%);
+  background: linear-gradient(top,  steelblue 0%,#7aa5a2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='steelblue', endColorstr='#7aa5a2',GradientType=0 );
   font-size: 16px;
   font-weight: bold;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3);

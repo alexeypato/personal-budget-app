@@ -1,15 +1,23 @@
-export const initialState = 0;
+import {
+  DELETE_UNPLANNEDMONEY_SUCCESS,
+  LOAD_UNPLANNEDMONEY_SUCCESS,
+  UPDATE_UNPLANNEDMONEY_SUCCESS,
+} from './action-types';
 
-export function unplannedMoneyReducer(state = initialState, action) {
-  switch (action.type) {
-    case 'ADD_UNPLANNED_MONEY':
-      return (state += action.deposit);
+const unplannedMoneyState = 0;
 
-    case 'DELETE_UNPLANNED_MONEY':
-      return (state -= action.withdrawal);
+export function unplannedMoneyReducer(state = unplannedMoneyState, { payload, type }) {
+  switch (type) {
+    case DELETE_UNPLANNEDMONEY_SUCCESS:
+      return unplannedMoneyState;
 
-    case 'CLEAR_UNPLANNED_MONEY':
-      return (state = 0);
+    case LOAD_UNPLANNEDMONEY_SUCCESS: {
+      return (payload || state);
+    }
+
+    case UPDATE_UNPLANNEDMONEY_SUCCESS: {
+      return payload;
+    }
 
     default:
       return state;
