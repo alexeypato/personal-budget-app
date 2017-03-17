@@ -2,15 +2,36 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
-class ClearHistory extends Component {
+import { categorieActions } from '../../reducers/categories';
+import { expensesActions } from '../../reducers/expenses';
+import { moneysActions } from '../../reducers/moneys';
+import { unplannedMoneyActions } from '../../reducers/unplannedMoney';
+
+class ClearHistoryModal extends Component {
   static propTypes = {
-    onClearState: PropTypes.func.isRequired,
+    deleteUnplannedMoney: PropTypes.func.isRequired,
     showModal: PropTypes.bool,
     closeModal: PropTypes.func.isRequired,
+    loadCategories: PropTypes.func.isRequired,
+    loadExpenses: PropTypes.func.isRequired,
+    loadMoneys: PropTypes.func.isRequired,
+    loadUnplannedMoney: PropTypes.func.isRequired,
+    unloadCategories: PropTypes.func.isRequired,
+    unloadExpenses: PropTypes.func.isRequired,
+    unloadMoneys: PropTypes.func.isRequired,
+    unloadUnplannedMoney: PropTypes.func.isRequired,
   }
 
   clearAndClose = () => {
-    this.props.onClearState();
+    this.props.unloadCategories();
+    this.props.unloadExpenses();
+    this.props.unloadMoneys();
+    this.props.unloadUnplannedMoney();
+    this.props.deleteUnplannedMoney();
+    this.props.loadCategories();
+    this.props.loadExpenses();
+    this.props.loadMoneys();
+    this.props.loadUnplannedMoney();
     this.props.closeModal();
   };
 
@@ -51,14 +72,15 @@ class ClearHistory extends Component {
   }
 }
 
+const mapDispatchToProps = Object.assign(
+  {},
+  categorieActions,
+  expensesActions,
+  moneysActions,
+  unplannedMoneyActions,
+);
+
 export default connect(
   null,
-  dispatch => ({
-    onClearState: () => {
-      dispatch({ type: 'CLEAR_MONEY' });
-      dispatch({ type: 'CLEAR_CATEGORY' });
-      dispatch({ type: 'CLEAR_EXPENSE' });
-      dispatch({ type: 'CLEAR_UNPLANNED_MONEY' });
-    },
-  }),
-)(ClearHistory);
+  mapDispatchToProps,
+)(ClearHistoryModal);

@@ -1,14 +1,15 @@
 import React from 'react';
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from 'react-router';
-import { isAuthenticated } from './auth';
+import { isAuthenticated } from './reducers/auth';
 
 import App from './containers/App';
-import LogIn from './containers/LogIn';
-import Home from './components/Home';
-import HomeTable from './components/HomeTable';
-import DepositsTable from './components/DepositsTable';
-import CategoriesTable from './components/CategoriesTable';
-import ExpensesTable from './components/ExpensesTable';
+import Home from './containers/Home';
+
+import LogIn from './components/LogIn';
+import HomeTable from './components/tables/HomeTable';
+import DepositsTable from './components/tables/DepositsTable';
+import CategoriesTable from './components/tables/CategoriesTable';
+import ExpensesTable from './components/tables/ExpensesTable';
 import { paths } from './constants';
 
 const requireAuth = (getState) => {

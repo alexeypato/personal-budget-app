@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { createSelector } from 'reselect';
-import { authActions, getAuth } from '../auth';
-import { getUnplannedMoney } from '../reducers';
+
+import { authActions, getAuth } from '../reducers/auth';
 import { paths } from '../constants';
 import Header from '../components/Header';
 
@@ -16,7 +16,6 @@ class App extends Component {
     auth: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
     signOut: PropTypes.func.isRequired,
-    unplannedMoney: PropTypes.number.isRequired,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -36,8 +35,8 @@ class App extends Component {
         {
           this.props.auth.authenticated
           ? <Header
+            pathname={this.context.router.location.pathname}
             signOut={this.props.signOut}
-            unplannedMoney={this.props.unplannedMoney}
           />
           : null
         }
@@ -49,14 +48,17 @@ class App extends Component {
 
 const mapStateToProps = createSelector(
   getAuth,
-  getUnplannedMoney,
-  (auth, unplannedMoney) => ({
+  auth => ({
     auth,
-    unplannedMoney,
   }),
+);
+
+const mapDispatchToProps = Object.assign(
+  {},
+  authActions,
 );
 
 export default connect(
   mapStateToProps,
-  authActions,
+  mapDispatchToProps,
 )(App);

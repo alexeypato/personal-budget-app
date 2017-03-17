@@ -1,6 +1,5 @@
 import { firebaseDb } from './firebase';
 
-
 export class FirebaseList {
   constructor(actions, modelClass, path = null) {
     this._actions = actions;
@@ -19,28 +18,28 @@ export class FirebaseList {
   push(value) {
     return new Promise((resolve, reject) => {
       firebaseDb.ref(this._path)
-        .push((value, error) => (error ? reject(error) : resolve()));
+        .push(value, (error) => { return error ? reject(error) : resolve(); });
     });
   }
 
   remove(key) {
     return new Promise((resolve, reject) => {
       firebaseDb.ref(`${this._path}/${key}`)
-        .remove(error => (error ? reject(error) : resolve()));
+        .remove((error) => { return error ? reject(error) : resolve(); });
     });
   }
 
   set(key, value) {
     return new Promise((resolve, reject) => {
       firebaseDb.ref(`${this._path}/${key}`)
-        .set((value, error) => (error ? reject(error) : resolve()));
+        .set(value, (error) => { return error ? reject(error) : resolve(); });
     });
   }
 
   update(key, value) {
     return new Promise((resolve, reject) => {
       firebaseDb.ref(`${this._path}/${key}`)
-        .update((value, error) => (error ? reject(error) : resolve()));
+        .update(value, (error) => { return error ? reject(error) : resolve(); });
     });
   }
 

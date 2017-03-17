@@ -1,6 +1,6 @@
 {
   "name": "personal-butget-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "This task is made for training, but not an examination.",
   "main": "server.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.16.0",

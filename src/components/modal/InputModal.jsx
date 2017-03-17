@@ -1,27 +1,37 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
+import { List } from 'immutable';
 import { Modal, Dropdown, MenuItem } from 'react-bootstrap';
-import '../assets/stylesheets/main.scss';
+
+import { getCategoryList, categorieActions } from '../../reducers/categories';
+import { moneysActions } from '../../reducers/moneys';
+import { unplannedMoneyActions } from '../../reducers/unplannedMoney';
 
 const DatePicker = require('react-bootstrap-date-picker');
 const date = require('date-and-time');
 
-class Input extends Component {
+const dayLabels = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
+const monthLabels = [
+  'Январь', 'Февраль', 'Март', 'Апрель',
+  'Май', 'Июнь', 'Июль', 'Август',
+  'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+];
+
+class InputModal extends Component {
   static propTypes = {
-    categories: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number,
-      nameCategory: PropTypes.string,
-      moneyCategory: PropTypes.number,
-    })),
-    onAddMoney: PropTypes.func.isRequired,
-    onEditCategories: PropTypes.func.isRequired,
+    categories: PropTypes.instanceOf(List).isRequired,
+    clearState: PropTypes.bool.isRequired,
+    createMoney: PropTypes.func.isRequired,
     showModal: PropTypes.bool,
+    updateCategory: PropTypes.func.isRequired,
+    updateUnplannedMoney: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
   }
   constructor(props) {
     super(props);
     this.state = {
+      clearState: false,
       value: '',
       textError: '',
       date: new Date().toISOString(),
@@ -29,6 +39,23 @@ class Input extends Component {
       titleDropdown: 'Выберите категорию',
       idDropdown: -1,
     };
+  }
+
+  componentWillReceiveProps = () => {
+    this.setState({
+      clearState: this.props.clearState,
+    });
+    if (this.props.clearState) {
+      this.setState({
+        clearState: false,
+        value: '',
+        textError: '',
+        date: new Date().toISOString(),
+        focused: false,
+        titleDropdown: 'Выберите категорию',
+        idDropdown: -1,
+      });
+    }
   }
 
   handleOnChangeInput = () => {
@@ -49,17 +76,15 @@ class Input extends Component {
     if (value > 0) {
       const dateOut = date.parse(this.state.date, 'YYYY-MM-DD');
       const idDropdown = this.state.idDropdown;
-      this.props.onAddMoney(value, date.format(dateOut, 'YYYY-MM-DD'));
+      this.props.createMoney(date.format(dateOut, 'YYYY-MM-DD'), value);
       if (idDropdown !== -1) {
-        this.props.onEditCategories(idDropdown, value, value);
+        this.props.updateCategory(
+          idDropdown,
+          { moneyCategory: idDropdown.moneyCategory + value },
+        );
+      } else {
+        this.props.updateUnplannedMoney(value);
       }
-      this.setState({
-        value: '',
-        textError: '',
-        date: new Date().toISOString(),
-        titleDropdown: 'Выберите категорию',
-        idDropdown: -1,
-      });
       this.props.closeModal();
     } else {
       this.setState({
@@ -98,6 +123,11 @@ class Input extends Component {
             />
             <DatePicker
               className="text-center margin-bottom"
+              weekStartsOnMonday
+              dayLabels={dayLabels}
+              monthLabels={monthLabels}
+              showTodayButton
+              todayButtonLabel={'Сегодня'}
               onChange={this.handleOnChangeDate}
               value={this.state.date}
               onFocus={() => { this.setState({ focused: true }); }}
@@ -131,7 +161,7 @@ class Input extends Component {
                     onClick={() => {
                       this.setState({
                         titleDropdown: category.nameCategory,
-                        idDropdown: category.id,
+                        idDropdown: category,
                       });
                     }}
                   >
@@ -162,18 +192,21 @@ class Input extends Component {
   }
 }
 
+const mapStateToProps = createSelector(
+  getCategoryList,
+  categories => ({
+    categories,
+  }),
+);
+
+const mapDispatchToProps = Object.assign(
+  {},
+  categorieActions,
+  moneysActions,
+  unplannedMoneyActions,
+);
+
 export default connect(
-  state => ({
-    categories: state.categories,
-  }),
-  dispatch => ({
-    onAddMoney: (deposit, addDate) => {
-      dispatch({ type: 'ADD_MONEY', deposit, addDate });
-      dispatch({ type: 'ADD_UNPLANNED_MONEY', deposit });
-    },
-    onEditCategories: (id, moneyCategory, withdrawal) => {
-      dispatch({ type: 'ADD_MONEY_TO_CATEGORY', id, moneyCategory });
-      dispatch({ type: 'DELETE_UNPLANNED_MONEY', withdrawal });
-    },
-  }),
-)(Input);
+  mapStateToProps,
+  mapDispatchToProps,
+)(InputModal);
