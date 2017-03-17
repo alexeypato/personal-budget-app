@@ -12,29 +12,29 @@
 	    }
 		},
     "plugins": [
-        "react",
-        "jsx-a11y",
-        "import"
+      "import",
+      "jsx-a11y",
+      "react"
     ],
     "rules": {
       "arrow-body-style": 0,
-      "linebreak-style": 0,
-      "max-len": ["error", 100],
-      "react/prop-types": 0,
-      "react/prefer-stateless-function": 0,
-      "prefer-template": 0,
-      "no-alert": 0,
-      "no-console": 0,
-      "react/self-closing-comp": 0,
-      "no-unused-vars": 0,
-      "no-underscore-dangle": 0,
+      "global-require": 0,
       "import/prefer-default-export": 0,
       "import/no-named-as-default": 0,
-      "react/forbid-prop-types": 0,
+      "linebreak-style": 0,
+      "max-len": ["error", 100],
+      "no-alert": 0,
+      "no-console": 0,
       "no-param-reassign": 0,
-      "prefer-const": 0,
       "no-shadow": 0,
-      "global-require": 0,
-      "react/no-render-return-value": 0
+      "no-unused-vars": 0,
+      "no-underscore-dangle": 0,
+      "prefer-const": 0,
+      "prefer-template": 0,
+      "react/forbid-prop-types": 0,
+      "react/no-render-return-value": 0,
+      "react/prefer-stateless-function": 0,
+      "react/prop-types": 0,
+      "react/self-closing-comp": 0
     }
 }

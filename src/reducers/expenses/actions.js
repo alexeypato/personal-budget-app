@@ -1,22 +1,13 @@
 import { expenseList } from './expense-list';
 import {
-  CREATE_EXPENSE_ERROR,
   CREATE_EXPENSE_SUCCESS,
   LOAD_EXPENSES_SUCCESS,
-  UNLOAD_EXPENSES_SUCCESS,
 } from './action-types';
 
-export function createExpenseError(error) {
-  return {
-    type: CREATE_EXPENSE_ERROR,
-    payload: error,
-  };
-}
-
 export function createExpense(date, keyCategory, moneyExpense, nameCategory) {
-  return (dispatch) => {
+  return () => {
     expenseList.push({ date, keyCategory, moneyExpense, nameCategory })
-      .catch(error => dispatch(createExpenseError(error)));
+      .catch(error => console.log(`createExpense: ${error}`));
   };
 }
 
@@ -43,8 +34,7 @@ export function loadExpenses() {
 }
 
 export function unloadExpenses() {
-  expenseList.unsubscribe();
-  return {
-    type: UNLOAD_EXPENSES_SUCCESS,
+  return () => {
+    expenseList.unsubscribe();
   };
 }

@@ -10,12 +10,12 @@ import { unplannedMoneyActions } from '../../reducers/unplannedMoney';
 class ClearHistoryModal extends Component {
   static propTypes = {
     deleteUnplannedMoney: PropTypes.func.isRequired,
-    showModal: PropTypes.bool,
     closeModal: PropTypes.func.isRequired,
     loadCategories: PropTypes.func.isRequired,
     loadExpenses: PropTypes.func.isRequired,
     loadMoneys: PropTypes.func.isRequired,
     loadUnplannedMoney: PropTypes.func.isRequired,
+    showModal: PropTypes.bool,
     unloadCategories: PropTypes.func.isRequired,
     unloadExpenses: PropTypes.func.isRequired,
     unloadMoneys: PropTypes.func.isRequired,

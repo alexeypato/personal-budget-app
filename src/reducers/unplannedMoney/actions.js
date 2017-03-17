@@ -12,12 +12,12 @@ export function deleteUnplannedMoneySuccess() {
 }
 
 export function deleteUnplannedMoney() {
-  return ((dispatch, getState) => {
+  return (dispatch, getState) => {
     const { auth } = getState();
     firebaseDb.ref(`${auth.id}`).remove()
       .then(dispatch(deleteUnplannedMoneySuccess()))
       .catch(error => console.log(`deleteUnplannedMoney: ${error}`));
-  });
+  };
 }
 
 export function loadUnplannedMoneySuccess(unplannedMoney) {
@@ -52,7 +52,7 @@ export function updateUnplannedMoneySuccess(unplannedMoney) {
 }
 
 export function updateUnplannedMoney(unplannedMoney) {
-  return ((dispatch, getState) => {
+  return (dispatch, getState) => {
     const { auth } = getState();
     firebaseDb.ref(`${auth.id}/unplannedMoney`).once('value')
       .then((snapshot) => {
@@ -62,5 +62,5 @@ export function updateUnplannedMoney(unplannedMoney) {
           .catch(error => console.log(`updateUnplannedMoney: ${error}`));
       })
       .catch(error => console.log(`updateUnplannedMoney: ${error}`));
-  });
+  };
 }

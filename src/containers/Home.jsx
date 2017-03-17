@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { List } from 'immutable';
 
 import { categorieActions } from '../reducers/categories';
 import { expensesActions } from '../reducers/expenses';

@@ -19,8 +19,8 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ModalInput: false,
       ModalClearHistory: false,
+      ModalInput: false,
     };
   }
 
@@ -91,17 +91,17 @@ class Header extends Component {
                   >
                     <span className="glyphicon glyphicon-trash"></span>  Очистить историю
                     <ClearHistoryModal
-                      showModal={this.state.ModalClearHistory}
                       closeModal={this.closeModalClearHistory}
+                      showModal={this.state.ModalClearHistory}
                     />
                   </a></li>
                 </ul>
               </div>
               <button
-                type="button"
                 className="navbar-toggle collapsed"
-                data-toggle="collapse"
                 data-target=".navbar-collapse"
+                data-toggle="collapse"
+                type="button"
               >
                 <span className="icon-bar"></span>
                 <span className="icon-bar"></span>
@@ -194,8 +194,8 @@ class Header extends Component {
                   >
                     <span className="glyphicon glyphicon-trash"></span>  Очистить историю
                     <ClearHistoryModal
-                      showModal={this.state.ModalClearHistory}
                       closeModal={this.closeModalClearHistory}
+                      showModal={this.state.ModalClearHistory}
                     />
                   </a></li>
                 </ul>
@@ -229,8 +229,8 @@ class Header extends Component {
                     >
                       <span className="glyphicon glyphicon-trash"></span>  Очистить историю
                       <ClearHistoryModal
-                        showModal={this.state.ModalClearHistory}
                         closeModal={this.closeModalClearHistory}
+                        showModal={this.state.ModalClearHistory}
                       />
                     </a></li>
                   </ul>
