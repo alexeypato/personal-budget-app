@@ -6,10 +6,6 @@ import App from './containers/App';
 import Home from './containers/Home';
 
 import LogIn from './components/LogIn';
-import HomeTable from './components/tables/HomeTable';
-import DepositsTable from './components/tables/DepositsTable';
-import CategoriesTable from './components/tables/CategoriesTable';
-import ExpensesTable from './components/tables/ExpensesTable';
 import { paths } from './constants';
 
 const requireAuth = (getState) => {
@@ -31,15 +27,10 @@ const requireUnauth = (getState) => {
 export const getRoutes = (getState) => {
   return (
     <Route path={paths.ROOT} component={App}>
-      <Route path={paths.SIGN_IN} component={LogIn} onEnter={requireUnauth(getState)} />
-      <Route path={paths.HOME} component={Home} onEnter={requireAuth(getState)}>
-        <IndexRoute component={HomeTable} />
-        <Route path={paths.DEPOSITS} component={DepositsTable} />
-        <Route path={paths.CATEGORIES} component={CategoriesTable} />
-        <Route path={paths.EXPENSES} component={ExpensesTable} />
-      </Route>
       <IndexRedirect to={paths.SIGN_IN} />
-      <Redirect from={paths.NOTFOUND} to={paths.HOME} />
+      <Route path={paths.SIGN_IN} component={LogIn} onEnter={requireUnauth(getState)} />
+      <Route path={paths.HOME} component={Home} onEnter={requireAuth(getState)} />
+      <Redirect from={paths.NOTFOUND} to={paths.SIGN_IN} />
     </Route>
   );
 };

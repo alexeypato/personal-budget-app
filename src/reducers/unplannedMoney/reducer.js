@@ -12,7 +12,7 @@ export function unplannedMoneyReducer(state = unplannedMoneyState, { payload, ty
       return unplannedMoneyState;
 
     case LOAD_UNPLANNEDMONEY_SUCCESS: {
-      return (payload || state);
+      return (payload === null ? state : payload);
     }
 
     case UPDATE_UNPLANNEDMONEY_SUCCESS: {

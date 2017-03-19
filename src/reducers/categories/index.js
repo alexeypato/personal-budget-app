@@ -1,6 +1,6 @@
-import * as categorieActions from './actions';
+import * as categoriesActions from './actions';
 
-export { categorieActions };
+export { categoriesActions };
 export * from './action-types';
 export { categoriesReducer } from './reducer';
 export { getCategoryList } from './selectors';

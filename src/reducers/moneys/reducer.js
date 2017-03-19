@@ -22,7 +22,7 @@ export function moneysReducer(state = new MoneysState(), { payload, type }) {
         previous: null,
         list: state.deleted && state.deleted.key === payload.key ?
               state.previous :
-              state.list.unshift(payload),
+              state.list.push(payload),
       });
 
     case DELETE_UNPLANNEDMONEY_SUCCESS:

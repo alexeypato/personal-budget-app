@@ -3,48 +3,34 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
-import InputModal from '../components/modal/InputModal';
-import ClearHistoryModal from '../components/modal/ClearHistoryModal';
+import ClearStateModal from './modal/ClearStateModal';
 import { paths } from '../constants';
 
-import { getUnplannedMoney, unplannedMoneyActions } from '../reducers/unplannedMoney';
+import { authActions, getAuth } from '../reducers/auth';
 
 class Header extends Component {
   static propTypes = {
+    auth: PropTypes.object.isRequired,
     pathname: PropTypes.string.isRequired,
     signOut: PropTypes.func.isRequired,
-    unplannedMoney: PropTypes.number.isRequired,
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      ModalClearHistory: false,
-      ModalInput: false,
+      ClearStateModal: false,
     };
   }
 
-  showModalInput = () => {
+  showClearStateModal = () => {
     this.setState({
-      ModalInput: true,
+      ClearStateModal: true,
     });
   }
 
-  closeModalInput = () => {
+  closeClearStateModal = () => {
     this.setState({
-      ModalInput: false,
-    });
-  }
-
-  showModalClearHistory = () => {
-    this.setState({
-      ModalClearHistory: true,
-    });
-  }
-
-  closeModalClearHistory = () => {
-    this.setState({
-      ModalClearHistory: false,
+      ClearStateModal: false,
     });
   }
 
@@ -55,48 +41,7 @@ class Header extends Component {
         <nav className="navbar navbar-default navbar-fixed-top">
           <div className="container-fluid">
             <div className="navbar-header">
-              <a className="navbar-brand">Личный бюджет</a>
-              <a
-                className="navbar-brand navbar-right visible-sm visible-md my-navbar-two"
-                href={paths.SIGN_IN}
-                onClick={this.props.signOut}
-              >
-                <span className="glyphicon glyphicon-log-out"></span> Выйти
-              </a>
-              <div className="dropdown navbar-right visible-sm visible-md my-navbar-two">
-                <a
-                  className="dropdown-toggle navbar-brand nav-item"
-                  data-toggle="dropdown"
-                >
-                  Баланс : {this.props.unplannedMoney}
-                  <span className="glyphicon glyphicon-usd"></span> <b className="caret"></b>
-                </a>
-                <ul className="dropdown-menu">
-                  <li><a
-                    className="nav-item"
-                    onClick={this.showModalInput}
-                    tabIndex={0}
-                  >
-                    <span className="glyphicon glyphicon-plus"></span>  Внести средства
-                    <InputModal
-                      clearState
-                      closeModal={this.closeModalInput}
-                      showModal={this.state.ModalInput}
-                    />
-                  </a></li>
-                  <li><a
-                    className="nav-item"
-                    onClick={this.showModalClearHistory}
-                    tabIndex={0}
-                  >
-                    <span className="glyphicon glyphicon-trash"></span>  Очистить историю
-                    <ClearHistoryModal
-                      closeModal={this.closeModalClearHistory}
-                      showModal={this.state.ModalClearHistory}
-                    />
-                  </a></li>
-                </ul>
-              </div>
+              <a className="navbar-brand" href={paths.HOME}>Личный бюджет</a>
               <button
                 className="navbar-toggle collapsed"
                 data-target=".navbar-collapse"
@@ -109,93 +54,31 @@ class Header extends Component {
               </button>
             </div>
             <div className="navbar-collapse collapse">
-              <ul className="nav navbar-nav">
-                <li
-                  className={pathname === paths.HOME
-                    ? 'active'
-                    : ''
-                  }
-                >
-                  <Link
-                    to={paths.HOME}
-                  >
-                    <span className="glyphicon glyphicon-home"></span> Главная
-                  </Link>
-                </li>
-                <li
-                  className={pathname === paths.DEPOSITS
-                    ? 'active'
-                    : ''
-                  }
-                >
-                  <Link
-                    to={paths.DEPOSITS}
-                  >
-                    <span className="glyphicon glyphicon-usd"></span> История пополнения
-                  </Link>
-                </li>
-                <li
-                  className={pathname === paths.CATEGORIES
-                    ? 'active'
-                    : ''
-                  }
-                >
-                  <Link
-                    to={paths.CATEGORIES}
-                  >
-                    <span className="glyphicon glyphicon-th-list"></span> Категории
-                  </Link>
-                </li>
-                <li
-                  className={pathname === paths.EXPENSES
-                    ? 'active'
-                    : ''
-                  }
-                >
-                  <Link
-                    to={paths.EXPENSES}
-                  >
-                    <span className="glyphicon glyphicon-shopping-cart"></span> Расходы
-                  </Link>
-                </li>
-              </ul>
               <a
-                className="navbar-brand navbar-right visible-md visible-lg my-navbar"
+                className="navbar-brand navbar-right hidden-xs"
                 href={paths.SIGN_IN}
                 onClick={this.props.signOut}
               >
                 <span className="glyphicon glyphicon-log-out"></span> Выйти
               </a>
-              <div className="dropdown navbar-right visible-md visible-lg my-navbar">
+              <div className="dropdown navbar-right hidden-xs">
                 <a
                   className="dropdown-toggle navbar-brand nav-item"
                   data-toggle="dropdown"
                 >
-                  Баланс : {this.props.unplannedMoney}
-                  <span className="glyphicon glyphicon-usd"></span> <b className="caret"></b>
+                  <span className="glyphicon glyphicon-user"></span>
+                  &nbsp;{this.props.auth.displayName} <b className="caret"></b>
                 </a>
                 <ul className="dropdown-menu">
                   <li><a
                     className="nav-item"
-                    onClick={this.showModalInput}
-                    tabIndex={0}
-                  >
-                    <span className="glyphicon glyphicon-plus"></span>  Внести средства
-                    <InputModal
-                      clearState
-                      closeModal={this.closeModalInput}
-                      showModal={this.state.ModalInput}
-                    />
-                  </a></li>
-                  <li><a
-                    className="nav-item"
-                    onClick={this.showModalClearHistory}
+                    onClick={this.showClearStateModal}
                     tabIndex={0}
                   >
                     <span className="glyphicon glyphicon-trash"></span>  Очистить историю
-                    <ClearHistoryModal
-                      closeModal={this.closeModalClearHistory}
-                      showModal={this.state.ModalClearHistory}
+                    <ClearStateModal
+                      closeModal={this.closeClearStateModal}
+                      showModal={this.state.ClearStateModal}
                     />
                   </a></li>
                 </ul>
@@ -206,31 +89,19 @@ class Header extends Component {
                     className="dropdown-toggle nav-item"
                     data-toggle="dropdown"
                   >
-                    Баланс : {this.props.unplannedMoney}
-                    <span className="glyphicon glyphicon-usd"></span> <b className="caret"></b>
+                    <span className="glyphicon glyphicon-user"></span>
+                    &nbsp;{this.props.auth.displayName} <b className="caret"></b>
                   </a>
                   <ul className="dropdown-menu">
                     <li><a
                       className="nav-item"
-                      onClick={this.showModalInput}
-                      tabIndex={0}
-                    >
-                      <span className="glyphicon glyphicon-plus"></span>  Внести средства
-                      <InputModal
-                        clearState
-                        closeModal={this.closeModalInput}
-                        showModal={this.state.ModalInput}
-                      />
-                    </a></li>
-                    <li><a
-                      className="nav-item"
-                      onClick={this.showModalClearHistory}
+                      onClick={this.showClearStateModal}
                       tabIndex={0}
                     >
                       <span className="glyphicon glyphicon-trash"></span>  Очистить историю
-                      <ClearHistoryModal
-                        closeModal={this.closeModalClearHistory}
-                        showModal={this.state.ModalClearHistory}
+                      <ClearStateModal
+                        closeModal={this.closeClearStateModal}
+                        showModal={this.state.ClearStateModal}
                       />
                     </a></li>
                   </ul>
@@ -250,9 +121,9 @@ class Header extends Component {
 }
 
 const mapStateToProps = createSelector(
-  getUnplannedMoney,
-  unplannedMoney => ({
-    unplannedMoney,
+  getAuth,
+  auth => ({
+    auth,
   }),
 );
 
