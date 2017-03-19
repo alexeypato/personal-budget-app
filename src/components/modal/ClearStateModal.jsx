@@ -2,12 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
-import { categorieActions } from '../../reducers/categories';
+import { categoriesActions } from '../../reducers/categories';
 import { expensesActions } from '../../reducers/expenses';
 import { moneysActions } from '../../reducers/moneys';
 import { unplannedMoneyActions } from '../../reducers/unplannedMoney';
 
-class ClearHistoryModal extends Component {
+class ClearStateModal extends Component {
   static propTypes = {
     deleteUnplannedMoney: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
@@ -74,7 +74,7 @@ class ClearHistoryModal extends Component {
 
 const mapDispatchToProps = Object.assign(
   {},
-  categorieActions,
+  categoriesActions,
   expensesActions,
   moneysActions,
   unplannedMoneyActions,
@@ -83,4 +83,4 @@ const mapDispatchToProps = Object.assign(
 export default connect(
   null,
   mapDispatchToProps,
-)(ClearHistoryModal);
+)(ClearStateModal);

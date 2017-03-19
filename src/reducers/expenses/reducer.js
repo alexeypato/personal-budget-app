@@ -21,7 +21,7 @@ export function expensesReducer(state = new ExpensesState(), { payload, type }) 
         previous: null,
         list: state.deleted && state.deleted.key === payload.key ?
               state.previous :
-              state.list.unshift(payload),
+              state.list.push(payload),
       });
 
     case DELETE_UNPLANNEDMONEY_SUCCESS:
