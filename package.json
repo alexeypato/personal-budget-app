@@ -1,14 +1,30 @@
 {
   "name": "personal-butget-app",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "This task is made for training, but not an examination.",
+  "homepage": "https://personal-budget-app.herokuapp.com",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexeypato/personal-budget-app"
+  },
   "scripts": {
     "start": "node server.js",
     "postinstall": "webpack -p --config webpack.prod.config.js"
   },
-  "author": "Aliaksei Patotski",
-  "license": "ISC",
+  "author": {
+    "name": "Aliaksei Patotski",
+    "email": "alexeypato@gmail.com",
+    "url": "https://www.linkedin.com/in/alexeypato/"
+  },
+  "license": "MIT",
+  "keywords": [
+    "ReactJS",
+    "Redux",
+    "Firebase",
+    "React Router",
+    "ESLint"
+  ],
   "dependencies": {
     "babel-core": "^6.7.6",
     "babel-eslint": "^7.1.1",

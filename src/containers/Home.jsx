@@ -266,6 +266,11 @@ class Home extends Component {
       $('#data-table-categories').DataTable().destroy();
       $('#data-table-history').DataTable().destroy();
     }
+    const heightDivCategory = $('#data-table-categories').height();
+    const heightDivHistory = $('#data-table-history').height();
+    const heightDivTable = (heightDivCategory > heightDivHistory)
+      ? 'right'
+      : 'left';
 
     const totalAccountBalance = this.getTotalAccountBalance();
     const totalAccountExpense = this.getTotalAccountExpense();
@@ -329,7 +334,12 @@ class Home extends Component {
           </div>
 
           <div className="row border-div">
-            <div className="col-md-5 border-div-right border-div-table">
+            <div
+              className={heightDivTable === 'right'
+                ? 'col-md-5 border-div-right border-div-table'
+                : 'col-md-5 border-div-table'
+              }
+            >
               <div className="text-left margin-top">
                 <button
                   className="btn btn-primary"
@@ -399,7 +409,12 @@ class Home extends Component {
                 </table>
               </div>
             </div>
-            <div className="col-md-7 border-div-table">
+            <div
+              className={heightDivTable === 'left'
+                ? 'col-md-7 border-div-left border-div-table'
+                : 'col-md-7 border-div-table'
+              }
+            >
               <div className="text-left margin-top">
                 <div className="btn-group">
                   <a
