@@ -12,7 +12,7 @@ class Footer extends Component {
             href="https://www.linkedin.com/in/alexeypato/"
             style={{ color: 'steelblue' }}
           >
-            LinkedID
+            LinkedIn
           </a>
           &nbsp;
           <a
@@ -20,7 +20,7 @@ class Footer extends Component {
               'b06f8d0dff031b92590039ed1f525a56446431'}
             style={{ color: 'indianred' }}
           >
-            TUT.by
+            TUT.BY
           </a>
         </div>
       </footer>

@@ -145,11 +145,15 @@ class MainForm extends Component {
             deposit: '',
             textErrorDeposit: 'Ошибка! Баланс меньше суммы пополнения.',
           });
+          $('#text-error-deposit').slideDown('fast');
+          setTimeout(this.hideError, 3000);
         } else if (nameCategory === 'Выберите категорию') {
           this.setState({
             deposit: '',
             textErrorDeposit: 'Ошибка! Выберите категорию.',
           });
+          $('#text-error-deposit').slideDown('fast');
+          setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
           this.props.updateCategory(
@@ -169,6 +173,8 @@ class MainForm extends Component {
             deposit: '',
             textErrorDeposit: 'Ошибка! Выберите категорию.',
           });
+          $('#text-error-deposit').slideDown('fast');
+          setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
           if (deposit > category.moneyCategory) {
@@ -176,6 +182,8 @@ class MainForm extends Component {
               deposit: '',
               textErrorDeposit: 'Ошибка! Баланс категории меньше суммы пополнения.',
             });
+            $('#text-error-deposit').slideDown('fast');
+            setTimeout(this.hideError, 3000);
           } else {
             this.props.updateCategory(
               category,
@@ -195,6 +203,8 @@ class MainForm extends Component {
         textErrorDeposit: 'Ошибка! Введите сумму пополнения.',
         deposit: '',
       });
+      $('#text-error-deposit').slideDown('fast');
+      setTimeout(this.hideError, 3000);
     }
   }
 
@@ -214,13 +224,17 @@ class MainForm extends Component {
             expense: '',
             textErrorExpense: 'Ошибка! Выберите категорию.',
           });
+          $('#text-error-expense').slideDown('fast');
+          setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
           if (expense > category.moneyCategory) {
             this.setState({
               expense: '',
-              textErrorExpense: 'Ошибка! Сумма расхода превышена.',
+              textErrorExpense: 'Ошибка! Сумма расходов превышена.',
             });
+            $('#text-error-expense').slideDown('fast');
+            setTimeout(this.hideError, 3000);
           } else {
             this.props.createExpense(
               date.format(dateOut, 'YYYY-MM-DD'),
@@ -246,13 +260,22 @@ class MainForm extends Component {
           expense: '',
           textErrorExpense: 'Ошибка! Неверно заполненны данные.',
         });
+        $('#text-error-expense').slideDown('fast');
+        setTimeout(this.hideError, 3000);
       }
     } else {
       this.setState({
-        textErrorExpense: 'Ошибка! Введите сумму средств.',
         expense: '',
+        textErrorExpense: 'Ошибка! Введите сумму расходов.',
       });
+      $('#text-error-expense').slideDown('fast');
+      setTimeout(this.hideError, 3000);
     }
+  }
+
+  hideError = () => {
+    $('#text-error-deposit').slideUp('slow');
+    $('#text-error-expense').slideUp('slow');
   }
 
   tab1 = () => {
@@ -387,10 +410,8 @@ class MainForm extends Component {
               <div className="col-sm-8">
                 <button
                   className="btn btn-block"
-                  style={this.state.textErrorDeposit
-                    ? { visibility: 'visible', backgroundColor: 'indianred' }
-                    : { visibility: 'hidden' }
-                  }
+                  id="text-error-deposit"
+                  style={{ display: 'none', backgroundColor: 'indianred' }}
                   type="button"
                 >
                   {this.state.textErrorDeposit}
@@ -467,10 +488,8 @@ class MainForm extends Component {
               <div className="col-sm-8">
                 <button
                   className="btn btn-block"
-                  style={this.state.textErrorExpense
-                    ? { visibility: 'visible', backgroundColor: 'indianred' }
-                    : { visibility: 'hidden' }
-                  }
+                  id="text-error-expense"
+                  style={{ display: 'none', backgroundColor: 'indianred' }}
                   type="button"
                 >
                   {this.state.textErrorExpense}

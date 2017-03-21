@@ -32,6 +32,7 @@ class Home extends Component {
     super(props);
     this.state = {
       category: {},
+      filtrTipHistory: 'Все операции',
       isDeleteCategory: false,
       isEditCategory: false,
       refreshTable: false,
@@ -182,16 +183,90 @@ class Home extends Component {
     });
   }
 
+  renderTable = () => {
+    if (this.state.filtrTipHistory === 'Все операции') {
+      return (
+        <tbody>
+          {this.props.moneys.map((money, index) =>
+            <tr key={index}>
+              <td className="text-center">
+                <i className="glyphicon glyphicon-plus"></i>
+              </td>
+              <td className="text-center">
+                -
+              </td>
+              <td className="text-center">
+                {money.money}<i className="glyphicon glyphicon-usd"></i>
+              </td>
+              <td className="text-center">
+                {money.date}
+              </td>
+            </tr>,
+          )}
+          {this.props.expenses.map((expense, index) =>
+            <tr key={index}>
+              <td className="text-center">
+                <i className="glyphicon glyphicon-minus"></i>
+              </td>
+              <td className="text-center">{expense.nameCategory}</td>
+              <td className="text-center">
+                {expense.moneyExpense}<i className="glyphicon glyphicon-usd"></i>
+              </td>
+              <td className="text-center">{expense.date}</td>
+            </tr>,
+          )}
+        </tbody>
+      );
+    }
+    if (this.state.filtrTipHistory === 'Пополнение') {
+      return (
+        <tbody>
+          {this.props.moneys.map((money, index) =>
+            <tr key={index}>
+              <td className="text-center">
+                <i className="glyphicon glyphicon-plus"></i>
+              </td>
+              <td className="text-center">
+                -
+              </td>
+              <td className="text-center">
+                {money.money}<i className="glyphicon glyphicon-usd"></i>
+              </td>
+              <td className="text-center">
+                {money.date}
+              </td>
+            </tr>,
+          )}
+        </tbody>
+      );
+    }
+    if (this.state.filtrTipHistory === 'Расход') {
+      return (
+        <tbody>
+          {this.props.expenses.map((expense, index) =>
+            <tr key={index}>
+              <td className="text-center">
+                <i className="glyphicon glyphicon-minus"></i>
+              </td>
+              <td className="text-center">{expense.nameCategory}</td>
+              <td className="text-center">
+                {expense.moneyExpense}<i className="glyphicon glyphicon-usd"></i>
+              </td>
+              <td className="text-center">{expense.date}</td>
+            </tr>,
+          )}
+        </tbody>
+      );
+    }
+    return 0;
+  }
+
   render() {
     if (this.state.refreshTable) {
       $('#data-table-categories').DataTable().destroy();
       $('#data-table-history').DataTable().destroy();
     }
-    const heightDivCategory = $('#data-table-categories').height();
-    const heightDivHistory = $('#data-table-history').height();
-    const heightDivTable = (heightDivCategory > heightDivHistory)
-      ? $('#div-table-categories').height()
-      : $('#div-table-history').height();
+
     const totalAccountBalance = this.getTotalAccountBalance();
     const totalAccountExpense = this.getTotalAccountExpense();
 
@@ -252,14 +327,9 @@ class Home extends Component {
               <MainForm />
             </div>
           </div>
-          <div className="row">
-            <div
-              className="col-md-5 border-div text-center"
-              id="div-table-categories"
-              style={{
-                minHeight: heightDivTable,
-              }}
-            >
+
+          <div className="row border-div">
+            <div className="col-md-5 border-div-right border-div-table">
               <div className="text-left margin-top">
                 <button
                   className="btn btn-primary"
@@ -329,21 +399,50 @@ class Home extends Component {
                 </table>
               </div>
             </div>
-            <div
-              className="col-md-7  border-div text-center"
-              id="div-table-history"
-              style={{
-                minHeight: heightDivTable,
-              }}
-            >
+            <div className="col-md-7 border-div-table">
               <div className="text-left margin-top">
-                <button
-                  className="btn btn-primary"
-                  id="filtr-button"
-                  onClick={() => { document.getElementById('filtr-button').blur(); }}
-                >
-                  Фильтр будет когда-то
-                </button>
+                <div className="btn-group">
+                  <a
+                    className="btn btn-primary dropdown-toggle btn-select"
+                    data-toggle="dropdown"
+                    href={undefined}
+                    tabIndex={0}
+                  >
+                    Все операции <span className="caret"></span>
+                  </a>
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a
+                        className="nav-item"
+                        href={undefined}
+                        onClick={() => this.setState({ filtrTipHistory: 'Все операции' })}
+                        tabIndex={0}
+                      >
+                        Все операции
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="nav-item"
+                        href={undefined}
+                        onClick={() => this.setState({ filtrTipHistory: 'Пополнение' })}
+                        tabIndex={0}
+                      >
+                        Пополнение
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="nav-item"
+                        href={undefined}
+                        onClick={() => this.setState({ filtrTipHistory: 'Расход' })}
+                        tabIndex={0}
+                      >
+                        Расход
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div className="table-responsive margin-top">
                 <table
@@ -358,36 +457,7 @@ class Home extends Component {
                       <th className="text-center" style={{ width: '20%' }}>Дата</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {this.props.moneys.map((money, index) =>
-                      <tr key={index}>
-                        <td className="text-center">
-                          <i className="glyphicon glyphicon-plus"></i>
-                        </td>
-                        <td className="text-center">
-                          -
-                        </td>
-                        <td className="text-center">
-                          {money.money}<i className="glyphicon glyphicon-usd"></i>
-                        </td>
-                        <td className="text-center">
-                          {money.date}
-                        </td>
-                      </tr>,
-                    )}
-                    {this.props.expenses.map((expense, index) =>
-                      <tr key={index}>
-                        <td className="text-center">
-                          <i className="glyphicon glyphicon-minus"></i>
-                        </td>
-                        <td className="text-center">{expense.nameCategory}</td>
-                        <td className="text-center">
-                          {expense.moneyExpense}<i className="glyphicon glyphicon-usd"></i>
-                        </td>
-                        <td className="text-center">{expense.date}</td>
-                      </tr>,
-                    )}
-                  </tbody>
+                  {this.renderTable()}
                 </table>
               </div>
             </div>

@@ -52,6 +52,7 @@ class ClearStateModal extends Component {
           </Modal.Body>
           <Modal.Footer>
             <button
+              autoFocus
               className="btn btn-default"
               type="button"
               onClick={this.props.closeModal}

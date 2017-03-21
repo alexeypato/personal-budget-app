@@ -113,6 +113,14 @@ class CategoryModal extends Component {
     this.props.closeCategoryModal();
   }
 
+  runScript = (e) => {
+    if (e.which === 13 || e.keyCode === 13) {
+      this.saveAndClose();
+      return false;
+    }
+    return true;
+  }
+
   choiseAction = () => {
     if (this.props.isDeleteCategory) {
       return (
@@ -128,11 +136,14 @@ class CategoryModal extends Component {
             </Modal.Header>
             <Modal.Body style={{ wordBreak: 'break-all' }}>
               <p>
-                {'Вы действительно хотите удалить категорию: `{this.props.category.nameCategory}`?'}
+                {
+              `Вы действительно хотите удалить категорию: "${this.props.category.nameCategory}" ?`
+                }
               </p>
             </Modal.Body>
             <Modal.Footer>
               <button
+                autoFocus
                 className="btn btn-default"
                 onClick={this.props.closeCategoryModal}
                 type="button"
@@ -171,16 +182,16 @@ class CategoryModal extends Component {
           </Modal.Header>
           <Modal.Body>
             <input
+              autoFocus
               className="form-control text-center margin-bottom"
-              data-toggle="tooltip"
               onChange={() => this.handleOnChangeInput()}
+              onKeyPress={e => this.runScript(e)}
               placeholder={
                 this.state.textError ?
                   this.state.textError :
                   'Введите название категории'
               }
               ref={(input) => { this.nameCategoryInput = input; }}
-              title="Название категории"
               value={this.state.nameCategory}
             />
           </Modal.Body>

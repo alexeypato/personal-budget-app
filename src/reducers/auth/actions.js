@@ -37,7 +37,7 @@ function authenticate(provider) {
   return (dispatch) => {
     firebaseAuth.signInWithPopup(provider)
       .then(result => dispatch(signInSuccess(result)))
-      .catch(error => console.log(`authenticate: ${error}`));
+      .catch(error => alert(error));
   };
 }
 
