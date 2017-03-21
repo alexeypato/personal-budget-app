@@ -51,8 +51,8 @@ class MainForm extends Component {
       expense: '',
       focused: false,
       selectedCategory: { value: '0', label: 'Выберите категорию' },
-      selectedDeposit: { value: '0', label: 'Наличные' },
-      selectedExpense: { value: '0', label: 'Со счета' },
+      selectedDeposit: { value: '0', label: 'Баланса' },
+      selectedExpense: { value: '0', label: 'С баланса категории' },
       textErrorDeposit: '',
       textErrorExpense: '',
     };
@@ -117,7 +117,7 @@ class MainForm extends Component {
     const dateOut = date.parse(this.state.dateDeposit, 'YYYY-MM-DD');
 
     if (deposit > 0) {
-      if (typeDeposit === 'Наличные') {
+      if (typeDeposit === 'Баланса') {
         if (nameCategory === 'Выберите категорию') {
           this.props.createMoney(date.format(dateOut, 'YYYY-MM-DD'), deposit);
           this.props.updateUnplannedMoney(deposit);
@@ -139,11 +139,11 @@ class MainForm extends Component {
             textErrorDeposit: '',
           });
         }
-      } else if (typeDeposit === 'Со счета') {
+      } else if (typeDeposit === 'Баланса категории с основного баланса') {
         if (deposit > this.props.unplannedMoney) {
           this.setState({
             deposit: '',
-            textErrorDeposit: 'Ошибка! Нехватает средств на счете.',
+            textErrorDeposit: 'Ошибка! Баланс меньше суммы пополнения.',
           });
         } else if (nameCategory === 'Выберите категорию') {
           this.setState({
@@ -163,10 +163,36 @@ class MainForm extends Component {
             textErrorDeposit: '',
           });
         }
+      } else if (typeDeposit === 'Основного баланса с баланса категории') {
+        if (nameCategory === 'Выберите категорию') {
+          this.setState({
+            deposit: '',
+            textErrorDeposit: 'Ошибка! Выберите категорию.',
+          });
+        } else {
+          const category = this.findCategory(nameCategory);
+          if (deposit > category.moneyCategory) {
+            this.setState({
+              deposit: '',
+              textErrorDeposit: 'Ошибка! Баланс категории меньше суммы пополнения.',
+            });
+          } else {
+            this.props.updateCategory(
+              category,
+              { moneyCategory: category.moneyCategory - deposit },
+            );
+            this.props.updateUnplannedMoney(deposit);
+            this.setState({
+              dateDeposit: new Date().toISOString(),
+              deposit: '',
+              textErrorDeposit: '',
+            });
+          }
+        }
       }
     } else {
       this.setState({
-        textErrorDeposit: 'Ошибка! Введите сумму средств.',
+        textErrorDeposit: 'Ошибка! Введите сумму пополнения.',
         deposit: '',
       });
     }
@@ -182,12 +208,7 @@ class MainForm extends Component {
     const dateOut = date.parse(this.state.dateExpense, 'YYYY-MM-DD');
 
     if (expense > 0) {
-      if (typeExpense === 'Наличные') {
-        this.setState({
-          expense: '',
-          textErrorExpense: 'Ошибка! Запрещено расходовать наличные.',
-        });
-      } else if (typeExpense === 'Со счета') {
+      if (typeExpense === 'С баланса категории') {
         if (nameCategory === 'Выберите категорию') {
           this.setState({
             expense: '',
@@ -220,6 +241,11 @@ class MainForm extends Component {
             });
           }
         }
+      } else {
+        this.setState({
+          expense: '',
+          textErrorExpense: 'Ошибка! Неверно заполненны данные.',
+        });
       }
     } else {
       this.setState({
@@ -247,11 +273,11 @@ class MainForm extends Component {
   tab2 = () => {
     this.setState({
       borderTab: {
-        border: '3px double red',
+        border: '3px double indianred',
         borderRadius: '3px',
       },
       colorTab1: {
-        color: 'red',
+        color: 'indianred',
       },
       colorTab2: {
         color: 'black',
@@ -262,11 +288,12 @@ class MainForm extends Component {
   render() {
     const optionsCategory = this.getCategories();
     const optionsDeposit = [
-      { value: '0', label: 'Наличные' },
-      { value: '1', label: 'Со счета' },
+      { value: '0', label: 'Баланса' },
+      { value: '1', label: 'Баланса категории с основного баланса' },
+      { value: '2', label: 'Основного баланса с баланса категории' },
     ];
     const optionsExpense = [
-      { value: '1', label: 'Со счета' },
+      { value: '1', label: 'С баланса категории' },
     ];
     return (
       <div
@@ -281,7 +308,7 @@ class MainForm extends Component {
               onClick={this.tab1}
               style={this.state.colorTab1}
             >
-              Депозит
+              Пополнение
             </a>
           </li>
           <li>
@@ -304,7 +331,9 @@ class MainForm extends Component {
           <div className="tab-pane active" id="tab1" style={{ padding: '10px' }}>
             <div className="row">
               <div className="col-sm-2 col-xs-4">
-                Деньги
+                <button className="btn vertical-align-middle">
+                  Пополнение
+                </button>
               </div>
               <div id="dropdown-deposit" className="col-sm-5 col-xs-8">
                 <DropdownCategory
@@ -316,22 +345,20 @@ class MainForm extends Component {
                 <input
                   className="form-control text-center"
                   onChange={() => this.handleOnChangeDeposit()}
-                  placeholder={
-                    this.state.textErrorDeposit ?
-                      this.state.textErrorDeposit :
-                      'Депозит'
-                  }
+                  placeholder="Сумма"
                   value={this.state.deposit}
                   maxLength="10"
                   ref={(input) => { this.depositInput = input; }}
                   data-toggle="tooltip"
-                  title="Депозит"
+                  title="Сумма пополнения"
                 />
               </div>
             </div>
             <div className="row margin-top">
               <div className="col-sm-2 col-xs-4">
-                Категория
+                <button className="btn vertical-align-middle">
+                  Категория
+                </button>
               </div>
               <div id="dropdown-category-deposit" className="col-sm-5 col-xs-8">
                 <DropdownCategory
@@ -357,9 +384,21 @@ class MainForm extends Component {
               </div>
             </div>
             <div className="row margin-top">
-              <div className="col-sm-4 col-sm-offset-8">
+              <div className="col-sm-8">
                 <button
-                  className="btn btn-primary btn-block"
+                  className="btn btn-block"
+                  style={this.state.textErrorDeposit
+                    ? { visibility: 'visible', backgroundColor: 'indianred' }
+                    : { visibility: 'hidden' }
+                  }
+                  type="button"
+                >
+                  {this.state.textErrorDeposit}
+                </button>
+              </div>
+              <div className="col-sm-4">
+                <button
+                  className="btn btn-primary btn-block margin-top"
                   id="create-deposit-button"
                   onClick={this.createDeposit}
                   type="button"
@@ -373,7 +412,9 @@ class MainForm extends Component {
           <div className="tab-pane" id="tab2" style={{ padding: '10px' }}>
             <div className="row">
               <div className="col-sm-2 col-xs-4">
-                Деньги
+                <button className="btn vertical-align-middle">
+                  Расход
+                </button>
               </div>
               <div id="dropdown-expense" className="col-sm-5 col-xs-8">
                 <DropdownCategory
@@ -385,21 +426,19 @@ class MainForm extends Component {
                 <input
                   className="form-control text-center"
                   onChange={() => this.handleOnChangeExpense()}
-                  placeholder={
-                    this.state.textErrorExpense ?
-                      this.state.textErrorExpense :
-                      'Расход'
-                  }
+                  placeholder="Сумма"
                   value={this.state.expense}
                   ref={(input) => { this.expenseInput = input; }}
                   data-toggle="tooltip"
-                  title="Расход"
+                  title="Сумма расходов"
                 />
               </div>
             </div>
             <div className="row margin-top">
               <div className="col-sm-2 col-xs-4">
-                Категория
+                <button className="btn vertical-align-middle">
+                  Категория
+                </button>
               </div>
               <div id="dropdown-сategory-expense" className="col-sm-5 col-xs-8">
                 <DropdownCategory
@@ -425,9 +464,21 @@ class MainForm extends Component {
               </div>
             </div>
             <div className="row margin-top">
-              <div className="col-sm-4 col-sm-offset-8">
+              <div className="col-sm-8">
                 <button
-                  className="btn btn-danger btn-block"
+                  className="btn btn-block"
+                  style={this.state.textErrorExpense
+                    ? { visibility: 'visible', backgroundColor: 'indianred' }
+                    : { visibility: 'hidden' }
+                  }
+                  type="button"
+                >
+                  {this.state.textErrorExpense}
+                </button>
+              </div>
+              <div className="col-sm-4">
+                <button
+                  className="btn btn-danger btn-block margin-top"
                   id="create-expense-button"
                   onClick={this.createExpense}
                   type="button"

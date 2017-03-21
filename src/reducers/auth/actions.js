@@ -45,6 +45,10 @@ export function signInWithGoogle() {
   return authenticate(new firebase.auth.GoogleAuthProvider());
 }
 
+export function signInWithFacebook() {
+  return authenticate(new firebase.auth.FacebookAuthProvider());
+}
+
 export function signInWithTwitter() {
   return authenticate(new firebase.auth.TwitterAuthProvider());
 }

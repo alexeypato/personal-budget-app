@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 
 import { authActions, getAuth } from '../reducers/auth';
 import { paths } from '../constants';
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 
 class App extends Component {
@@ -32,15 +33,20 @@ class App extends Component {
   render() {
     return (
       <div>
-        {
-          this.props.auth.authenticated
-          ? <Header
-            pathname={this.context.router.location.pathname}
-            signOut={this.props.signOut}
-          />
-          : null
-        }
-        {this.props.children}
+        <div className="content">
+          {
+            this.props.auth.authenticated
+            ? <Header
+              pathname={this.context.router.location.pathname}
+              signOut={this.props.signOut}
+            />
+            : null
+          }
+          {this.props.children}
+        </div>
+        <div className="footer">
+          <Footer />
+        </div>
       </div>
     );
   }

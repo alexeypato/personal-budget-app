@@ -59,7 +59,7 @@ class Header extends Component {
                 href={paths.SIGN_IN}
                 onClick={this.props.signOut}
               >
-                <span className="glyphicon glyphicon-log-out"></span> Выйти
+                <span className="glyphicon glyphicon-log-out"></span>{' Выйти'}
               </a>
               <div className="dropdown navbar-right hidden-xs">
                 <a
@@ -75,7 +75,7 @@ class Header extends Component {
                     onClick={this.showClearStateModal}
                     tabIndex={0}
                   >
-                    <span className="glyphicon glyphicon-trash"></span>  Очистить историю
+                    <span className="glyphicon glyphicon-trash"></span>{' Очистить историю'}
                     <ClearStateModal
                       closeModal={this.closeClearStateModal}
                       showModal={this.state.ClearStateModal}
@@ -98,7 +98,7 @@ class Header extends Component {
                       onClick={this.showClearStateModal}
                       tabIndex={0}
                     >
-                      <span className="glyphicon glyphicon-trash"></span>  Очистить историю
+                      <span className="glyphicon glyphicon-trash"></span>{' Очистить историю'}
                       <ClearStateModal
                         closeModal={this.closeClearStateModal}
                         showModal={this.state.ClearStateModal}
@@ -108,7 +108,7 @@ class Header extends Component {
                 </li>
                 <li>
                   <Link to={paths.SIGN_IN} onClick={this.props.signOut}>
-                    <span className="glyphicon glyphicon-log-out"></span> Выйти
+                    <span className="glyphicon glyphicon-log-out"></span>{' Выйти'}
                   </Link>
                 </li>
               </ul>

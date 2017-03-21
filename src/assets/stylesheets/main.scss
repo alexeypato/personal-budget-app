@@ -1,6 +1,24 @@
 html, body {
-  font-family: Comic Sans, Comic Sans MS, cursive;
   background-color: whitesmoke;
+  font-family: Comic Sans, Comic Sans MS, cursive;
+  height: 100%;
+}
+
+#root {
+  position: relative;
+  min-height: 100%;
+}
+
+.content {
+  padding-bottom: 90px;
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
 }
 
 .form-login {
@@ -36,16 +54,10 @@ html, body {
   }
 }
 
-@media (min-width: 992px) {
-  .vr {
-    border-right: 1px dotted black;
-  }
-}
-
-@media (max-width: 991px) {
-  .vr {
-    border-bottom: 1px dotted black;
-  }
+.border-div {
+  border: 3px double steelblue;
+  border-radius: 3px;
+  margin-top: 20px;
 }
 
 td {
@@ -54,4 +66,9 @@ td {
 
 .Dropdown-option {
   word-break: break-all;
+}
+
+.vertical-align-middle {
+  background-color: white;
+  padding-left: 0px;
 }

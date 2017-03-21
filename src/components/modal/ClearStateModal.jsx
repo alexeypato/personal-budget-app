@@ -44,7 +44,7 @@ class ClearStateModal extends Component {
         >
           <Modal.Header closeButton>
             <Modal.Title>
-              <span className="glyphicon glyphicon-trash"></span> Очистить все
+              <span className="glyphicon glyphicon-trash"></span>{' Очистить все'}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>

@@ -12,7 +12,7 @@ class DropdownCategory extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: { value: '0', label: 'Наличные' },
+      selected: { value: '0', label: '' },
       selectedKey: '0',
     };
   }

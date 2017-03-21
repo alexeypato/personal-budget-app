@@ -123,12 +123,12 @@ class CategoryModal extends Component {
           >
             <Modal.Header closeButton>
               <Modal.Title>
-                <span className="glyphicon glyphicon-trash"></span> Удалить категорию
+                <span className="glyphicon glyphicon-trash"></span>{' Удалить категорию'}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ wordBreak: 'break-all' }}>
               <p>
-                Вы действительно хотите удалить категорию: `{this.props.category.nameCategory}`?
+                {'Вы действительно хотите удалить категорию: `{this.props.category.nameCategory}`?'}
               </p>
             </Modal.Body>
             <Modal.Footer>
@@ -161,10 +161,10 @@ class CategoryModal extends Component {
             <Modal.Title>
               {this.props.isEditCategory
                 ? <div>
-                  <span className="glyphicon glyphicon-pencil"></span> Редактировать категорию
+                  <span className="glyphicon glyphicon-pencil"></span>{' Редактировать категорию'}
                 </div>
                 : <div>
-                  <span className="glyphicon glyphicon-plus"></span> Добавить категорию
+                  <span className="glyphicon glyphicon-plus"></span>{' Добавить категорию'}
                 </div>
               }
             </Modal.Title>

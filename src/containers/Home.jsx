@@ -72,8 +72,26 @@ class Home extends Component {
     this.props.unloadUnplannedMoney();
   }
 
+  getTotalAccountBalance = () => {
+    let tmp = 0;
+    this.props.moneys.map((money, index) => {
+      tmp += money.money;
+      return 0;
+    });
+    return tmp;
+  }
+
+  getTotalAccountExpense = () => {
+    let tmp = 0;
+    this.props.expenses.map((expense, index) => {
+      tmp += expense.moneyExpense;
+      return 0;
+    });
+    return tmp;
+  }
+
   dataTableCreate = () => {
-    $('#datatable').dataTable({
+    $('#data-table-categories').dataTable({
       bLengthChange: false,
       iDisplayLength: 10,
       info: false,
@@ -102,7 +120,7 @@ class Home extends Component {
       order: [[0, 'ask']],
       stateSave: true,
     });
-    $('#dataTableHistory').dataTable({
+    $('#data-table-history').dataTable({
       bLengthChange: false,
       iDisplayLength: 10,
       language: {
@@ -123,7 +141,7 @@ class Home extends Component {
           last: '...',
         },
       },
-      order: [[3, 'desk']],
+      order: [[3, 'desc']],
       stateSave: true,
     });
   }
@@ -166,50 +184,82 @@ class Home extends Component {
 
   render() {
     if (this.state.refreshTable) {
-      $('#datatable').DataTable().destroy();
-      $('#dataTableHistory').DataTable().destroy();
+      $('#data-table-categories').DataTable().destroy();
+      $('#data-table-history').DataTable().destroy();
     }
+    const heightDivCategory = $('#data-table-categories').height();
+    const heightDivHistory = $('#data-table-history').height();
+    const heightDivTable = (heightDivCategory > heightDivHistory)
+      ? $('#div-table-categories').height()
+      : $('#div-table-history').height();
+    const totalAccountBalance = this.getTotalAccountBalance();
+    const totalAccountExpense = this.getTotalAccountExpense();
+
     return (
       <div className="intro-header">
         <div className="container">
           <div
             className="row"
-            style={{
-              marginTop: '20px',
-            }}
+            style={{ marginTop: '20px' }}
           >
-            <div
-              className={(this.props.unplannedMoney !== 0)
-                ? `col-md-3
-                  alert alert-danger text-center`
-                : `col-md-3
-                  alert alert-info text-center`
-              }
-            >
-              <h2>Баланс</h2>
-              <h1
-                style={{
-                  border: '1px dotted black',
-                  borderRadius: '3px',
-                  wordBreak: 'break-all',
-                }}
-              >
-                {this.props.unplannedMoney}<i className="glyphicon glyphicon-usd"></i>
-              </h1>
+            <div className="col-md-4">
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>
+                      <h4>Баланс:</h4>
+                    </td>
+                    <td className="text-right">
+                      <h4>
+                        <b
+                          style={(this.props.unplannedMoney !== 0)
+                            ? {
+                              color: 'indianred',
+                            }
+                            : {
+                              color: 'steelblue',
+                            }
+                          }
+                        >
+                          {` ${this.props.unplannedMoney}`}
+                        </b>
+                        <i className="glyphicon glyphicon-usd"></i>
+                      </h4>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td>Cумма пополнений:</td>
+                    <td className="text-right">
+                      <b>{` ${totalAccountBalance}`}</b>
+                      <i className="glyphicon glyphicon-usd"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Cумма расходов:</td>
+                    <td className="text-right">
+                      <b>{` ${totalAccountExpense}`}</b>
+                      <i className="glyphicon glyphicon-usd"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div className="col-md-8 col-md-offset-1 text-center">
+            <div className="col-md-8 text-center">
               <MainForm />
             </div>
           </div>
-          <div
-            className="row"
-            style={{
-              border: '1px dotted black',
-              borderRadius: '3px',
-              marginTop: '20px',
-            }}
-          >
-            <div className="col-md-5 text-center vr">
+          <div className="row">
+            <div
+              className="col-md-5 border-div text-center"
+              id="div-table-categories"
+              style={{
+                minHeight: heightDivTable,
+              }}
+            >
               <div className="text-left margin-top">
                 <button
                   className="btn btn-primary"
@@ -230,12 +280,12 @@ class Home extends Component {
               <div className="table-responsive margin-top">
                 <table
                   className="table table-bordered table-hover table-striped table-condensed"
-                  id="datatable"
+                  id="data-table-categories"
                 >
                   <thead>
                     <tr>
                       <th className="text-center">Название категории</th>
-                      <th className="text-center" style={{ width: '20%' }}>Сумма</th>
+                      <th className="text-center" style={{ width: '20%' }}>Баланс</th>
                       <th className="text-center" style={{ width: '10px' }}></th>
                       <th className="text-center" style={{ width: '10px' }}></th>
                     </tr>
@@ -279,7 +329,13 @@ class Home extends Component {
                 </table>
               </div>
             </div>
-            <div className="col-md-7 text-center">
+            <div
+              className="col-md-7  border-div text-center"
+              id="div-table-history"
+              style={{
+                minHeight: heightDivTable,
+              }}
+            >
               <div className="text-left margin-top">
                 <button
                   className="btn btn-primary"
@@ -292,7 +348,7 @@ class Home extends Component {
               <div className="table-responsive margin-top">
                 <table
                   className="table table-bordered table-hover table-striped table-condensed"
-                  id="dataTableHistory"
+                  id="data-table-history"
                 >
                   <thead>
                     <tr>
@@ -306,7 +362,7 @@ class Home extends Component {
                     {this.props.moneys.map((money, index) =>
                       <tr key={index}>
                         <td className="text-center">
-                          Депозит
+                          <i className="glyphicon glyphicon-plus"></i>
                         </td>
                         <td className="text-center">
                           -
@@ -322,7 +378,7 @@ class Home extends Component {
                     {this.props.expenses.map((expense, index) =>
                       <tr key={index}>
                         <td className="text-center">
-                          Расход
+                          <i className="glyphicon glyphicon-minus"></i>
                         </td>
                         <td className="text-center">{expense.nameCategory}</td>
                         <td className="text-center">
