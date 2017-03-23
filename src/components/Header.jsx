@@ -4,21 +4,22 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
 import ClearStateModal from './modal/ClearStateModal';
+import ExitModal from './modal/ExitModal';
 import { paths } from '../constants';
 
-import { authActions, getAuth } from '../reducers/auth';
+import { getAuth } from '../reducers/auth';
 
 class Header extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     pathname: PropTypes.string.isRequired,
-    signOut: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props);
     this.state = {
       ClearStateModal: false,
+      ExitModal: false,
     };
   }
 
@@ -31,6 +32,19 @@ class Header extends Component {
   closeClearStateModal = () => {
     this.setState({
       ClearStateModal: false,
+    });
+  }
+
+  showExitModal = () => {
+    document.getElementById('show-exit-modal').blur();
+    this.setState({
+      ExitModal: true,
+    });
+  }
+
+  closeExitModal = () => {
+    this.setState({
+      ExitModal: false,
     });
   }
 
@@ -55,11 +69,16 @@ class Header extends Component {
             </div>
             <div className="navbar-collapse collapse">
               <a
-                className="navbar-brand navbar-right hidden-xs"
-                href={paths.SIGN_IN}
-                onClick={this.props.signOut}
+                className="navbar-brand navbar-right nav-item hidden-xs"
+                id="show-exit-modal"
+                onClick={this.showExitModal}
+                tabIndex={0}
               >
                 <span className="glyphicon glyphicon-log-out"></span>{' Выйти'}
+                <ExitModal
+                  closeModal={this.closeExitModal}
+                  showModal={this.state.ExitModal}
+                />
               </a>
               <div className="dropdown navbar-right hidden-xs">
                 <a
@@ -107,9 +126,18 @@ class Header extends Component {
                   </ul>
                 </li>
                 <li>
-                  <Link to={paths.SIGN_IN} onClick={this.props.signOut}>
+                  <a
+                    className="navbar-brand navbar-right nav-item"
+                    id="show-exit-modal"
+                    onClick={this.showExitModal}
+                    tabIndex={0}
+                  >
                     <span className="glyphicon glyphicon-log-out"></span>{' Выйти'}
-                  </Link>
+                    <ExitModal
+                      closeModal={this.closeExitModal}
+                      showModal={this.state.ExitModal}
+                    />
+                  </a>
                 </li>
               </ul>
             </div>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { Link } from 'react-router';
 
-import { authActions, getAuth } from '../reducers/auth';
+import { getAuth } from '../reducers/auth';
 import { paths } from '../constants';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -16,7 +16,6 @@ class App extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
-    signOut: PropTypes.func.isRequired,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -38,7 +37,6 @@ class App extends Component {
             this.props.auth.authenticated
             ? <Header
               pathname={this.context.router.location.pathname}
-              signOut={this.props.signOut}
             />
             : null
           }
@@ -59,12 +57,6 @@ const mapStateToProps = createSelector(
   }),
 );
 
-const mapDispatchToProps = Object.assign(
-  {},
-  authActions,
-);
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
 )(App);

@@ -32,7 +32,6 @@ export function loadUnplannedMoney() {
     const { auth } = getState();
     firebaseDb.ref(`${auth.id}/unplannedMoney`).on('value',
       (snapshot) => { dispatch(loadUnplannedMoneySuccess(snapshot.val())); },
-      (error) => { console.log(`loadUnplannedMoney: ${error}`); },
     );
   };
 }

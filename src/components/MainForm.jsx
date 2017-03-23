@@ -51,8 +51,8 @@ class MainForm extends Component {
       expense: '',
       focused: false,
       selectedCategory: { value: '0', label: 'Выберите категорию' },
-      selectedDeposit: { value: '0', label: 'Баланса' },
-      selectedExpense: { value: '0', label: 'С баланса категории' },
+      selectedDeposit: { value: '0', label: 'Баланс' },
+      selectedExpense: { value: '0', label: 'Категория' },
       textErrorDeposit: '',
       textErrorExpense: '',
     };
@@ -117,7 +117,7 @@ class MainForm extends Component {
     const dateOut = date.parse(this.state.dateDeposit, 'YYYY-MM-DD');
 
     if (deposit > 0) {
-      if (typeDeposit === 'Баланса') {
+      if (typeDeposit === 'Баланс') {
         if (nameCategory === 'Выберите категорию') {
           this.props.createMoney(date.format(dateOut, 'YYYY-MM-DD'), deposit);
           this.props.updateUnplannedMoney(deposit);
@@ -139,7 +139,7 @@ class MainForm extends Component {
             textErrorDeposit: '',
           });
         }
-      } else if (typeDeposit === 'Баланса категории с основного баланса') {
+      } else if (typeDeposit === 'Баланс --> Категория') {
         if (deposit > this.props.unplannedMoney) {
           this.setState({
             deposit: '',
@@ -167,7 +167,7 @@ class MainForm extends Component {
             textErrorDeposit: '',
           });
         }
-      } else if (typeDeposit === 'Основного баланса с баланса категории') {
+      } else if (typeDeposit === 'Категория ---> Баланс') {
         if (nameCategory === 'Выберите категорию') {
           this.setState({
             deposit: '',
@@ -218,7 +218,7 @@ class MainForm extends Component {
     const dateOut = date.parse(this.state.dateExpense, 'YYYY-MM-DD');
 
     if (expense > 0) {
-      if (typeExpense === 'С баланса категории') {
+      if (typeExpense === 'Категория') {
         if (nameCategory === 'Выберите категорию') {
           this.setState({
             expense: '',
@@ -255,13 +255,36 @@ class MainForm extends Component {
             });
           }
         }
-      } else {
-        this.setState({
-          expense: '',
-          textErrorExpense: 'Ошибка! Неверно заполненны данные.',
-        });
-        $('#text-error-expense').slideDown('fast');
-        setTimeout(this.hideError, 3000);
+      } else if (typeExpense === 'Баланс') {
+        if (nameCategory === 'Выберите категорию') {
+          this.setState({
+            expense: '',
+            textErrorExpense: 'Ошибка! Выберите категорию.',
+          });
+          $('#text-error-expense').slideDown('fast');
+          setTimeout(this.hideError, 3000);
+        } else if (expense > this.props.unplannedMoney) {
+          this.setState({
+            expense: '',
+            textErrorExpense: 'Ошибка! Сумма расходов превышена.',
+          });
+          $('#text-error-expense').slideDown('fast');
+          setTimeout(this.hideError, 3000);
+        } else {
+          const category = this.findCategory(nameCategory);
+          this.props.createExpense(
+            date.format(dateOut, 'YYYY-MM-DD'),
+            category.key,
+            expense,
+            category.nameCategory,
+          );
+          this.props.updateUnplannedMoney(-expense);
+          this.setState({
+            dateExpense: new Date().toISOString(),
+            expense: '',
+            textErrorExpense: '',
+          });
+        }
       }
     } else {
       this.setState({
@@ -311,12 +334,13 @@ class MainForm extends Component {
   render() {
     const optionsCategory = this.getCategories();
     const optionsDeposit = [
-      { value: '0', label: 'Баланса' },
-      { value: '1', label: 'Баланса категории с основного баланса' },
-      { value: '2', label: 'Основного баланса с баланса категории' },
+      { value: '0', label: 'Баланс' },
+      { value: '1', label: 'Баланс --> Категория' },
+      { value: '2', label: 'Категория --> Баланс' },
     ];
     const optionsExpense = [
-      { value: '1', label: 'С баланса категории' },
+      { value: '0', label: 'Категория' },
+      { value: '1', label: 'Баланс' },
     ];
     return (
       <div
@@ -392,6 +416,7 @@ class MainForm extends Component {
               <div className="col-sm-5 col-xs-12 margin-top-xs">
                 <DatePicker
                   className="text-center"
+                  cellPadding="4px"
                   dateFormat="YYYY-MM-DD"
                   dayLabels={dayLabels}
                   monthLabels={monthLabels}
@@ -419,7 +444,7 @@ class MainForm extends Component {
               </div>
               <div className="col-sm-4">
                 <button
-                  className="btn btn-primary btn-block margin-top"
+                  className="btn btn-primary btn-block margin-top-xs"
                   id="create-deposit-button"
                   onClick={this.createDeposit}
                   type="button"
@@ -439,7 +464,7 @@ class MainForm extends Component {
               </div>
               <div id="dropdown-expense" className="col-sm-5 col-xs-8">
                 <DropdownCategory
-                  disabled
+                  disabled={false}
                   options={optionsExpense}
                 />
               </div>
@@ -470,6 +495,7 @@ class MainForm extends Component {
               <div className="col-sm-5 col-xs-12 margin-top-xs">
                 <DatePicker
                   className="text-center"
+                  cellPadding="4px"
                   dateFormat="YYYY-MM-DD"
                   dayLabels={dayLabels}
                   monthLabels={monthLabels}
@@ -497,7 +523,7 @@ class MainForm extends Component {
               </div>
               <div className="col-sm-4">
                 <button
-                  className="btn btn-danger btn-block margin-top"
+                  className="btn btn-danger btn-block margin-top-xs"
                   id="create-expense-button"
                   onClick={this.createExpense}
                   type="button"

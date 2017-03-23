@@ -32,7 +32,7 @@ class Home extends Component {
     super(props);
     this.state = {
       category: {},
-      filtrTipHistory: 'Все операции',
+      filterTypeHistory: 'Все операции',
       isDeleteCategory: false,
       isEditCategory: false,
       refreshTable: false,
@@ -184,7 +184,7 @@ class Home extends Component {
   }
 
   renderTable = () => {
-    if (this.state.filtrTipHistory === 'Все операции') {
+    if (this.state.filterTypeHistory === 'Все операции') {
       return (
         <tbody>
           {this.props.moneys.map((money, index) =>
@@ -218,7 +218,7 @@ class Home extends Component {
         </tbody>
       );
     }
-    if (this.state.filtrTipHistory === 'Пополнение') {
+    if (this.state.filterTypeHistory === 'Пополнение') {
       return (
         <tbody>
           {this.props.moneys.map((money, index) =>
@@ -240,7 +240,7 @@ class Home extends Component {
         </tbody>
       );
     }
-    if (this.state.filtrTipHistory === 'Расход') {
+    if (this.state.filterTypeHistory === 'Расход') {
       return (
         <tbody>
           {this.props.expenses.map((expense, index) =>
@@ -266,23 +266,15 @@ class Home extends Component {
       $('#data-table-categories').DataTable().destroy();
       $('#data-table-history').DataTable().destroy();
     }
-    const heightDivCategory = $('#data-table-categories').height();
-    const heightDivHistory = $('#data-table-history').height();
-    const heightDivTable = (heightDivCategory > heightDivHistory)
-      ? 'right'
-      : 'left';
 
     const totalAccountBalance = this.getTotalAccountBalance();
     const totalAccountExpense = this.getTotalAccountExpense();
 
     return (
-      <div className="intro-header">
-        <div className="container">
-          <div
-            className="row"
-            style={{ marginTop: '20px' }}
-          >
-            <div className="col-md-4">
+      <div className="intro-header container-fluid">
+        <div className="my-table col-md-12" style={{ marginTop: '20px' }}>
+          <div className="table-row text-center">
+            <div className="table-cell table-cell-1 table-cell-1-padding text-left">
               <table className="table">
                 <tbody>
                   <tr>
@@ -307,10 +299,6 @@ class Home extends Component {
                       </h4>
                     </td>
                   </tr>
-                </tbody>
-              </table>
-              <table className="table">
-                <tbody>
                   <tr>
                     <td>Cумма пополнений:</td>
                     <td className="text-right">
@@ -328,19 +316,17 @@ class Home extends Component {
                 </tbody>
               </table>
             </div>
-            <div className="col-md-8 text-center">
+            <div className="table-cell-clear">
+            </div>
+            <div className="table-cell table-cell-2 text-center" style={{ verticalAlign: 'top' }}>
               <MainForm />
             </div>
           </div>
 
-          <div className="row border-div">
-            <div
-              className={heightDivTable === 'right'
-                ? 'col-md-5 border-div-right border-div-table'
-                : 'col-md-5 border-div-table'
-              }
-            >
-              <div className="text-left margin-top">
+          <div className="table-row-clear"></div>
+          <div className="table-row">
+            <div className="border-div table-cell table-cell-1">
+              <div className="text-left">
                 <button
                   className="btn btn-primary"
                   id="show-create-category-modal"
@@ -366,8 +352,8 @@ class Home extends Component {
                     <tr>
                       <th className="text-center">Название категории</th>
                       <th className="text-center" style={{ width: '20%' }}>Баланс</th>
-                      <th className="text-center" style={{ width: '10px' }}></th>
-                      <th className="text-center" style={{ width: '10px' }}></th>
+                      <th className="text-center" style={{ width: '1%' }}></th>
+                      <th className="text-center" style={{ width: '1%' }}></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -409,13 +395,10 @@ class Home extends Component {
                 </table>
               </div>
             </div>
-            <div
-              className={heightDivTable === 'left'
-                ? 'col-md-7 border-div-left border-div-table'
-                : 'col-md-7 border-div-table'
-              }
-            >
-              <div className="text-left margin-top">
+            <div className="table-cell-clear">
+            </div>
+            <div className="border-div table-cell table-cell-2">
+              <div className="text-left">
                 <div className="btn-group">
                   <a
                     className="btn btn-primary dropdown-toggle btn-select"
@@ -430,7 +413,7 @@ class Home extends Component {
                       <a
                         className="nav-item"
                         href={undefined}
-                        onClick={() => this.setState({ filtrTipHistory: 'Все операции' })}
+                        onClick={() => this.setState({ filterTypeHistory: 'Все операции' })}
                         tabIndex={0}
                       >
                         Все операции
@@ -440,7 +423,7 @@ class Home extends Component {
                       <a
                         className="nav-item"
                         href={undefined}
-                        onClick={() => this.setState({ filtrTipHistory: 'Пополнение' })}
+                        onClick={() => this.setState({ filterTypeHistory: 'Пополнение' })}
                         tabIndex={0}
                       >
                         Пополнение
@@ -450,7 +433,7 @@ class Home extends Component {
                       <a
                         className="nav-item"
                         href={undefined}
-                        onClick={() => this.setState({ filtrTipHistory: 'Расход' })}
+                        onClick={() => this.setState({ filterTypeHistory: 'Расход' })}
                         tabIndex={0}
                       >
                         Расход
