@@ -1,9 +1,10 @@
 import { Record } from 'immutable';
 
-export const Expense = new Record({
+export const History = new Record({
   date: null,
   key: null,
   keyCategory: null,
-  moneyExpense: null,
+  moneyHistory: null,
   nameCategory: null,
+  type: null,
 });

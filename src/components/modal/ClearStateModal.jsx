@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
 import { categoriesActions } from '../../reducers/categories';
-import { expensesActions } from '../../reducers/expenses';
-import { moneysActions } from '../../reducers/moneys';
+import { historyActions } from '../../reducers/history';
 import { unplannedMoneyActions } from '../../reducers/unplannedMoney';
 
 class ClearStateModal extends Component {
@@ -12,25 +11,21 @@ class ClearStateModal extends Component {
     deleteUnplannedMoney: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
     loadCategories: PropTypes.func.isRequired,
-    loadExpenses: PropTypes.func.isRequired,
-    loadMoneys: PropTypes.func.isRequired,
+    loadHistory: PropTypes.func.isRequired,
     loadUnplannedMoney: PropTypes.func.isRequired,
     showModal: PropTypes.bool,
     unloadCategories: PropTypes.func.isRequired,
-    unloadExpenses: PropTypes.func.isRequired,
-    unloadMoneys: PropTypes.func.isRequired,
+    unloadHistory: PropTypes.func.isRequired,
     unloadUnplannedMoney: PropTypes.func.isRequired,
   }
 
   clearAndClose = () => {
     this.props.unloadCategories();
-    this.props.unloadExpenses();
-    this.props.unloadMoneys();
+    this.props.unloadHistory();
     this.props.unloadUnplannedMoney();
     this.props.deleteUnplannedMoney();
     this.props.loadCategories();
-    this.props.loadExpenses();
-    this.props.loadMoneys();
+    this.props.loadHistory();
     this.props.loadUnplannedMoney();
     this.props.closeModal();
   };
@@ -76,8 +71,7 @@ class ClearStateModal extends Component {
 const mapDispatchToProps = Object.assign(
   {},
   categoriesActions,
-  expensesActions,
-  moneysActions,
+  historyActions,
   unplannedMoneyActions,
 );
 

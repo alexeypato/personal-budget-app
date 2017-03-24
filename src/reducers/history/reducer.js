@@ -1,22 +1,23 @@
 import { List, Record } from 'immutable';
 
 import {
-  CREATE_MONEY_SUCCESS,
-  LOAD_MONEYS_SUCCESS,
+  CREATE_HISTORY_SUCCESS,
+  FILTER_HISTORY,
+  LOAD_HISTORY_SUCCESS,
 } from './action-types';
 
 import { DELETE_UNPLANNEDMONEY_SUCCESS } from '../unplannedMoney';
 
-
-export const MoneysState = new Record({
+export const HistoryState = new Record({
   deleted: null,
+  filter: '',
   list: new List(),
   previous: null,
 });
 
-export function moneysReducer(state = new MoneysState(), { payload, type }) {
+export function historyReducer(state = new HistoryState(), { payload, type }) {
   switch (type) {
-    case CREATE_MONEY_SUCCESS:
+    case CREATE_HISTORY_SUCCESS:
       return state.merge({
         deleted: null,
         previous: null,
@@ -26,9 +27,12 @@ export function moneysReducer(state = new MoneysState(), { payload, type }) {
       });
 
     case DELETE_UNPLANNEDMONEY_SUCCESS:
-      return new MoneysState();
+      return new HistoryState();
 
-    case LOAD_MONEYS_SUCCESS:
+    case FILTER_HISTORY:
+      return state.set('filter', payload.filterType || '');
+
+    case LOAD_HISTORY_SUCCESS:
       return state.set('list', new List(payload.reverse()));
 
     default:

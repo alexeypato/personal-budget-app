@@ -5,25 +5,25 @@ import { List } from 'immutable';
 import $ from 'jquery';
 
 import CategoryModal from '../components/modal/CategoryModal';
+import DataTableCategories from '../components/datatable/DataTableCategories';
+import DataTableHistory from '../components/datatable/DataTableHistory';
 import MainForm from '../components/MainForm';
 
 import { getCategoryList, categoriesActions } from '../reducers/categories';
-import { getExpenseList, expensesActions } from '../reducers/expenses';
-import { getMoneyList, moneysActions } from '../reducers/moneys';
+import { getVisibleHistory, historyActions } from '../reducers/history';
 import { getUnplannedMoney, unplannedMoneyActions } from '../reducers/unplannedMoney';
 
 class Home extends Component {
   static propTypes = {
     // children: PropTypes.object.isRequired,
     categories: PropTypes.instanceOf(List).isRequired,
+    filterHistory: PropTypes.func.isRequired,
     loadCategories: PropTypes.func.isRequired,
-    loadExpenses: PropTypes.func.isRequired,
-    loadMoneys: PropTypes.func.isRequired,
+    loadHistory: PropTypes.func.isRequired,
     loadUnplannedMoney: PropTypes.func.isRequired,
-    moneys: PropTypes.instanceOf(List).isRequired,
+    history: PropTypes.instanceOf(List).isRequired,
     unloadCategories: PropTypes.func.isRequired,
-    unloadExpenses: PropTypes.func.isRequired,
-    unloadMoneys: PropTypes.func.isRequired,
+    unloadHistory: PropTypes.func.isRequired,
     unloadUnplannedMoney: PropTypes.func.isRequired,
     unplannedMoney: PropTypes.number.isRequired,
   }
@@ -31,7 +31,9 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      balanceColor: 'steelblue',
       category: {},
+      contentPopoverBalance: 'Баланс пуст!',
       filterTypeHistory: 'Все операции',
       isDeleteCategory: false,
       isEditCategory: false,
@@ -42,19 +44,39 @@ class Home extends Component {
 
   componentWillMount = () => {
     this.props.loadCategories();
-    this.props.loadExpenses();
-    this.props.loadMoneys();
+    this.props.loadHistory();
     this.props.loadUnplannedMoney();
   }
 
   componentDidMount = () => {
     this.dataTableCreate();
+    $('#balance').popover({
+      placement: 'bottom',
+      trigger: 'hover',
+    });
   }
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({
       refreshTable: true,
     });
+    if (nextProps.unplannedMoney !== 0) {
+      this.setState({
+        balanceColor: 'indianred',
+        contentPopoverBalance: 'Внимание! На балансе находятся незапланнированные средства.',
+      });
+    } else {
+      this.setState({
+        balanceColor: 'steelblue',
+        contentPopoverBalance: 'Баланс пуст!',
+      });
+    }
+    if (nextProps.unplannedMoney > 0 && nextProps.unplannedMoney !== this.props.unplannedMoney) {
+      $(document).ready(() => {
+        $('#balance').popover('show');
+        setTimeout(this.hidePopover, 4000);
+      });
+    }
   }
 
   componentDidUpdate = () => {
@@ -68,15 +90,16 @@ class Home extends Component {
 
   componentWillUnmount = () => {
     this.props.unloadCategories();
-    this.props.unloadExpenses();
-    this.props.unloadMoneys();
+    this.props.unloadHistory();
     this.props.unloadUnplannedMoney();
   }
 
   getTotalAccountBalance = () => {
     let tmp = 0;
-    this.props.moneys.map((money, index) => {
-      tmp += money.money;
+    this.props.history.map((history, index) => {
+      if (history.type === 'Пополнение') {
+        tmp += history.moneyHistory;
+      }
       return 0;
     });
     return tmp;
@@ -84,8 +107,10 @@ class Home extends Component {
 
   getTotalAccountExpense = () => {
     let tmp = 0;
-    this.props.expenses.map((expense, index) => {
-      tmp += expense.moneyExpense;
+    this.props.history.map((history, index) => {
+      if (history.type === 'Расход') {
+        tmp += history.moneyHistory;
+      }
       return 0;
     });
     return tmp;
@@ -93,6 +118,12 @@ class Home extends Component {
 
   dataTableCreate = () => {
     $('#data-table-categories').dataTable({
+      aoColumns: [
+        null,
+        null,
+        { bSortable: false },
+        { bSortable: false },
+      ],
       bLengthChange: false,
       iDisplayLength: 10,
       info: false,
@@ -122,6 +153,12 @@ class Home extends Component {
       stateSave: true,
     });
     $('#data-table-history').dataTable({
+      aoColumns: [
+        { bSortable: false },
+        null,
+        null,
+        null,
+      ],
       bLengthChange: false,
       iDisplayLength: 10,
       language: {
@@ -145,6 +182,10 @@ class Home extends Component {
       order: [[3, 'desc']],
       stateSave: true,
     });
+  }
+
+  hidePopover = () => {
+    $('#balance').popover('hide');
   }
 
   showCreateCategoryModal = () => {
@@ -183,82 +224,13 @@ class Home extends Component {
     });
   }
 
-  renderTable = () => {
-    if (this.state.filterTypeHistory === 'Все операции') {
-      return (
-        <tbody>
-          {this.props.moneys.map((money, index) =>
-            <tr key={index}>
-              <td className="text-center">
-                <i className="glyphicon glyphicon-plus"></i>
-              </td>
-              <td className="text-center">
-                -
-              </td>
-              <td className="text-center">
-                {money.money}<i className="glyphicon glyphicon-usd"></i>
-              </td>
-              <td className="text-center">
-                {money.date}
-              </td>
-            </tr>,
-          )}
-          {this.props.expenses.map((expense, index) =>
-            <tr key={index}>
-              <td className="text-center">
-                <i className="glyphicon glyphicon-minus"></i>
-              </td>
-              <td className="text-center">{expense.nameCategory}</td>
-              <td className="text-center">
-                {expense.moneyExpense}<i className="glyphicon glyphicon-usd"></i>
-              </td>
-              <td className="text-center">{expense.date}</td>
-            </tr>,
-          )}
-        </tbody>
-      );
+  filterHistory = (filter) => {
+    this.setState({ filterTypeHistory: filter });
+    if (filter === 'Все операции') {
+      this.props.filterHistory('');
+    } else {
+      this.props.filterHistory(filter);
     }
-    if (this.state.filterTypeHistory === 'Пополнение') {
-      return (
-        <tbody>
-          {this.props.moneys.map((money, index) =>
-            <tr key={index}>
-              <td className="text-center">
-                <i className="glyphicon glyphicon-plus"></i>
-              </td>
-              <td className="text-center">
-                -
-              </td>
-              <td className="text-center">
-                {money.money}<i className="glyphicon glyphicon-usd"></i>
-              </td>
-              <td className="text-center">
-                {money.date}
-              </td>
-            </tr>,
-          )}
-        </tbody>
-      );
-    }
-    if (this.state.filterTypeHistory === 'Расход') {
-      return (
-        <tbody>
-          {this.props.expenses.map((expense, index) =>
-            <tr key={index}>
-              <td className="text-center">
-                <i className="glyphicon glyphicon-minus"></i>
-              </td>
-              <td className="text-center">{expense.nameCategory}</td>
-              <td className="text-center">
-                {expense.moneyExpense}<i className="glyphicon glyphicon-usd"></i>
-              </td>
-              <td className="text-center">{expense.date}</td>
-            </tr>,
-          )}
-        </tbody>
-      );
-    }
-    return 0;
   }
 
   render() {
@@ -279,19 +251,20 @@ class Home extends Component {
                 <tbody>
                   <tr>
                     <td>
-                      <h4>Баланс:</h4>
+                      <h4>
+                        {'Баланс: '}
+                        <a
+                          data-toggle="popover"
+                          data-content={this.state.contentPopoverBalance}
+                          id="balance"
+                          style={{ color: this.state.balanceColor }}
+                        >{'?'}</a>
+                      </h4>
                     </td>
                     <td className="text-right">
                       <h4>
                         <b
-                          style={(this.props.unplannedMoney !== 0)
-                            ? {
-                              color: 'indianred',
-                            }
-                            : {
-                              color: 'steelblue',
-                            }
-                          }
+                          style={{ color: this.state.balanceColor }}
                         >
                           {` ${this.props.unplannedMoney}`}
                         </b>
@@ -343,57 +316,11 @@ class Home extends Component {
                   showCategoryModal={this.state.showCategoryModal}
                 />
               </div>
-              <div className="table-responsive margin-top">
-                <table
-                  className="table table-bordered table-hover table-striped table-condensed"
-                  id="data-table-categories"
-                >
-                  <thead>
-                    <tr>
-                      <th className="text-center">Название категории</th>
-                      <th className="text-center" style={{ width: '20%' }}>Баланс</th>
-                      <th className="text-center" style={{ width: '1%' }}></th>
-                      <th className="text-center" style={{ width: '1%' }}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.props.categories.map((category, index) =>
-                      <tr key={index}>
-                        <td className="text-center">
-                          {category.nameCategory}
-                        </td>
-                        <td className="text-center">
-                          {category.moneyCategory}<i className="glyphicon glyphicon-usd"></i>
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-xs btn-primary"
-                            data-toggle="tooltip"
-                            id={`show-update-category-modal-${index}`}
-                            onClick={() => this.showUpdateCategoryModal(category, index)}
-                            title="Редактировать"
-                            type="button"
-                          >
-                            <span className="glyphicon glyphicon-pencil"></span>
-                          </button>
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-xs btn-danger"
-                            data-toggle="tooltip"
-                            id={`show-delete-category-modal-${index}`}
-                            onClick={() => this.showDeleteCategoryModal(category, index)}
-                            title="Удалить"
-                            type="button"
-                          >
-                            <span className="glyphicon glyphicon-trash"></span>
-                          </button>
-                        </td>
-                      </tr>,
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              <DataTableCategories
+                categories={this.props.categories}
+                showDeleteCategoryModal={this.showDeleteCategoryModal}
+                showUpdateCategoryModal={this.showUpdateCategoryModal}
+              />
             </div>
             <div className="table-cell-clear">
             </div>
@@ -406,14 +333,14 @@ class Home extends Component {
                     href={undefined}
                     tabIndex={0}
                   >
-                    Все операции <span className="caret"></span>
+                    {this.state.filterTypeHistory} <span className="caret"></span>
                   </a>
                   <ul className="dropdown-menu">
                     <li>
                       <a
                         className="nav-item"
                         href={undefined}
-                        onClick={() => this.setState({ filterTypeHistory: 'Все операции' })}
+                        onClick={() => this.filterHistory('Все операции')}
                         tabIndex={0}
                       >
                         Все операции
@@ -423,7 +350,7 @@ class Home extends Component {
                       <a
                         className="nav-item"
                         href={undefined}
-                        onClick={() => this.setState({ filterTypeHistory: 'Пополнение' })}
+                        onClick={() => this.filterHistory('Пополнение')}
                         tabIndex={0}
                       >
                         Пополнение
@@ -433,7 +360,17 @@ class Home extends Component {
                       <a
                         className="nav-item"
                         href={undefined}
-                        onClick={() => this.setState({ filterTypeHistory: 'Расход' })}
+                        onClick={() => this.filterHistory('Перевод')}
+                        tabIndex={0}
+                      >
+                        Перевод
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="nav-item"
+                        href={undefined}
+                        onClick={() => this.filterHistory('Расход')}
                         tabIndex={0}
                       >
                         Расход
@@ -442,22 +379,9 @@ class Home extends Component {
                   </ul>
                 </div>
               </div>
-              <div className="table-responsive margin-top">
-                <table
-                  className="table table-bordered table-hover table-striped table-condensed"
-                  id="data-table-history"
-                >
-                  <thead>
-                    <tr>
-                      <th className="text-center" style={{ width: '15%' }}>Тип</th>
-                      <th className="text-center" style={{ width: '50%' }}>Название категории</th>
-                      <th className="text-center" style={{ width: '15%' }}>Сумма</th>
-                      <th className="text-center" style={{ width: '20%' }}>Дата</th>
-                    </tr>
-                  </thead>
-                  {this.renderTable()}
-                </table>
-              </div>
+              <DataTableHistory
+                history={this.props.history}
+              />
             </div>
           </div>
         </div>
@@ -468,13 +392,11 @@ class Home extends Component {
 
 const mapStateToProps = createSelector(
   getCategoryList,
-  getExpenseList,
-  getMoneyList,
+  getVisibleHistory,
   getUnplannedMoney,
-  (categories, expenses, moneys, unplannedMoney) => ({
+  (categories, history, unplannedMoney) => ({
     categories,
-    expenses,
-    moneys,
+    history,
     unplannedMoney,
   }),
 );
@@ -482,8 +404,7 @@ const mapStateToProps = createSelector(
 const mapDispatchToProps = Object.assign(
   {},
   categoriesActions,
-  expensesActions,
-  moneysActions,
+  historyActions,
   unplannedMoneyActions,
 );
 

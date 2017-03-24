@@ -8,8 +8,7 @@ import Dropdown from 'react-dropdown';
 import DropdownCategory from './dropdown/DropdownCategory';
 
 import { getCategoryList, categoriesActions } from '../reducers/categories';
-import { getExpenseList, expensesActions } from '../reducers/expenses';
-import { getMoneyList, moneysActions } from '../reducers/moneys';
+import { historyActions } from '../reducers/history';
 import { getUnplannedMoney, unplannedMoneyActions } from '../reducers/unplannedMoney';
 
 const DatePicker = require('react-bootstrap-date-picker');
@@ -25,8 +24,7 @@ const monthLabels = [
 class MainForm extends Component {
   static propTypes = {
     categories: PropTypes.instanceOf(List).isRequired,
-    createExpense: PropTypes.func.isRequired,
-    createMoney: PropTypes.func.isRequired,
+    createHistory: PropTypes.func.isRequired,
     unplannedMoney: PropTypes.number.isRequired,
     updateCategory: PropTypes.func.isRequired,
     updateUnplannedMoney: PropTypes.func.isRequired,
@@ -119,7 +117,13 @@ class MainForm extends Component {
     if (deposit > 0) {
       if (typeDeposit === 'Баланс') {
         if (nameCategory === 'Выберите категорию') {
-          this.props.createMoney(date.format(dateOut, 'YYYY-MM-DD'), deposit);
+          this.props.createHistory(
+            date.format(dateOut, 'YYYY-MM-DD'),
+            '0',
+            deposit,
+            '-',
+            'Пополнение',
+          );
           this.props.updateUnplannedMoney(deposit);
           this.setState({
             dateDeposit: new Date().toISOString(),
@@ -128,7 +132,13 @@ class MainForm extends Component {
           });
         } else {
           const category = this.findCategory(nameCategory);
-          this.props.createMoney(date.format(dateOut, 'YYYY-MM-DD'), deposit);
+          this.props.createHistory(
+            date.format(dateOut, 'YYYY-MM-DD'),
+            category.key,
+            deposit,
+            category.nameCategory,
+            'Пополнение',
+          );
           this.props.updateCategory(
             category,
             { moneyCategory: category.moneyCategory + deposit },
@@ -156,9 +166,16 @@ class MainForm extends Component {
           setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
+          this.props.createHistory(
+            date.format(dateOut, 'YYYY-MM-DD'),
+            category.key,
+            deposit,
+            `Баланс --> ${category.nameCategory}`,
+            'Перевод',
+          );
           this.props.updateCategory(
             category,
-            { moneyCategory: deposit },
+            { moneyCategory: category.moneyCategory + deposit },
           );
           this.props.updateUnplannedMoney(-deposit);
           this.setState({
@@ -167,7 +184,7 @@ class MainForm extends Component {
             textErrorDeposit: '',
           });
         }
-      } else if (typeDeposit === 'Категория ---> Баланс') {
+      } else if (typeDeposit === 'Категория --> Баланс') {
         if (nameCategory === 'Выберите категорию') {
           this.setState({
             deposit: '',
@@ -185,6 +202,13 @@ class MainForm extends Component {
             $('#text-error-deposit').slideDown('fast');
             setTimeout(this.hideError, 3000);
           } else {
+            this.props.createHistory(
+              date.format(dateOut, 'YYYY-MM-DD'),
+              category.key,
+              deposit,
+              `${category.nameCategory} ---> Баланс`,
+              'Перевод',
+            );
             this.props.updateCategory(
               category,
               { moneyCategory: category.moneyCategory - deposit },
@@ -236,11 +260,12 @@ class MainForm extends Component {
             $('#text-error-expense').slideDown('fast');
             setTimeout(this.hideError, 3000);
           } else {
-            this.props.createExpense(
+            this.props.createHistory(
               date.format(dateOut, 'YYYY-MM-DD'),
               category.key,
               expense,
               category.nameCategory,
+              'Расход',
             );
             this.props.updateCategory(
               category,
@@ -272,11 +297,19 @@ class MainForm extends Component {
           setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
-          this.props.createExpense(
+          this.props.createHistory(
             date.format(dateOut, 'YYYY-MM-DD'),
             category.key,
             expense,
             category.nameCategory,
+            'Перевод',
+          );
+          this.props.createHistory(
+            date.format(dateOut, 'YYYY-MM-DD'),
+            category.key,
+            expense,
+            category.nameCategory,
+            'Расход',
           );
           this.props.updateUnplannedMoney(-expense);
           this.setState({
@@ -541,13 +574,9 @@ class MainForm extends Component {
 
 const mapStateToProps = createSelector(
   getCategoryList,
-  getExpenseList,
-  getMoneyList,
   getUnplannedMoney,
-  (categories, expenses, moneys, unplannedMoney) => ({
+  (categories, unplannedMoney) => ({
     categories,
-    expenses,
-    moneys,
     unplannedMoney,
   }),
 );
@@ -555,8 +584,7 @@ const mapStateToProps = createSelector(
 const mapDispatchToProps = Object.assign(
   {},
   categoriesActions,
-  expensesActions,
-  moneysActions,
+  historyActions,
   unplannedMoneyActions,
 );
 
