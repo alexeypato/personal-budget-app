@@ -37,6 +37,8 @@ class MainForm extends Component {
         border: '3px double steelblue',
         borderRadius: '3px',
       },
+      categoryErrorDeposit: '',
+      categoryErrorExpense: '',
       colorTab1: {
         color: 'black',
       },
@@ -54,6 +56,40 @@ class MainForm extends Component {
       textErrorDeposit: '',
       textErrorExpense: '',
     };
+  }
+
+  componentDidMount = () => {
+    $('[data-toggle="popover"]').popover({
+      placement: 'bottom',
+      trigger: 'hover',
+    });
+  }
+
+  componentDidUpdate = () => {
+    if (this.state.textErrorDeposit !== '') {
+      $(document).ready(() => {
+        $('#input-deposit').popover('show');
+        setTimeout(this.hideInputErrorDeposit, 3000);
+      });
+    }
+    if (this.state.categoryErrorDeposit !== '') {
+      $(document).ready(() => {
+        $('#dropdown-category-deposit').popover('show');
+        setTimeout(this.hideCategoryErrorDeposit, 3000);
+      });
+    }
+    if (this.state.textErrorExpense !== '') {
+      $(document).ready(() => {
+        $('#input-expense').popover('show');
+        setTimeout(this.hideInputErrorExpense, 3000);
+      });
+    }
+    if (this.state.categoryErrorExpense !== '') {
+      $(document).ready(() => {
+        $('#dropdown-сategory-expense').popover('show');
+        setTimeout(this.hideCategoryErrorExpense, 3000);
+      });
+    }
   }
 
   getCategories = () => {
@@ -128,7 +164,6 @@ class MainForm extends Component {
           this.setState({
             dateDeposit: new Date().toISOString(),
             deposit: '',
-            textErrorDeposit: '',
           });
         } else {
           const category = this.findCategory(nameCategory);
@@ -146,7 +181,6 @@ class MainForm extends Component {
           this.setState({
             dateDeposit: new Date().toISOString(),
             deposit: '',
-            textErrorDeposit: '',
           });
         }
       } else if (typeDeposit === 'Баланс --> Категория') {
@@ -155,15 +189,10 @@ class MainForm extends Component {
             deposit: '',
             textErrorDeposit: 'Ошибка! Баланс меньше суммы пополнения.',
           });
-          $('#text-error-deposit').slideDown('fast');
-          setTimeout(this.hideError, 3000);
         } else if (nameCategory === 'Выберите категорию') {
           this.setState({
-            deposit: '',
-            textErrorDeposit: 'Ошибка! Выберите категорию.',
+            categoryErrorDeposit: 'Ошибка! Выберите категорию.',
           });
-          $('#text-error-deposit').slideDown('fast');
-          setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
           this.props.createHistory(
@@ -181,17 +210,13 @@ class MainForm extends Component {
           this.setState({
             dateDeposit: new Date().toISOString(),
             deposit: '',
-            textErrorDeposit: '',
           });
         }
       } else if (typeDeposit === 'Категория --> Баланс') {
         if (nameCategory === 'Выберите категорию') {
           this.setState({
-            deposit: '',
-            textErrorDeposit: 'Ошибка! Выберите категорию.',
+            categoryErrorDeposit: 'Ошибка! Выберите категорию.',
           });
-          $('#text-error-deposit').slideDown('fast');
-          setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
           if (deposit > category.moneyCategory) {
@@ -199,8 +224,6 @@ class MainForm extends Component {
               deposit: '',
               textErrorDeposit: 'Ошибка! Баланс категории меньше суммы пополнения.',
             });
-            $('#text-error-deposit').slideDown('fast');
-            setTimeout(this.hideError, 3000);
           } else {
             this.props.createHistory(
               date.format(dateOut, 'YYYY-MM-DD'),
@@ -217,7 +240,6 @@ class MainForm extends Component {
             this.setState({
               dateDeposit: new Date().toISOString(),
               deposit: '',
-              textErrorDeposit: '',
             });
           }
         }
@@ -227,8 +249,6 @@ class MainForm extends Component {
         textErrorDeposit: 'Ошибка! Введите сумму пополнения.',
         deposit: '',
       });
-      $('#text-error-deposit').slideDown('fast');
-      setTimeout(this.hideError, 3000);
     }
   }
 
@@ -245,11 +265,8 @@ class MainForm extends Component {
       if (typeExpense === 'Категория') {
         if (nameCategory === 'Выберите категорию') {
           this.setState({
-            expense: '',
-            textErrorExpense: 'Ошибка! Выберите категорию.',
+            categoryErrorExpense: 'Ошибка! Выберите категорию.',
           });
-          $('#text-error-expense').slideDown('fast');
-          setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
           if (expense > category.moneyCategory) {
@@ -257,8 +274,6 @@ class MainForm extends Component {
               expense: '',
               textErrorExpense: 'Ошибка! Сумма расходов превышена.',
             });
-            $('#text-error-expense').slideDown('fast');
-            setTimeout(this.hideError, 3000);
           } else {
             this.props.createHistory(
               date.format(dateOut, 'YYYY-MM-DD'),
@@ -276,25 +291,19 @@ class MainForm extends Component {
             this.setState({
               dateExpense: new Date().toISOString(),
               expense: '',
-              textErrorExpense: '',
             });
           }
         }
       } else if (typeExpense === 'Баланс') {
         if (nameCategory === 'Выберите категорию') {
           this.setState({
-            expense: '',
-            textErrorExpense: 'Ошибка! Выберите категорию.',
+            categoryErrorExpense: 'Ошибка! Выберите категорию.',
           });
-          $('#text-error-expense').slideDown('fast');
-          setTimeout(this.hideError, 3000);
         } else if (expense > this.props.unplannedMoney) {
           this.setState({
             expense: '',
             textErrorExpense: 'Ошибка! Сумма расходов превышена.',
           });
-          $('#text-error-expense').slideDown('fast');
-          setTimeout(this.hideError, 3000);
         } else {
           const category = this.findCategory(nameCategory);
           this.props.createHistory(
@@ -315,7 +324,6 @@ class MainForm extends Component {
           this.setState({
             dateExpense: new Date().toISOString(),
             expense: '',
-            textErrorExpense: '',
           });
         }
       }
@@ -324,14 +332,35 @@ class MainForm extends Component {
         expense: '',
         textErrorExpense: 'Ошибка! Введите сумму расходов.',
       });
-      $('#text-error-expense').slideDown('fast');
-      setTimeout(this.hideError, 3000);
     }
   }
 
-  hideError = () => {
-    $('#text-error-deposit').slideUp('slow');
-    $('#text-error-expense').slideUp('slow');
+  hideInputErrorDeposit = () => {
+    $('#input-deposit').popover('hide');
+    this.setState({
+      textErrorDeposit: '',
+    });
+  }
+
+  hideInputErrorExpense = () => {
+    $('#input-expense').popover('hide');
+    this.setState({
+      textErrorExpense: '',
+    });
+  }
+
+  hideCategoryErrorDeposit = () => {
+    $('#dropdown-category-deposit').popover('hide');
+    this.setState({
+      categoryErrorDeposit: '',
+    });
+  }
+
+  hideCategoryErrorExpense = () => {
+    $('#dropdown-сategory-expense').popover('hide');
+    this.setState({
+      categoryErrorExpense: '',
+    });
   }
 
   tab1 = () => {
@@ -424,13 +453,14 @@ class MainForm extends Component {
               <div className="col-sm-5 col-xs-12 margin-top-xs">
                 <input
                   className="form-control text-center"
+                  data-toggle="popover"
+                  data-content={this.state.textErrorDeposit}
+                  id="input-deposit"
+                  maxLength="10"
                   onChange={() => this.handleOnChangeDeposit()}
                   placeholder="Сумма"
-                  value={this.state.deposit}
-                  maxLength="10"
                   ref={(input) => { this.depositInput = input; }}
-                  data-toggle="tooltip"
-                  title="Сумма пополнения"
+                  value={this.state.deposit}
                 />
               </div>
             </div>
@@ -440,7 +470,12 @@ class MainForm extends Component {
                   Категория
                 </button>
               </div>
-              <div id="dropdown-category-deposit" className="col-sm-5 col-xs-8">
+              <div
+                className="col-sm-5 col-xs-8"
+                data-toggle="popover"
+                data-content={this.state.categoryErrorDeposit}
+                id="dropdown-category-deposit"
+              >
                 <DropdownCategory
                   disabled={false}
                   options={optionsCategory}
@@ -465,19 +500,9 @@ class MainForm extends Component {
               </div>
             </div>
             <div className="row margin-top">
-              <div className="col-sm-8">
+              <div className="col-sm-4 col-sm-offset-8">
                 <button
-                  className="btn btn-block"
-                  id="text-error-deposit"
-                  style={{ display: 'none', backgroundColor: 'indianred' }}
-                  type="button"
-                >
-                  {this.state.textErrorDeposit}
-                </button>
-              </div>
-              <div className="col-sm-4">
-                <button
-                  className="btn btn-primary btn-block margin-top-xs"
+                  className="btn btn-primary btn-block"
                   id="create-deposit-button"
                   onClick={this.createDeposit}
                   type="button"
@@ -504,12 +529,13 @@ class MainForm extends Component {
               <div className="col-sm-5 col-xs-12 margin-top-xs">
                 <input
                   className="form-control text-center"
+                  data-toggle="popover"
+                  data-content={this.state.textErrorExpense}
+                  id="input-expense"
                   onChange={() => this.handleOnChangeExpense()}
                   placeholder="Сумма"
                   value={this.state.expense}
                   ref={(input) => { this.expenseInput = input; }}
-                  data-toggle="tooltip"
-                  title="Сумма расходов"
                 />
               </div>
             </div>
@@ -519,7 +545,12 @@ class MainForm extends Component {
                   Категория
                 </button>
               </div>
-              <div id="dropdown-сategory-expense" className="col-sm-5 col-xs-8">
+              <div
+                className="col-sm-5 col-xs-8"
+                data-toggle="popover"
+                data-content={this.state.categoryErrorExpense}
+                id="dropdown-сategory-expense"
+              >
                 <DropdownCategory
                   disabled={false}
                   options={optionsCategory}
@@ -544,19 +575,9 @@ class MainForm extends Component {
               </div>
             </div>
             <div className="row margin-top">
-              <div className="col-sm-8">
+              <div className="col-sm-4 col-sm-offset-8">
                 <button
-                  className="btn btn-block"
-                  id="text-error-expense"
-                  style={{ display: 'none', backgroundColor: 'indianred' }}
-                  type="button"
-                >
-                  {this.state.textErrorExpense}
-                </button>
-              </div>
-              <div className="col-sm-4">
-                <button
-                  className="btn btn-danger btn-block margin-top-xs"
+                  className="btn btn-danger btn-block"
                   id="create-expense-button"
                   onClick={this.createExpense}
                   type="button"

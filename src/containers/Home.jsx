@@ -10,14 +10,13 @@ import DataTableHistory from '../components/datatable/DataTableHistory';
 import MainForm from '../components/MainForm';
 
 import { getCategoryList, categoriesActions } from '../reducers/categories';
-import { getVisibleHistory, historyActions } from '../reducers/history';
+import { getHistoryList, historyActions } from '../reducers/history';
 import { getUnplannedMoney, unplannedMoneyActions } from '../reducers/unplannedMoney';
 
 class Home extends Component {
   static propTypes = {
     // children: PropTypes.object.isRequired,
     categories: PropTypes.instanceOf(List).isRequired,
-    filterHistory: PropTypes.func.isRequired,
     loadCategories: PropTypes.func.isRequired,
     loadHistory: PropTypes.func.isRequired,
     loadUnplannedMoney: PropTypes.func.isRequired,
@@ -144,10 +143,6 @@ class Home extends Component {
           next: '>',
           last: '...',
         },
-        aria: {
-          sortAscending: ': активировать для сортировки столбца по возрастанию',
-          sortDescending: ': активировать для сортировки столбца по убыванию',
-        },
       },
       order: [[0, 'ask']],
       stateSave: true,
@@ -225,12 +220,10 @@ class Home extends Component {
   }
 
   filterHistory = (filter) => {
-    this.setState({ filterTypeHistory: filter });
-    if (filter === 'Все операции') {
-      this.props.filterHistory('');
-    } else {
-      this.props.filterHistory(filter);
-    }
+    this.setState({
+      filterTypeHistory: filter,
+      refreshTable: true,
+    });
   }
 
   render() {
@@ -346,6 +339,7 @@ class Home extends Component {
                         Все операции
                       </a>
                     </li>
+                    <li role="separator" className="divider"></li>
                     <li>
                       <a
                         className="nav-item"
@@ -380,6 +374,7 @@ class Home extends Component {
                 </div>
               </div>
               <DataTableHistory
+                filter={this.state.filterTypeHistory}
                 history={this.props.history}
               />
             </div>
@@ -392,7 +387,7 @@ class Home extends Component {
 
 const mapStateToProps = createSelector(
   getCategoryList,
-  getVisibleHistory,
+  getHistoryList,
   getUnplannedMoney,
   (categories, history, unplannedMoney) => ({
     categories,

@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from 'immutable';
+import $ from 'jquery';
 
 class DataTableHistory extends Component {
   static propTypes = {
+    filter: PropTypes.string.isRequired,
     history: PropTypes.instanceOf(List).isRequired,
   }
 
@@ -23,6 +25,9 @@ class DataTableHistory extends Component {
   }
 
   render() {
+    const history = this.props.filter === 'Все операции'
+      ? this.props.history
+      : this.props.history.filter(history => history.type === this.props.filter);
     return (
       <div className="table-responsive margin-top">
         <table
@@ -38,7 +43,7 @@ class DataTableHistory extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.history.map((history, index) =>
+            {history.map((history, index) =>
               <tr key={index}>
                 <td className="text-center">
                   {this.choiceIcon(history.type)}
