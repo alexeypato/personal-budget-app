@@ -10,7 +10,21 @@
   },
   "scripts": {
     "start": "node server.js",
-    "postinstall": "webpack -p --config webpack.prod.config.js"
+    "postinstall": "webpack -p --config webpack.prod.config.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^.+\\.(css|scss)$": "identity-obj-proxy"
+    },
+    "setupFiles": [
+      "./test/jestsetup.js"
+    ],
+    "snapshotSerializers": [
+      "<rootDir>/node_modules/enzyme-to-json/serializer"
+    ]
   },
   "author": {
     "name": "Aliaksei Patotski",
@@ -70,6 +84,14 @@
     "webpack": "^1.12.14"
   },
   "devDependencies": {
+    "babel-jest": "^19.0.0",
+    "enzyme": "^2.8.0",
+    "enzyme-to-json": "^1.5.0",
+    "expect": "^1.20.2",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^19.0.2",
+    "react-addons-test-utils": "^15.4.2",
+    "react-test-renderer": "^15.4.2",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-dev-server": "^1.14.1",
     "webpack-hot-middleware": "^2.10.0"

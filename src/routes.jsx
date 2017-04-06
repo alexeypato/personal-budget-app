@@ -5,7 +5,8 @@ import { isAuthenticated } from './reducers/auth';
 import App from './containers/App';
 import Home from './containers/Home';
 
-import LogIn from './components/LogIn';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 import { paths } from './constants';
 
 const requireAuth = (getState) => {
@@ -28,7 +29,8 @@ export const getRoutes = (getState) => {
   return (
     <Route path={paths.ROOT} component={App}>
       <IndexRedirect to={paths.SIGN_IN} />
-      <Route path={paths.SIGN_IN} component={LogIn} onEnter={requireUnauth(getState)} />
+      <Route path={paths.SIGN_IN} component={SignIn} onEnter={requireUnauth(getState)} />
+      <Route path={paths.SIGN_UP} component={SignUp} onEnter={requireUnauth(getState)} />
       <Route path={paths.HOME} component={Home} onEnter={requireAuth(getState)} />
       <Redirect from={paths.NOTFOUND} to={paths.SIGN_IN} />
     </Route>

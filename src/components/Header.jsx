@@ -86,7 +86,8 @@ class Header extends Component {
                   data-toggle="dropdown"
                 >
                   <span className="glyphicon glyphicon-user"></span>
-                  &nbsp;{this.props.auth.displayName} <b className="caret"></b>
+                  &nbsp;{this.props.auth.displayName || this.props.auth.email}
+                  &nbsp;<b className="caret"></b>
                 </a>
                 <ul className="dropdown-menu">
                   <li><a
@@ -109,7 +110,8 @@ class Header extends Component {
                     data-toggle="dropdown"
                   >
                     <span className="glyphicon glyphicon-user"></span>
-                    &nbsp;{this.props.auth.displayName} <b className="caret"></b>
+                    &nbsp;{this.props.auth.displayName || this.props.auth.email}
+                    &nbsp;<b className="caret"></b>
                   </a>
                   <ul className="dropdown-menu">
                     <li><a

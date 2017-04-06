@@ -16,7 +16,7 @@ export function initAuth(user) {
 export function signInSuccess(result) {
   return {
     type: SIGN_IN_SUCCESS,
-    payload: result.user,
+    payload: result.user || result,
   };
 }
 
@@ -41,6 +41,22 @@ function authenticate(provider) {
   };
 }
 
+export function resetPassword(email) {
+  return (dispatch) => {
+    firebaseAuth.sendPasswordResetEmail(email)
+      .then(() => alert('Проверьте свою почту!'))
+      .catch(error => alert(error));
+  };
+}
+
+export function signIn(email, password) {
+  return (dispatch) => {
+    firebaseAuth.signInWithEmailAndPassword(email, password)
+      .then(result => dispatch(signInSuccess(result)))
+      .catch(error => alert(error));
+  };
+}
+
 export function signInWithGoogle() {
   return authenticate(new firebase.auth.GoogleAuthProvider());
 }
@@ -51,4 +67,12 @@ export function signInWithFacebook() {
 
 export function signInWithTwitter() {
   return authenticate(new firebase.auth.TwitterAuthProvider());
+}
+
+export function signUp(email, password) {
+  return (dispatch) => {
+    firebaseAuth.createUserWithEmailAndPassword(email, password)
+      .then(result => dispatch(signInSuccess(result)))
+      .catch(error => alert(error));
+  };
 }
