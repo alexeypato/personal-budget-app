@@ -92,7 +92,7 @@ class SignUp extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-md-6 col-md-offset-3">
+          <div className="col-md-8 col-md-offset-2">
             <div className="form-login">
               <div className="row text-center">
                 <p>Регистрация - Личный бютжет</p>
@@ -135,7 +135,7 @@ class SignUp extends Component {
                   /></p>
                 </div>
                 <div className="col-md-8 col-md-offset-2">
-                  <div className="col-xs-6">
+                  <div className="col-xs-6" style={{ padding: '0px 5px' }}>
                     <p><button
                       className="btn btn-danger btn-block"
                       id="sign-up"
@@ -145,7 +145,7 @@ class SignUp extends Component {
                       <span className="glyphicon glyphicon-user"></span>{' Регистрация'}
                     </button></p>
                   </div>
-                  <div className="col-xs-6">
+                  <div className="col-xs-6" style={{ padding: '0px 5px' }}>
                     <p><button
                       className="btn btn-primary btn-block"
                       onClick={() => { this.context.router.replace(paths.SIGN_IN); }}

@@ -6,9 +6,9 @@ import {
   UPDATE_CATEGORY_SUCCESS,
 } from './action-types';
 
-export function createCategory(moneyCategory, nameCategory) {
+export function createCategory(moneyCategory, nameCategory, progress) {
   return () => {
-    categoryList.push({ moneyCategory, nameCategory })
+    categoryList.push({ moneyCategory, nameCategory, progress })
       .catch(error => console.log(`createCategory: ${error}`));
   };
 }

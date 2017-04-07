@@ -120,6 +120,7 @@ class Home extends Component {
       aoColumns: [
         null,
         null,
+        null,
         { bSortable: false },
         { bSortable: false },
       ],

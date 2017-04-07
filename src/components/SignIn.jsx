@@ -92,7 +92,7 @@ class SignIn extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-md-6 col-md-offset-3">
+          <div className="col-md-8 col-md-offset-2">
             <div className="form-login">
               <div className="row text-center">
                 <p>Вход - Личный бютжет</p>
@@ -141,7 +141,7 @@ class SignIn extends Component {
                   />
                 </div>
                 <div className="col-md-8 col-md-offset-2">
-                  <div className="col-xs-6">
+                  <div className="col-xs-6" style={{ padding: '0px 5px' }}>
                     <p><button
                       className="btn btn-primary btn-block"
                       id="sign-in"
@@ -151,7 +151,7 @@ class SignIn extends Component {
                       <span className="glyphicon glyphicon-log-in"></span>{' Войти'}
                     </button></p>
                   </div>
-                  <div className="col-xs-6">
+                  <div className="col-xs-6" style={{ padding: '0px 5px' }}>
                     <p><button
                       className="btn btn-danger btn-block"
                       onClick={() => this.context.router.replace(paths.SIGN_UP)}

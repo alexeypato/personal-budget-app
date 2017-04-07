@@ -22,13 +22,16 @@ class CategoryModal extends Component {
     super(props);
     this.state = {
       nameCategory: '',
-      textError: '',
+      progress: '',
+      textErrorName: '',
+      textErrorProgress: '',
     };
   }
 
   componentDidMount = () => {
     this.setState({
       nameCategory: this.props.category.nameCategory,
+      textErrorProgress: this.props.category.progress || '',
     });
   }
 
@@ -36,12 +39,16 @@ class CategoryModal extends Component {
     if (nextProps.isEditCategory) {
       this.setState({
         nameCategory: nextProps.category.nameCategory,
-        textError: '',
+        progress: '',
+        textErrorName: '',
+        textErrorProgress: nextProps.category.progress,
       });
     } else {
       this.setState({
         nameCategory: '',
-        textError: '',
+        progress: '',
+        textErrorName: '',
+        textErrorProgress: '',
       });
     }
   }
@@ -52,8 +59,15 @@ class CategoryModal extends Component {
     });
   }
 
+  handleOnChangeProgress = () => {
+    this.setState({
+      progress: this.progressInput.value.replace(/\D/, ''),
+    });
+  }
+
   saveAndClose = () => {
     const nameCategory = this.state.nameCategory.trim();
+    const progress = this.state.progress;
     if (nameCategory.length > 0) {
       let duplicate = false;
       const categories = this.props.categories._tail !== undefined
@@ -71,15 +85,22 @@ class CategoryModal extends Component {
         }
 
         if (!duplicate) {
-          this.props.updateCategory(
-            this.props.category,
-            { nameCategory: this.state.nameCategory },
-          );
-          this.props.closeCategoryModal();
+          if (progress > 1) {
+            this.props.updateCategory(
+              this.props.category,
+              { nameCategory, progress },
+            );
+            this.props.closeCategoryModal();
+          } else {
+            this.setState({
+              progress: '',
+              textErrorProgress: 'Ошибка! Введите целевую сумму.',
+            });
+          }
         } else {
           this.setState({
             nameCategory: '',
-            textError: 'Ошибка! Такая категория уже есть.',
+            textErrorName: 'Ошибка! Такая категория уже есть.',
           });
         }
       } else {
@@ -90,19 +111,26 @@ class CategoryModal extends Component {
         }
 
         if (!duplicate) {
-          this.props.createCategory(0, nameCategory);
-          this.props.closeCategoryModal();
+          if (progress > 1) {
+            this.props.createCategory(0, nameCategory, progress);
+            this.props.closeCategoryModal();
+          } else {
+            this.setState({
+              progress: '',
+              textErrorProgress: 'Ошибка! Введите целевую сумму.',
+            });
+          }
         } else {
           this.setState({
             nameCategory: '',
-            textError: 'Ошибка! Такая категория уже есть.',
+            textErrorName: 'Ошибка! Такая категория уже есть.',
           });
         }
       }
     } else {
       this.setState({
         nameCategory: '',
-        textError: 'Ошибка! Введите название категории.',
+        textErrorName: 'Ошибка! Введите название категории.',
       });
     }
   }
@@ -183,16 +211,29 @@ class CategoryModal extends Component {
           <Modal.Body>
             <input
               autoFocus
-              className="form-control text-center margin-bottom"
+              className="form-control text-center"
               onChange={() => this.handleOnChangeInput()}
               onKeyPress={e => this.runScript(e)}
               placeholder={
-                this.state.textError ?
-                  this.state.textError :
+                this.state.textErrorName ?
+                  this.state.textErrorName :
                   'Введите название категории'
               }
               ref={(input) => { this.nameCategoryInput = input; }}
               value={this.state.nameCategory}
+            />
+            <input
+              className="form-control text-center margin-top"
+              maxLength="10"
+              onChange={() => this.handleOnChangeProgress()}
+              onKeyPress={e => this.runScript(e)}
+              placeholder={
+                this.state.textErrorProgress ?
+                  this.state.textErrorProgress :
+                  'Введите целевую сумму'
+              }
+              ref={(input) => { this.progressInput = input; }}
+              value={this.state.progress}
             />
           </Modal.Body>
           <Modal.Footer>

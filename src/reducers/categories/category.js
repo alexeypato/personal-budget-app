@@ -4,4 +4,5 @@ export const Category = new Record({
   key: null,
   moneyCategory: null,
   nameCategory: null,
+  progress: null,
 });

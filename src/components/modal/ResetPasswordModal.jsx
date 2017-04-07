@@ -43,6 +43,14 @@ class ResetPasswordModal extends Component {
     }
   };
 
+  runScript = (e) => {
+    if (e.which === 13 || e.keyCode === 13) {
+      this.sendAndClose();
+      return false;
+    }
+    return true;
+  }
+
   render() {
     return (
       <div>
@@ -57,8 +65,10 @@ class ResetPasswordModal extends Component {
           </Modal.Header>
           <Modal.Body>
             <input
+              autoFocus
               className="form-control text-center"
               onChange={() => this.handleOnChangeEmail()}
+              onKeyPress={e => this.runScript(e)}
               placeholder={this.state.textErrorEmail || 'Email'}
               ref={(input) => { this.inputEmail = input; }}
               value={this.state.email}
@@ -66,7 +76,6 @@ class ResetPasswordModal extends Component {
           </Modal.Body>
           <Modal.Footer>
             <button
-              autoFocus
               className="btn btn-default"
               type="button"
               onClick={this.props.closeModal}
