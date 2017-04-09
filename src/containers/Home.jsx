@@ -145,7 +145,7 @@ class Home extends Component {
           last: '...',
         },
       },
-      order: [[0, 'ask']],
+      order: [[2, 'desc']],
       stateSave: true,
     });
     $('#data-table-history').dataTable({
