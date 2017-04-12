@@ -1,7 +1,6 @@
 import { historyList } from './history-list';
 import {
   CREATE_HISTORY_SUCCESS,
-  FILTER_HISTORY,
   LOAD_HISTORY_SUCCESS,
 } from './action-types';
 
@@ -16,13 +15,6 @@ export function createHistorySuccess(history) {
   return {
     type: CREATE_HISTORY_SUCCESS,
     payload: history,
-  };
-}
-
-export function filterHistory(filterType) {
-  return {
-    type: FILTER_HISTORY,
-    payload: { filterType },
   };
 }
 

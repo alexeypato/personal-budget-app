@@ -4,7 +4,7 @@ import {
   UPDATE_UNPLANNEDMONEY_SUCCESS,
 } from './action-types';
 
-const unplannedMoneyState = 0;
+export const unplannedMoneyState = 0;
 
 export function unplannedMoneyReducer(state = unplannedMoneyState, { payload, type }) {
   switch (type) {

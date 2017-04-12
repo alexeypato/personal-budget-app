@@ -1,0 +1,26 @@
+export const history = [
+  {
+    date: '2017-03-26',
+    key: 1,
+    keyCategory: 1,
+    moneyHistory: 1,
+    nameCategory: 'test1',
+    type: 'test1',
+  },
+  {
+    date: '2017-03-26',
+    key: 2,
+    keyCategory: 2,
+    moneyHistory: 2,
+    nameCategory: 'test2',
+    type: 'test2',
+  },
+  {
+    date: '2017-03-26',
+    key: 3,
+    keyCategory: 3,
+    moneyHistory: 3,
+    nameCategory: 'test3',
+    type: 'test3',
+  },
+];

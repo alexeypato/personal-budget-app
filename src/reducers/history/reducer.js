@@ -2,7 +2,6 @@ import { List, Record } from 'immutable';
 
 import {
   CREATE_HISTORY_SUCCESS,
-  FILTER_HISTORY,
   LOAD_HISTORY_SUCCESS,
 } from './action-types';
 
@@ -28,9 +27,6 @@ export function historyReducer(state = new HistoryState(), { payload, type }) {
 
     case DELETE_UNPLANNEDMONEY_SUCCESS:
       return new HistoryState();
-
-    case FILTER_HISTORY:
-      return state.set('filter', payload.filterType || '');
 
     case LOAD_HISTORY_SUCCESS:
       return state.set('list', new List(payload.reverse()));

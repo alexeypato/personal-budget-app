@@ -1,11 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { authActions } from '../reducers/auth';
 import { paths } from '../constants';
 
 class SignUp extends Component {
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   };
   static propTypes = {
     signUp: PropTypes.func.isRequired,
