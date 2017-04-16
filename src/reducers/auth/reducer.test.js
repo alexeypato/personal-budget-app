@@ -29,6 +29,16 @@ describe('Auth reducer', () => {
     });
   });
 
+  describe('DEFAULT', () => {
+    it('should default state', () => {
+      let state = authReducer(undefined, {
+        type: 'DEFAULT',
+        payload: { uid: '123' },
+      });
+
+      expect(state.id).toBe(null);
+    });
+  });
 
   describe('SIGN_IN_SUCCESS', () => {
     it('should set AuthState.authenticated to true', () => {
@@ -41,7 +51,6 @@ describe('Auth reducer', () => {
       expect(state.id).toBe('123');
     });
   });
-
 
   describe('SIGN_OUT_SUCCESS', () => {
     it('should set AuthState.authenticated to false', () => {

@@ -5,7 +5,7 @@ import {
   LOAD_HISTORY_SUCCESS,
 } from './action-types';
 
-import { DELETE_UNPLANNEDMONEY_SUCCESS } from '../unplannedMoney';
+import { DELETE_ALL_SUCCESS } from '../unplannedMoney';
 
 export const HistoryState = new Record({
   deleted: null,
@@ -25,7 +25,7 @@ export function historyReducer(state = new HistoryState(), { payload, type }) {
               state.list.push(payload),
       });
 
-    case DELETE_UNPLANNEDMONEY_SUCCESS:
+    case DELETE_ALL_SUCCESS:
       return new HistoryState();
 
     case LOAD_HISTORY_SUCCESS:

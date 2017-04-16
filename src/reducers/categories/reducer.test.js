@@ -7,6 +7,8 @@ import {
   UPDATE_CATEGORY_SUCCESS,
 } from './action-types';
 
+import { DELETE_ALL_SUCCESS } from '../unplannedMoney';
+
 import { Category } from './category';
 import { categoriesReducer, CategoriesState } from './reducer';
 
@@ -31,7 +33,6 @@ describe('categories', () => {
       });
     });
 
-
     describe('CREATE_CATEGORY_SUCCESS', () => {
       it('should prepend new category to list', () => {
         let state = new CategoriesState({list: new List([categories1])});
@@ -46,6 +47,29 @@ describe('categories', () => {
       });
     });
 
+    describe('DEFAULT', () => {
+      it('should default state', () => {
+        let state = new CategoriesState({list: new List([categories1, categories2])});
+
+        let nextState = categoriesReducer(state, {
+          type: 'DEFAULT',
+        });
+
+        expect(nextState.list).toBe(state.list);
+      });
+    });
+
+    describe('DELETE_ALL_SUCCESS', () => {
+      it('should remove all categories', () => {
+        let state = new CategoriesState({list: new List([categories1, categories2])});
+
+        let nextState = categoriesReducer(state, {
+          type: DELETE_ALL_SUCCESS,
+        });
+
+        expect(nextState.list.size).toBe(0);
+      });
+    });
 
     describe('DELETE_TASK_SUCCESS', () => {
       it('should remove category from list', () => {
@@ -87,7 +111,6 @@ describe('categories', () => {
         expect(nextState.list.get(1)).toBe(categories1);
       });
     });
-
 
     describe('UPDATE_CATEGORY_SUCCESS', () => {
       it('should update category', () => {

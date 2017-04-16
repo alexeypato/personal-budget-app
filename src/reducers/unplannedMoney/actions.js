@@ -1,5 +1,5 @@
 import {
-  DELETE_UNPLANNEDMONEY_SUCCESS,
+  DELETE_ALL_SUCCESS,
   LOAD_UNPLANNEDMONEY_SUCCESS,
   UPDATE_UNPLANNEDMONEY_SUCCESS,
 } from './action-types';
@@ -7,7 +7,7 @@ import { firebaseDb } from '../../firebase';
 
 export function deleteUnplannedMoneySuccess() {
   return {
-    type: DELETE_UNPLANNEDMONEY_SUCCESS,
+    type: DELETE_ALL_SUCCESS,
   };
 }
 

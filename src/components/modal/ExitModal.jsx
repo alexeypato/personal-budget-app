@@ -5,7 +5,7 @@ import { Modal } from 'react-bootstrap';
 
 import { authActions, getAuth } from '../../reducers/auth';
 
-class ExitModal extends Component {
+export class ExitModal extends Component {
   static propTypes = {
     closeModal: PropTypes.func.isRequired,
     showModal: PropTypes.bool,

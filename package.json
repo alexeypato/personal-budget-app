@@ -23,11 +23,13 @@
       "./test/jestsetup.js"
     ],
     "snapshotSerializers": [
-      "<rootDir>/node_modules/enzyme-to-json/serializer"
+      "./node_modules/enzyme-to-json/serializer"
     ],
     "unmockedModulePathPatterns": [
-      "node_modules/react/",
-      "node_modules/enzyme/"
+      "react",
+      "react-dom",
+      "react-addons-test-utils",
+      "enzyme"
     ]
   },
   "author": {
@@ -41,7 +43,8 @@
     "Redux",
     "Firebase",
     "React Router",
-    "ESLint"
+    "ESLint",
+    "Jest"
   ],
   "dependencies": {
     "babel-core": "^6.24.1",
@@ -93,11 +96,13 @@
     "enzyme": "^2.8.1",
     "enzyme-to-json": "^1.5.0",
     "expect": "^1.20.2",
+    "expect-enzyme": "^0.14.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^19.0.2",
     "react-addons-test-utils": "^15.5.1",
     "react-test-renderer": "^15.5.4",
     "regenerator-runtime": "^0.10.3",
+    "sinon": "^2.1.0",
     "webpack-dev-middleware": "^1.10.1",
     "webpack-dev-server": "^1.16.3",
     "webpack-hot-middleware": "^2.18.0"

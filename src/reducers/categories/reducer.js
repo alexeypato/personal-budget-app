@@ -7,7 +7,7 @@ import {
   UPDATE_CATEGORY_SUCCESS,
 } from './action-types';
 
-import { DELETE_UNPLANNEDMONEY_SUCCESS } from '../unplannedMoney';
+import { DELETE_ALL_SUCCESS } from '../unplannedMoney';
 
 export const CategoriesState = new Record({
   deleted: null,
@@ -33,7 +33,7 @@ export function categoriesReducer(state = new CategoriesState(), { payload, type
         list: state.list.filter(category => category.key !== payload.key),
       });
 
-    case DELETE_UNPLANNEDMONEY_SUCCESS:
+    case DELETE_ALL_SUCCESS:
       return new CategoriesState();
 
     case LOAD_CATEGORIES_SUCCESS:

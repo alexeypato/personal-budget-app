@@ -24,3 +24,24 @@ export const history = [
     type: 'test3',
   },
 ];
+
+export const categories = [
+  {
+    key: 1,
+    moneyCategory: 10,
+    nameCategory: 'test1',
+    progress: 100,
+  },
+  {
+    key: 2,
+    moneyCategory: 100,
+    nameCategory: 'test2',
+    progress: 100,
+  },
+  {
+    key: 3,
+    moneyCategory: 1000,
+    nameCategory: 'test3',
+    progress: 100,
+  },
+];

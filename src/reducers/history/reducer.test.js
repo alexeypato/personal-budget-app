@@ -5,6 +5,8 @@ import {
   LOAD_HISTORY_SUCCESS,
 } from './action-types';
 
+import { DELETE_ALL_SUCCESS } from '../unplannedMoney';
+
 import { History } from './history';
 import { historyReducer, HistoryState } from './reducer';
 
@@ -45,6 +47,30 @@ describe('history', () => {
 
         expect(nextState.list.get(0)).toBe(history1);
         expect(nextState.list.get(1)).toBe(history2);
+      });
+    });
+
+    describe('DEFAULT', () => {
+      it('should default state', () => {
+        let state = new HistoryState({list: new List([history1, history2])});
+
+        let nextState = historyReducer(state, {
+          type: 'DEFAULT',
+        });
+
+        expect(nextState.list).toBe(state.list);
+      });
+    });
+
+    describe('DELETE_ALL_SUCCESS', () => {
+      it('should remove all history', () => {
+        let state = new HistoryState({list: new List([history1, history2])});
+
+        let nextState = historyReducer(state, {
+          type: DELETE_ALL_SUCCESS,
+        });
+
+        expect(nextState.list.size).toBe(0);
       });
     });
 
