@@ -9,7 +9,7 @@ import { paths } from '../constants';
 import Footer from '../components/footer/Footer';
 import Header from '../components/Header';
 
-class App extends Component {
+export class App extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   };

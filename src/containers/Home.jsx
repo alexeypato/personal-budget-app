@@ -16,7 +16,6 @@ import { getUnplannedMoney, unplannedMoneyActions } from '../reducers/unplannedM
 
 class Home extends Component {
   static propTypes = {
-    // children: PropTypes.object.isRequired,
     categories: PropTypes.instanceOf(List).isRequired,
     loadCategories: PropTypes.func.isRequired,
     loadHistory: PropTypes.func.isRequired,
