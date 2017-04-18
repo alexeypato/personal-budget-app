@@ -94,9 +94,8 @@
   "devDependencies": {
     "babel-jest": "^19.0.0",
     "enzyme": "^2.8.1",
-    "enzyme-to-json": "^1.5.0",
+    "enzyme-to-json": "^1.5.1",
     "expect": "^1.20.2",
-    "expect-enzyme": "^0.14.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^19.0.2",
     "react-addons-test-utils": "^15.5.1",
