@@ -1,10 +1,17 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { App } from './App';
 import Footer from '../components/footer/Footer';
 import Header from '../components/Header';
+import { SignIn } from '../components/SignIn';
 
 describe('App component', () => {
+  const propsChild = {
+    resetPassword: () => {},
+    signInWithGoogle: () => {},
+    signInWithFacebook: () => {},
+    signInWithTwitter: () => {},
+  };
+
   const props = {
     auth: { 
       authenticated: false,
@@ -12,6 +19,7 @@ describe('App component', () => {
       email: null,
       id: null,
     },
+    children: <SignIn {...propsChild} />,
   };
 
   it('should render <Header /> component', () => {

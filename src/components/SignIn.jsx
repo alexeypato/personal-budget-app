@@ -5,7 +5,7 @@ import { authActions } from '../reducers/auth';
 import { paths } from '../constants';
 import ResetPasswordModal from './modal/ResetPasswordModal';
 
-class SignIn extends Component {
+export class SignIn extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   };

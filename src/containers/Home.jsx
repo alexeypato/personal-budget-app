@@ -14,7 +14,7 @@ import { getCategoryList, categoriesActions } from '../reducers/categories';
 import { getHistoryList, historyActions } from '../reducers/history';
 import { getUnplannedMoney, unplannedMoneyActions } from '../reducers/unplannedMoney';
 
-class Home extends Component {
+export class Home extends Component {
   static propTypes = {
     categories: PropTypes.instanceOf(List).isRequired,
     loadCategories: PropTypes.func.isRequired,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { List } from 'immutable';
 
-class DataTableCategories extends Component {
+export class DataTableCategories extends Component {
   static propTypes = {
     categories: PropTypes.instanceOf(List).isRequired,
     showDeleteCategoryModal: PropTypes.func.isRequired,
